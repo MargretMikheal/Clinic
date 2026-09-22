@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="becd1660901549b585b452c0cb07c2ba" Name="Diagram1">
+        <EntityTypeShape EntityType="ClinicDBEntities.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.Appointment" Width="1.5" PointX="10.5" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.AspNetRole" Width="1.5" PointX="0.75" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.AspNetUser" Width="1.5" PointX="3" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.Diagnosi" Width="1.5" PointX="12.75" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.Doctor" Width="1.5" PointX="8.25" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.DoctorSchedule" Width="1.5" PointX="10.5" PointY="16.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.Patient" Width="1.5" PointX="8.25" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.Prescription" Width="1.5" PointX="15" PointY="11.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.PrescriptionItem" Width="1.5" PointX="17.25" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.RoleScreenPermission" Width="1.5" PointX="3" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.Screen" Width="1.5" PointX="0.75" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.Speciality" Width="1.5" PointX="6" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.Symptom" Width="1.5" PointX="12.75" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.Visit" Width="1.5" PointX="12.75" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.VisitDiagnosi" Width="1.5" PointX="15" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClinicDBEntities.VisitSymptom" Width="1.5" PointX="15" PointY="16.375" IsExpanded="true" />
+        <AssociationConnector Association="ClinicDBEntities.FK_Appointment_Doctor" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_Appointment_Patient" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_Visit_Appointment" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_RoleScreenPermission_AspNetRoles_RoleId" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_RoleScreenPermission_Role" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_Doctor_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_VisitDiagnosis_Diagnosis" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_Doctor_Speciality" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_DoctorSchedule_Doctor" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_Visit_Doctor" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_Visit_Patient" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_Prescription_Visit" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_PrescriptionItem_Prescription" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_RoleScreenPermission_Screen" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_Screens_Parent" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_VisitSymptom_Symptom" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_VisitDiagnosis_Visit" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.FK_VisitSymptom_Visit" ManuallyRouted="false" />
+        <AssociationConnector Association="ClinicDBEntities.AspNetUserRoles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
