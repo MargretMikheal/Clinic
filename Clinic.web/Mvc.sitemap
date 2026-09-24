@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mvcSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
+            xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
+  
+  <mvcSiteMapNode title="Root" key="Root" url="~/">
+    
+    <mvcSiteMapNode title="menu.Administration" key="1" icon="fa-cogs" area="Administration" url="~/Menu/Administration" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web">
+      <mvcSiteMapNode title="menu.Users" key="4" icon="fa-users" area="Administration" controller="Users" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      <mvcSiteMapNode title="menu.RolePermissions" key="5" icon="fa-lock" area="Administration" controller="RolePermissions" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      <mvcSiteMapNode title="menu.Specialities" key="6" icon="fa-stethoscope" area="Administration" controller="Speciality" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      <mvcSiteMapNode title="menu.Symptoms" key="7" icon="fa-list" area="Administration" controller="Symptom" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      <mvcSiteMapNode title="menu.Diagnoses" key="8" icon="fa-medkit" area="Administration" controller="Diagnosis" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="menu.Reception" key="2" icon="fa-desktop" area="Reception" url="~/Menu/Reception" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web">
+      <mvcSiteMapNode title="menu.Patients" key="9" icon="fa-user" area="Reception" controller="Patient" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      <mvcSiteMapNode title="menu.Appointments" key="10" icon="fa-calendar" area="Reception" controller="Appointment" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="menu.Doctor" key="3" icon="fa-user-md" area="Doctor" url="~/Menu/Doctor" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web">
+      <mvcSiteMapNode title="menu.MySchedule" key="11" icon="fa-clock-o" area="Doctor" controller="Schedule" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      <mvcSiteMapNode title="menu.MyAppointments" key="12" icon="fa-calendar" area="Doctor" controller="Appointment" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      <mvcSiteMapNode title="menu.PatientHistory" key="13" icon="fa-history" area="Doctor" controller="Patient" action="History" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      <mvcSiteMapNode title="menu.Visit" key="14" icon="fa-stethoscope" area="Doctor" controller="Visit" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+    </mvcSiteMapNode>
+
+  </mvcSiteMapNode>
+</mvcSiteMap>

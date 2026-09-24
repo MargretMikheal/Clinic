@@ -1,0 +1,16 @@
+{
+  "Administration": "Administration",
+  "Users": "Users",
+  "RolePermissions": "Role Permissions",
+  "Specialities": "Specialities",
+  "Symptoms": "Symptoms",
+  "Diagnoses": "Diagnoses",
+  "Reception": "Reception",
+  "Patients": "Patients",
+  "Appointments": "Appointments",
+  "Doctor": "Doctor",
+  "MySchedule": "My Schedule",
+  "MyAppointments": "My Appointments",
+  "PatientHistory": "Patient History",
+  "Visit": "Visit"
+}

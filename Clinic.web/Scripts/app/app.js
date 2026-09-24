@@ -6,7 +6,12 @@
     // Clinic AngularJS Application
     // =========================================================
 
-    var app = angular.module("clinicApp", []);
+    var app;
+    try {
+        app = angular.module("clinicApp");
+    } catch (e) {
+        app = angular.module("clinicApp", []);
+    }
 
 
     // =========================================================
@@ -28,6 +33,17 @@
                     return responseData;
                 }
             );
+
+            $httpProvider.interceptors.push(function () {
+                return {
+                    request: function (config) {
+                        var match = document.cookie.match(/(^|;)\s*clinic_lang\s*=\s*([^;]+)/);
+                        var lang = match ? match.pop() : "ar";
+                        config.headers["Accept-Language"] = lang;
+                        return config;
+                    }
+                };
+            });
 
         }
     ]);
@@ -70,7 +86,7 @@
     // Notification Service
     // =========================================================
 
-    app.factory("notificationService", function () {
+    app.factory("notificationService", ["localizationService", function (localizationService) {
 
         return {
 
@@ -78,35 +94,32 @@
 
                 toastr.success(
                     message,
-                    title || "Success"
+                    title || localizationService.instant("common.Success")
                 );
             },
 
             error: function (message, title) {
-
                 toastr.error(
                     message,
-                    title || "Error"
+                    title || localizationService.instant("common.Error")
                 );
             },
 
             warning: function (message, title) {
-
                 toastr.warning(
                     message,
-                    title || "Warning"
+                    title || localizationService.instant("common.Warning")
                 );
             },
 
             info: function (message, title) {
-
                 toastr.info(
                     message,
-                    title || "Information"
+                    title || localizationService.instant("common.Information")
                 );
             }
         };
-    });
+    }]);
 
 
     // =========================================================

@@ -1,4 +1,4 @@
-﻿using System.Web.Mvc;
+using System.Web.Mvc;
 
 namespace Clinic.Web
 {
@@ -7,6 +7,7 @@ namespace Clinic.Web
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new Clinic.Web.Filters.LocalizationAttribute());
         }
     }
 }

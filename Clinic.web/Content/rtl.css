@@ -1,0 +1,28 @@
+/* RTL overrides for Bootstrap 3 */
+
+body {
+    direction: rtl;
+    text-align: right;
+}
+
+.pull-right {
+    float: left !important;
+}
+
+.pull-left {
+    float: right !important;
+}
+
+.text-right {
+    text-align: left;
+}
+
+.text-left {
+    text-align: right;
+}
+
+/* Add any specific margin/padding flips if needed */
+.mr-1, .mr-2, .mr-3 {
+    margin-right: 0 !important;
+    /* We would mirror these to margin-left in a full framework, but keep it basic */
+}

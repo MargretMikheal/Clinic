@@ -1,5 +1,9 @@
-﻿<!DOCTYPE html>
-<html ng-app="clinicApp">
+@{
+    var currentLang = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+    var currentDir = currentLang == "ar" ? "rtl" : "ltr";
+}
+<!DOCTYPE html>
+<html ng-app="clinicApp" lang="@currentLang" dir="@currentDir">
 <head>
     <meta charset="utf-8" />
 
@@ -12,16 +16,35 @@
 
     @Styles.Render("~/Content/css")
 
+    @if (currentLang == "ar")
+    {
+        <link href="~/Content/rtl.css" rel="stylesheet" />
+    }
+
     @Scripts.Render("~/bundles/modernizr")
 </head>
 
 <body>
 
+    <!-- Language Switcher -->
+    <div style="text-align: right; padding: 10px; background-color: #f8f9fa; border-bottom: 1px solid #ddd;">
+        <a href="#" ng-controller="LanguageController" ng-click="changeLanguage('en')">English</a> | 
+        <a href="#" ng-controller="LanguageController" ng-click="changeLanguage('ar')">العربية</a>
+    </div>
+
     <!-- Main Application -->
-    <div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                @Html.Partial("_Menu")
+            </div>
 
-        @RenderBody()
-
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                @RenderBody()
+            </div>
+        </div>
     </div>
 
 
@@ -39,7 +62,10 @@
 
 
     <!-- Clinic Angular Application -->
+    <script src="~/Scripts/app/services/localizationService.js"></script>
     <script src="~/Scripts/app/app.js"></script>
+    <script src="~/Scripts/app/filters/i18nFilter.js"></script>
+    <script src="~/Scripts/app/controllers/LanguageController.js"></script>
 
 
     <!-- Page Specific Scripts -->
