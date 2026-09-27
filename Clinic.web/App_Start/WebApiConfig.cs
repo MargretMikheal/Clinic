@@ -1,4 +1,4 @@
-﻿using System.Web.Http;
+using System.Web.Http;
 
 namespace Clinic.Web
 {
@@ -7,6 +7,7 @@ namespace Clinic.Web
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
+            config.Filters.Add(new Clinic.Web.Filters.GlobalWebApiExceptionFilter());
 
             // Web API routes
             config.MapHttpAttributeRoutes();

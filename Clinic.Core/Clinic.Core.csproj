@@ -160,6 +160,13 @@
     <Compile Include="Data\VisitSymptom.cs">
       <DependentUpon>ClinicDBEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="BLL\Interfaces\IAuthenticationService.cs" />
+    <Compile Include="BLL\Services\AuthenticationService.cs" />
+    <Compile Include="Common\DTOs\LoginRequest.cs" />
+    <Compile Include="Common\DTOs\LoginResponse.cs" />
+    <Compile Include="Common\DTOs\UserInfo.cs" />
+    <Compile Include="Common\Responses\BaseResponse.cs" />
+    <Compile Include="Common\Responses\BaseResponseGeneric.cs" />
     <Compile Include="Identity\ApplicationUser.cs" />
     <Compile Include="Identity\ApplicationRole.cs" />
     <Compile Include="Identity\Stores\ApplicationRoleStore.cs" />
@@ -178,8 +185,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BLL\Interfaces\" />
-    <Folder Include="BLL\Services\" />
     <Folder Include="Data\Configurations\" />
     <Folder Include="Data\Migrations\" />
     <Folder Include="Entities\" />
@@ -188,7 +193,6 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="Data\ClinicDBEntities.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

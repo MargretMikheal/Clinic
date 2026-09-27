@@ -23,5 +23,19 @@
   "Information": "معلومات",
   "Required": "هذا الحقل مطلوب",
   "InvalidData": "بيانات غير صالحة",
-  "SomethingWentWrong": "حدث خطأ ما"
+  "SomethingWentWrong": "حدث خطأ ما",
+  "Login": "تسجيل الدخول",
+  "Logout": "تسجيل الخروج",
+  "Username": "اسم المستخدم",
+  "Password": "كلمة المرور",
+  "InvalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحة",
+  "Welcome": "مرحباً",
+  "Dashboard": "لوحة القيادة",
+  "Role": "الدور",
+  "SigningIn": "جاري تسجيل الدخول...",
+  "AccessDenied": "تم رفض الوصول",
+  "NoPermission": "ليس لديك الإذن للوصول إلى هذا المورد.",
+  "ReturnHome": "العودة إلى الصفحة الرئيسية",
+  "ShowPassword": "إظهار كلمة المرور",
+  "HidePassword": "إخفاء كلمة المرور"
 }

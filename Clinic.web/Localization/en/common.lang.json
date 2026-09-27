@@ -23,5 +23,19 @@
   "Information": "Information",
   "Required": "This field is required",
   "InvalidData": "Invalid data",
-  "SomethingWentWrong": "Something went wrong"
+  "SomethingWentWrong": "Something went wrong",
+  "Login": "Login",
+  "Logout": "Logout",
+  "Username": "Username",
+  "Password": "Password",
+  "InvalidCredentials": "Invalid username or password",
+  "Welcome": "Welcome",
+  "Dashboard": "Dashboard",
+  "Role": "Role",
+  "SigningIn": "Signing in...",
+  "AccessDenied": "Access Denied",
+  "NoPermission": "You do not have permission to access this resource.",
+  "ReturnHome": "Return to Home",
+  "ShowPassword": "Show Password",
+  "HidePassword": "Hide Password"
 }

@@ -1,0 +1,45 @@
+@{
+    Layout = "~/Areas/Auth/Views/Shared/_LoginLayout.cshtml";
+    ViewBag.Title = "Login";
+}
+
+<div class="row" ng-controller="LoginController">
+    <div class="col-md-12 text-center" style="margin-bottom: 20px;">
+        <div class="btn-group" ng-controller="LanguageController">
+            <button type="button" class="btn btn-default" ng-click="changeLanguage('en')">English</button>
+            <button type="button" class="btn btn-default" ng-click="changeLanguage('ar')">العربية</button>
+        </div>
+    </div>
+    
+    <div class="col-md-12">
+        <form class="form-signin" ng-submit="login()" name="loginForm" novalidate>
+            <h2 class="form-signin-heading text-center">{{ 'common.Login' | i18n }}</h2>
+            
+            <div class="form-group" ng-class="{ 'has-error' : loginForm.username.$invalid && loginForm.username.$touched }">
+                <input type="text" name="username" class="form-control" ng-model="credentials.username" placeholder="{{ 'common.Username' | i18n }}" required autofocus />
+                <span class="help-block" ng-show="loginForm.username.$invalid && loginForm.username.$touched">{{ 'common.Required' | i18n }}</span>
+            </div>
+            
+            <div class="form-group" ng-class="{ 'has-error' : loginForm.password.$invalid && loginForm.password.$touched }">
+                <div class="input-group">
+                    <input type="{{ showPassword ? 'text' : 'password' }}" name="password" class="form-control" ng-model="credentials.password" placeholder="{{ 'common.Password' | i18n }}" required />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="togglePassword()" title="{{ showPassword ? ('common.HidePassword' | i18n) : ('common.ShowPassword' | i18n) }}" tabindex="-1">
+                            <i class="fa" ng-class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </button>
+                    </span>
+                </div>
+                <span class="help-block" ng-show="loginForm.password.$invalid && loginForm.password.$touched">{{ 'common.Required' | i18n }}</span>
+            </div>
+            
+            <div class="alert alert-danger" ng-show="errorMessage">
+                {{ errorMessage }}
+            </div>
+            
+            <button class="btn btn-lg btn-primary btn-block" type="submit" ng-disabled="loginForm.$invalid || isLoading">
+                <span ng-show="!isLoading">{{ 'common.Login' | i18n }}</span>
+                <span ng-show="isLoading"><i class="fa fa-spinner fa-spin"></i> {{ 'common.SigningIn' | i18n }}</span>
+            </button>
+        </form>
+    </div>
+</div>

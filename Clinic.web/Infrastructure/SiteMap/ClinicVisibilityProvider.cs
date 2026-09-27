@@ -71,11 +71,13 @@ namespace Clinic.Web.Infrastructure.SiteMap
             EnsureCache();
 
             int screenId;
+            bool isExplicitlyVisible = false;
+
             if (int.TryParse(node.Key, out screenId))
             {
                 if (activeScreens != null && !activeScreens.Contains(screenId))
                 {
-                    return false;
+                    return false; // Deleted or inactive screen, always hide
                 }
 
                 if (screenRoleCache != null && screenRoleCache.ContainsKey(screenId))
@@ -87,22 +89,35 @@ namespace Clinic.Web.Infrastructure.SiteMap
                         {
                             if (context.User.IsInRole(role))
                             {
-                                return true;
+                                isExplicitlyVisible = true;
+                                break;
                             }
                         }
                     }
                 }
-                return false;
             }
 
-            // If it's a parent node, we check if any child is visible.
+            if (isExplicitlyVisible)
+            {
+                return true;
+            }
+
+            // If it's not explicitly visible, we check if ANY child is visible.
+            // This ensures parent nodes appear if they contain accessible children.
             if (node.HasChildNodes)
             {
                 foreach (ISiteMapNode child in node.ChildNodes)
                 {
-                    if (IsVisible(child, sourceMetadata))
+                    // FIX: Only propagate visibility from children that are actual Screens (integer keys).
+                    // This prevents dynamically generated action nodes (e.g. string keys or empty keys) 
+                    // from falsely making a parent screen visible.
+                    int childScreenId;
+                    if (int.TryParse(child.Key, out childScreenId))
                     {
-                        return true;
+                        if (IsVisible(child, sourceMetadata))
+                        {
+                            return true;
+                        }
                     }
                 }
             }

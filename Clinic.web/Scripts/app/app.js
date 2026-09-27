@@ -1,23 +1,32 @@
 (function () {
-
     "use strict";
-
     // =========================================================
     // Clinic AngularJS Application
     // =========================================================
 
-    var app;
-    try {
-        app = angular.module("clinicApp");
-    } catch (e) {
-        app = angular.module("clinicApp", []);
-    }
+    var app = angular.module("clinicApp", ['ngCookies', 'ngSanitize', 'ngLocalize']);
 
+    // Configure angular-localization
+    angular.module('ngLocalize.Config', [])
+        .value('localeConf', {
+            basePath: '/Localization',
+            defaultLocale: 'ar',
+            sharedDictionary: 'common',
+            fileExtension: '.lang.json',
+            persistSelection: true,
+            cookieName: 'clinic_lang',
+            observableAttrs: new RegExp('^data-(?!ng-|i18n)'),
+            delimiter: '::',
+            validTokens: new RegExp('^[\\w\\.-]+\\.[\\w\\s\\.-]+\\w(:.*)?$')
+        });
+
+    angular.module('ngLocalize.InstalledLanguages', [])
+        .value('localeSupported', ['ar', 'en'])
+        .value('localeFallbacks', { 'ar': 'ar', 'en': 'en' });
 
     // =========================================================
     // HTTP Configuration
     // =========================================================
-
     app.config([
         "$httpProvider",
         function ($httpProvider) {
@@ -86,7 +95,7 @@
     // Notification Service
     // =========================================================
 
-    app.factory("notificationService", ["localizationService", function (localizationService) {
+    app.factory("notificationService", ["$filter", function ($filter) {
 
         return {
 
@@ -94,28 +103,28 @@
 
                 toastr.success(
                     message,
-                    title || localizationService.instant("common.Success")
+                    title || $filter('i18n')("common.Success")
                 );
             },
 
             error: function (message, title) {
                 toastr.error(
                     message,
-                    title || localizationService.instant("common.Error")
+                    title || $filter('i18n')("common.Error")
                 );
             },
 
             warning: function (message, title) {
                 toastr.warning(
                     message,
-                    title || localizationService.instant("common.Warning")
+                    title || $filter('i18n')("common.Warning")
                 );
             },
 
             info: function (message, title) {
                 toastr.info(
                     message,
-                    title || localizationService.instant("common.Information")
+                    title || $filter('i18n')("common.Information")
                 );
             }
         };
@@ -219,8 +228,6 @@
                 convertDateStringsToDates(value);
             }
         }
-
-
         return input;
     }
 

@@ -6,7 +6,7 @@ namespace Clinic.Web
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            filters.Add(new Clinic.Web.Filters.GlobalMvcExceptionFilter());
             filters.Add(new Clinic.Web.Filters.LocalizationAttribute());
         }
     }

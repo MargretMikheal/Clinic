@@ -1,0 +1,12 @@
+@{
+    Layout = "~/Areas/Auth/Views/Shared/_LoginLayout.cshtml";
+    ViewBag.Title = "Access Denied";
+}
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h2>{{ 'common.AccessDenied' | i18n }}</h2>
+        <p>{{ 'common.NoPermission' | i18n }}</p>
+        <a href="@Url.Action("Index", "Home", new { area = "" })" class="btn btn-primary">{{ 'common.ReturnHome' | i18n }}</a>
+    </div>
+</div>

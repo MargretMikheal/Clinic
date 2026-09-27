@@ -25,9 +25,13 @@
 </head>
 
 <body>
-
-    <!-- Language Switcher -->
     <div style="text-align: right; padding: 10px; background-color: #f8f9fa; border-bottom: 1px solid #ddd;">
+        <span class="pull-left" ng-controller="LogoutController" style="margin-left: 10px; margin-right: 10px;">
+            @if (Request.IsAuthenticated)
+            {
+                <button type="button" class="btn btn-sm btn-danger" ng-click="logout()"><i class="fa fa-sign-out"></i> {{ 'common.Logout' | i18n }}</button>
+            }
+        </span>
         <a href="#" ng-controller="LanguageController" ng-click="changeLanguage('en')">English</a> | 
         <a href="#" ng-controller="LanguageController" ng-click="changeLanguage('ar')">العربية</a>
     </div>
@@ -61,11 +65,16 @@
     <script src="~/Scripts/angular.js"></script>
 
 
+    <script src="~/Scripts/angular-cookies.js"></script>
+    <script src="~/Scripts/angular-sanitize.js"></script>
+    <script src="~/Scripts/angular-localization.js"></script>
+
     <!-- Clinic Angular Application -->
-    <script src="~/Scripts/app/services/localizationService.js"></script>
     <script src="~/Scripts/app/app.js"></script>
-    <script src="~/Scripts/app/filters/i18nFilter.js"></script>
     <script src="~/Scripts/app/controllers/LanguageController.js"></script>
+    <script src="~/Areas/Auth/Scripts/Services/authService.js"></script>
+    <script src="~/Scripts/app/controllers/DashboardController.js"></script>
+    <script src="~/Areas/Auth/Scripts/Controllers/AccountController.js"></script>
 
 
     <!-- Page Specific Scripts -->
