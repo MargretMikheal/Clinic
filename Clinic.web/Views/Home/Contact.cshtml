@@ -1,19 +1,83 @@
 ﻿@{
-    ViewBag.Title = "Contact";
+    ViewBag.Title = "Dashboard";
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
 
-    <address>
-        One Microsoft Way<br />
-        Redmond, WA 98052-6399<br />
-        <abbr title="Phone">P:</abbr>
-        425.555.0100
-    </address>
+<div ng-controller="DashboardController">
 
-    <address>
-        <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-        <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-    </address>
-</main>
+    <!-- Page Header -->
+    <div class="clinic-page-header">
+
+        <h1 class="clinic-page-title">
+            {{ 'common.Dashboard' | i18n }}
+        </h1>
+
+    </div>
+
+
+    <!-- Loading -->
+    <div class="clinic-card"
+         ng-show="isLoading">
+
+        <div class="clinic-card-body text-center">
+
+            <i class="fa fa-spinner fa-spin"></i>
+
+            <span>
+                {{ 'common.Loading' | i18n }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- Error -->
+    <div class="clinic-card"
+         ng-show="!isLoading && errorMessage">
+
+        <div class="clinic-card-body">
+
+            <div class="clinic-alert clinic-alert-danger">
+                {{ errorMessage }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Dashboard Content -->
+    <div ng-show="!isLoading && !errorMessage">
+
+        <!-- Welcome Card -->
+        <div class="clinic-card">
+
+            <div class="clinic-card-body text-center">
+
+                <h2>
+                    {{ 'common.Welcome' | i18n }},
+                    {{ userInfo.DisplayName }}!
+                </h2>
+
+                <p class="clinic-muted">
+
+                    <strong>
+                        {{ 'common.Role' | i18n }}:
+                    </strong>
+
+                    <span ng-repeat="role in userInfo.Roles"
+                          class="clinic-badge clinic-badge-primary">
+
+                        {{ role }}
+
+                    </span>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

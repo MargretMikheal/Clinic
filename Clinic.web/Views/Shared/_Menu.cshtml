@@ -3,57 +3,125 @@
 @using MvcSiteMapProvider.Web.Html
 @using MvcSiteMapProvider
 
-<ul class="nav navbar-nav sidebar-menu">
-    <li>
-        <a href="@Url.Action("Index", "Home", new { area = "" })">
-            <i class="fa fa-home"></i>
-            <span>{{ 'common.Home' | i18n }}</span>
+<ul class="clinic-menu">
+
+    <!-- Home -->
+    <li class="clinic-menu-item">
+        <a href="@Url.Action("Index", "Home", new { area = "" })"
+           class="clinic-menu-link">
+
+            <i class="fa fa-home clinic-menu-icon"></i>
+
+            <span class="clinic-menu-text">
+                {{ 'common.Home' | i18n }}
+            </span>
+
         </a>
     </li>
-    @if (Html.MvcSiteMap().SiteMap != null && Html.MvcSiteMap().SiteMap.RootNode != null)
+
+
+    @if (Html.MvcSiteMap().SiteMap != null &&
+         Html.MvcSiteMap().SiteMap.RootNode != null)
     {
         foreach (var parentNode in Html.MvcSiteMap().SiteMap.RootNode.ChildNodes)
         {
-            if (parentNode.IsAccessibleToUser())
+            if(!parentNode.IsVisible(new Dictionary<string, object>()))
+{
+                continue;
+            }
+
+            var parentIcon =
+        parentNode.Attributes.ContainsKey("icon")
+            ? parentNode.Attributes["icon"].ToString()
+            : "fa-folder";
+
+
+            /*
+             * Main item WITH children
+             */
+            if (parentNode.HasChildNodes)
             {
-                var parentIcon = parentNode.Attributes.ContainsKey("icon") ? parentNode.Attributes["icon"].ToString() : "";
-                
-                <li class="treeview">
-                    <a href="#">
-                        @if (!string.IsNullOrEmpty(parentIcon))
-                        {
-                            <i class="fa @parentIcon"></i>
-                        }
-                        <span>{{ '@parentNode.Title' | i18n }}</span>
-                        <span class="pull-right-container">
-                            <i class="fa fa-angle-left pull-right"></i>
+                <li class="clinic-menu-item clinic-menu-parent">
+
+                    <a href="#"
+                       class="clinic-menu-link clinic-menu-toggle">
+
+                        <span class="clinic-menu-left">
+
+                            <i class="fa @parentIcon clinic-menu-icon"></i>
+
+                            <span class="clinic-menu-text">
+                                {{ '@parentNode.Title' | i18n }}
+                            </span>
+
                         </span>
+
+                        <i class="fa fa-angle-down clinic-menu-arrow"></i>
+
                     </a>
-                    
-                    @if (parentNode.HasChildNodes)
-                    {
-                        <ul class="treeview-menu">
-                            @foreach (var childNode in parentNode.ChildNodes)
+
+
+                    <ul class="clinic-submenu">
+
+                        @foreach (var childNode in parentNode.ChildNodes)
+                        {
+                            if (!childNode.IsVisible(new Dictionary<string, object>()))
                             {
-                                if (childNode.IsAccessibleToUser())
-                                {
-                                    var childIcon = childNode.Attributes.ContainsKey("icon") ? childNode.Attributes["icon"].ToString() : "";
-                                    string url = childNode.Url ?? "#";
-                                    <li>
-                                        <a href="@url">
-                                            @if (!string.IsNullOrEmpty(childIcon))
-                                            {
-                                                <i class="fa @childIcon"></i>
-                                            }
-                                            {{ '@childNode.Title' | i18n }}
-                                        </a>
-                                    </li>
-                                }
+                                continue;
                             }
-                        </ul>
-                    }
+
+                            var childIcon =
+                                childNode.Attributes.ContainsKey("icon")
+                                    ? childNode.Attributes["icon"].ToString()
+                                    : "fa-circle-o";
+
+                            string url = childNode.Url ?? "#";
+
+                            <li class="clinic-submenu-item">
+
+                                <a href="@url"
+                                   class="clinic-submenu-link">
+
+                                    <i class="fa @childIcon clinic-submenu-icon"></i>
+
+                                    <span>
+                                        {{ '@childNode.Title' | i18n }}
+                                    </span>
+
+                                </a>
+
+                            </li>
+                        }
+
+                    </ul>
+
+                </li>
+            }
+            else
+            {
+
+                string url = parentNode.Url ?? "#";
+
+                <li class="clinic-menu-item">
+
+                    <a href="@url"
+                       class="clinic-menu-link">
+
+                        <span class="clinic-menu-left">
+
+                            <i class="fa @parentIcon clinic-menu-icon"></i>
+
+                            <span class="clinic-menu-text">
+                                {{ '@parentNode.Title' | i18n }}
+                            </span>
+
+                        </span>
+
+                    </a>
+
                 </li>
             }
         }
     }
+
 </ul>

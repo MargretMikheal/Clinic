@@ -3,10 +3,22 @@
     ViewBag.Title = "Access Denied";
 }
 
-<div class="row">
-    <div class="col-md-12 text-center">
-        <h2>{{ 'common.AccessDenied' | i18n }}</h2>
-        <p>{{ 'common.NoPermission' | i18n }}</p>
-        <a href="@Url.Action("Index", "Home", new { area = "" })" class="btn btn-primary">{{ 'common.ReturnHome' | i18n }}</a>
+<div class="clinic-auth-card text-center">
+
+    <div class="clinic-auth-title">
+        <i class="fa fa-lock"></i>
+        {{ 'common.AccessDenied' | i18n }}
     </div>
+
+    <p class="clinic-muted">
+        {{ 'common.NoPermission' | i18n }}
+    </p>
+
+    <a href="@Url.Action("Index", "Home", new { area = "" })"
+       class="btn btn-clinic-primary">
+
+        {{ 'common.ReturnHome' | i18n }}
+
+    </a>
+
 </div>

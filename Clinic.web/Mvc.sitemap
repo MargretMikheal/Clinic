@@ -5,7 +5,7 @@
   
   <mvcSiteMapNode title="Root" key="Root" url="~/">
     
-    <mvcSiteMapNode title="menu.Administration" key="1" icon="fa-cogs" area="Administration" url="~/Menu/Administration" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web">
+    <mvcSiteMapNode title="menu.Administration" key="1"  icon="fa-cogs" area="Administration" url="~/Menu/Administration" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web">
       <mvcSiteMapNode title="menu.Users" key="4" icon="fa-users" area="Administration" controller="Users" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
       <mvcSiteMapNode title="menu.RolePermissions" key="5" icon="fa-lock" area="Administration" controller="RolePermissions" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
       <mvcSiteMapNode title="menu.Specialities" key="6" icon="fa-stethoscope" area="Administration" controller="Speciality" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />

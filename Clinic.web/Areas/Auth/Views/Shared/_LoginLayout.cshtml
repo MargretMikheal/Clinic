@@ -1,47 +1,83 @@
 @{
-    var currentLang = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+    var languageCookie = Request.Cookies["clinic_lang"];
+
+    var currentLang = languageCookie != null
+        ? languageCookie.Value
+        : "ar";
+
+    if (currentLang != "ar" && currentLang != "en")
+    {
+        currentLang = "ar";
+    }
+
     var currentDir = currentLang == "ar" ? "rtl" : "ltr";
 }
+
 <!DOCTYPE html>
-<html ng-app="clinicApp" lang="@currentLang" dir="@currentDir">
+<html ng-app="clinicApp"
+      lang="@currentLang"
+      dir="@currentDir">
+
 <head>
+
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Clinic Management System</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        @ViewBag.Title - Clinic Management System
+    </title>
+
     @Styles.Render("~/Content/css")
+
+    <link href="~/Content/clinic-theme.css"
+          rel="stylesheet" />
+
     @if (currentLang == "ar")
     {
-        <link href="~/Content/rtl.css" rel="stylesheet" />
+        <link href="~/Content/rtl.css"
+              rel="stylesheet" />
     }
+
     @Scripts.Render("~/bundles/modernizr")
-    
-    <style>
-        body { padding-top: 40px; padding-bottom: 40px; background-color: #eee; }
-        .form-signin { max-width: 330px; padding: 15px; margin: 0 auto; }
-        .form-signin .form-signin-heading { margin-bottom: 10px; }
-        .form-signin .form-control { position: relative; height: auto; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; padding: 10px; font-size: 16px; max-width: 100%; }
-        .form-signin .form-control:focus { z-index: 2; }
-    </style>
+
 </head>
-<body>
-    <div class="container">
+
+<body class="clinic-auth-page">
+
+    <div class="clinic-auth-container">
+
         @RenderBody()
+
     </div>
+
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    
+
+
     <!-- AngularJS -->
+
     <script src="~/Scripts/angular.js"></script>
-    
+
     <script src="~/Scripts/angular-cookies.js"></script>
+
     <script src="~/Scripts/angular-sanitize.js"></script>
+
     <script src="~/Scripts/angular-localization.js"></script>
 
+
     <!-- Clinic Angular Application -->
+
     <script src="~/Scripts/app/app.js"></script>
+
     <script src="~/Scripts/app/controllers/LanguageController.js"></script>
+
     <script src="~/Areas/Auth/Scripts/Services/authService.js"></script>
+
     <script src="~/Areas/Auth/Scripts/Controllers/AccountController.js"></script>
+
 </body>
+
 </html>

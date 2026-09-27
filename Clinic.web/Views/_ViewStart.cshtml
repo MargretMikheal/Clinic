@@ -1,3 +1,16 @@
 ﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    var languageCookie = Request.Cookies["clinic_lang"];
+
+    var currentLang = languageCookie != null
+        ? languageCookie.Value
+        : "ar";
+
+    if (currentLang != "ar" && currentLang != "en")
+    {
+        currentLang = "ar";
+    }
+
+    Layout = currentLang == "en"
+        ? "~/Views/Shared/_LayoutLTR.cshtml"
+        : "~/Views/Shared/_LayoutRTL.cshtml";
 }

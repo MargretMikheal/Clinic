@@ -102,15 +102,11 @@ namespace Clinic.Web.Infrastructure.SiteMap
                 return true;
             }
 
-            // If it's not explicitly visible, we check if ANY child is visible.
-            // This ensures parent nodes appear if they contain accessible children.
+
             if (node.HasChildNodes)
             {
                 foreach (ISiteMapNode child in node.ChildNodes)
                 {
-                    // FIX: Only propagate visibility from children that are actual Screens (integer keys).
-                    // This prevents dynamically generated action nodes (e.g. string keys or empty keys) 
-                    // from falsely making a parent screen visible.
                     int childScreenId;
                     if (int.TryParse(child.Key, out childScreenId))
                     {

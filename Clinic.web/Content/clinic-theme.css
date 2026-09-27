@@ -1,0 +1,841 @@
+﻿/* =========================================================
+   Clinic Management System
+   Main Theme
+   ========================================================= */
+
+
+/* =========================================================
+   1. Theme Variables
+   ========================================================= */
+
+:root {
+    --clinic-primary: #2563EB;
+    --clinic-primary-hover: #1D4ED8;
+    --clinic-background: #F8FAFC;
+    --clinic-surface: #FFFFFF;
+    --clinic-text: #1E293B;
+    --clinic-text-muted: #64748B;
+    --clinic-border: #E2E8F0;
+    --clinic-success: #16A34A;
+    --clinic-warning: #F59E0B;
+    --clinic-danger: #DC2626;
+    --clinic-radius: 10px;
+    --clinic-sidebar-width: 240px;
+}
+
+
+/* =========================================================
+   2. Global
+   ========================================================= */
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: var(--clinic-background);
+    color: var(--clinic-text);
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+a {
+    color: var(--clinic-primary);
+}
+
+    a:hover,
+    a:focus {
+        color: var(--clinic-primary-hover);
+        text-decoration: none;
+    }
+
+
+/* =========================================================
+   3. Main Navbar
+   ========================================================= */
+
+.clinic-navbar {
+    min-height: 60px;
+    margin-bottom: 0;
+    background-color: var(--clinic-surface);
+    border: 0;
+    border-bottom: 1px solid var(--clinic-border);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.clinic-navbar-inner {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+/* ---------- Brand ---------- */
+
+.clinic-brand {
+    display: flex;
+    align-items: center;
+    color: var(--clinic-text);
+    text-decoration: none;
+}
+
+    .clinic-brand:hover,
+    .clinic-brand:focus {
+        color: var(--clinic-text);
+        text-decoration: none;
+    }
+
+.clinic-brand-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--clinic-text);
+}
+
+
+/* ---------- Navbar Actions ---------- */
+
+.clinic-navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+/* =========================================================
+   4. Logo
+   ========================================================= */
+
+.clinic-logo {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 2px solid var(--clinic-border);
+    background-color: var(--clinic-surface);
+}
+
+    .clinic-logo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+
+/* ---------- Logo Sizes ---------- */
+
+.clinic-logo-sm {
+    width: 42px;
+    height: 42px;
+}
+
+.clinic-logo-lg {
+    width: 100px;
+    height: 100px;
+}
+
+
+/* =========================================================
+   5. Language
+   ========================================================= */
+
+.clinic-language-switcher {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+    .clinic-language-switcher a {
+        color: var(--clinic-text-muted);
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+        .clinic-language-switcher a:hover {
+            color: var(--clinic-primary);
+        }
+
+.clinic-language-separator {
+    color: var(--clinic-border);
+}
+
+
+/* =========================================================
+   6. Page Layout
+   ========================================================= */
+
+.clinic-page {
+    min-height: calc(100vh - 60px);
+    background-color: var(--clinic-background);
+}
+
+.clinic-layout {
+    display: flex;
+    min-height: calc(100vh - 60px);
+}
+
+
+/* =========================================================
+   7. Sidebar
+   ========================================================= */
+
+.clinic-sidebar {
+    width: var(--clinic-sidebar-width);
+    min-height: calc(100vh - 60px);
+    flex-shrink: 0;
+    background-color: var(--clinic-surface);
+    border-right: 1px solid var(--clinic-border);
+}
+
+
+/* =========================================================
+   8. Main Content
+   ========================================================= */
+
+.clinic-content {
+    flex: 1;
+    min-width: 0;
+    padding: 24px;
+}
+
+
+/* =========================================================
+   9. Page Header
+   ========================================================= */
+
+.clinic-page-header {
+    margin-bottom: 24px;
+}
+
+.clinic-page-title {
+    margin: 0;
+    color: var(--clinic-text);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.clinic-page-subtitle {
+    margin-top: 6px;
+    color: var(--clinic-text-muted);
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   10. Cards
+   ========================================================= */
+
+.clinic-card {
+    margin-bottom: 20px;
+    background-color: var(--clinic-surface);
+    border: 1px solid var(--clinic-border);
+    border-radius: var(--clinic-radius);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.clinic-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--clinic-border);
+    font-weight: 600;
+}
+
+.clinic-card-body {
+    padding: 20px;
+}
+
+
+/* =========================================================
+   11. Buttons
+   ========================================================= */
+
+.btn-clinic-primary {
+    color: #FFFFFF;
+    background-color: var(--clinic-primary);
+    border-color: var(--clinic-primary);
+}
+
+    .btn-clinic-primary:hover,
+    .btn-clinic-primary:focus {
+        color: #FFFFFF;
+        background-color: var(--clinic-primary-hover);
+        border-color: var(--clinic-primary-hover);
+    }
+
+
+/* =========================================================
+   12. Tables
+   ========================================================= */
+
+.clinic-table {
+    width: 100%;
+    background-color: var(--clinic-surface);
+    border: 1px solid var(--clinic-border);
+}
+
+    .clinic-table > thead > tr > th {
+        background-color: #F8FAFC;
+        color: var(--clinic-text);
+        font-weight: 600;
+        border-bottom: 1px solid var(--clinic-border);
+    }
+
+    .clinic-table > tbody > tr:hover {
+        background-color: #F8FAFC;
+    }
+
+
+/* =========================================================
+   13. Forms
+   ========================================================= */
+
+.clinic-form-control {
+    height: 40px;
+    border: 1px solid var(--clinic-border);
+    border-radius: 7px;
+    box-shadow: none;
+}
+
+    .clinic-form-control:focus {
+        border-color: var(--clinic-primary);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.10);
+    }
+
+
+/* =========================================================
+   14. Status Badges
+   ========================================================= */
+
+.clinic-badge {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.clinic-badge-primary {
+    color: #1D4ED8;
+    background-color: #DBEAFE;
+}
+
+.clinic-badge-success {
+    color: #166534;
+    background-color: #DCFCE7;
+}
+
+.clinic-badge-warning {
+    color: #92400E;
+    background-color: #FEF3C7;
+}
+
+.clinic-badge-danger {
+    color: #991B1B;
+    background-color: #FEE2E2;
+}
+
+
+/* =========================================================
+   15. Alerts
+   ========================================================= */
+
+.clinic-alert {
+    padding: 12px 14px;
+    border: 1px solid;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.clinic-alert-danger {
+    color: #B91C1C;
+    background-color: #FEF2F2;
+    border-color: #FECACA;
+}
+
+
+/* =========================================================
+   16. Utility
+   ========================================================= */
+
+.clinic-muted {
+    color: var(--clinic-text-muted);
+}
+
+
+/* =========================================================
+   17. Sidebar Menu
+   ========================================================= */
+
+.clinic-menu {
+    list-style: none;
+    margin: 0;
+    padding: 12px;
+}
+
+.clinic-menu-item {
+    list-style: none;
+    margin-bottom: 4px;
+}
+
+.clinic-menu-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    padding: 0 12px;
+    color: var(--clinic-text);
+    border-radius: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+    .clinic-menu-link:hover,
+    .clinic-menu-link:focus {
+        color: var(--clinic-primary);
+        background-color: #EFF6FF;
+        text-decoration: none;
+    }
+
+.clinic-menu-left {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.clinic-menu-icon {
+    width: 20px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.clinic-menu-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.clinic-menu-arrow {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+
+/* =========================================================
+   18. Sidebar Submenu
+   ========================================================= */
+
+.clinic-submenu {
+    display: none;
+    list-style: none;
+    margin: 4px 0 6px;
+    padding: 0 0 0 32px;
+}
+
+.clinic-submenu-item {
+    list-style: none;
+}
+
+.clinic-submenu-link {
+    display: flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 0 10px;
+    color: var(--clinic-text-muted);
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+    .clinic-submenu-link:hover,
+    .clinic-submenu-link:focus {
+        color: var(--clinic-primary);
+        background-color: #F8FAFC;
+        text-decoration: none;
+    }
+
+.clinic-submenu-icon {
+    width: 18px;
+    margin-right: 8px;
+    text-align: center;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   19. Open Menu Parent
+   ========================================================= */
+
+.clinic-menu-parent.is-open > .clinic-submenu {
+    display: block;
+}
+
+.clinic-menu-parent.is-open > .clinic-menu-link {
+    color: var(--clinic-primary);
+    background-color: #EFF6FF;
+}
+
+    .clinic-menu-parent.is-open > .clinic-menu-link .clinic-menu-arrow {
+        transform: rotate(180deg);
+    }
+
+
+/* =========================================================
+   20. Login Page
+   ========================================================= */
+
+.clinic-auth-page {
+    min-height: 100vh;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--clinic-background);
+}
+
+.clinic-auth-container {
+    width: 100%;
+    max-width: 430px;
+}
+
+
+/* ---------- Login Card ---------- */
+
+.clinic-login-card {
+    position: relative;
+    width: 100%;
+    padding: 38px 40px 40px;
+    background-color: var(--clinic-surface);
+    border: 1px solid var(--clinic-border);
+    border-radius: 14px;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.07);
+}
+
+
+/* ---------- Login Language ---------- */
+
+.clinic-login-language {
+    position: absolute;
+    top: 20px;
+    right: 22px;
+    display: flex;
+    align-items: center;
+}
+
+.clinic-language-option {
+    padding: 3px 6px;
+    border: 0;
+    background: transparent;
+    color: var(--clinic-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+    .clinic-language-option:hover {
+        color: var(--clinic-primary);
+    }
+
+    .clinic-language-option:focus {
+        outline: none;
+    }
+
+
+/* ---------- Login Brand ---------- */
+
+.clinic-login-brand {
+    margin-top: 50px;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+    .clinic-login-brand .clinic-logo {
+        margin: 0 auto 20px;
+    }
+
+.clinic-login-title {
+    margin: 0;
+    color: var(--clinic-text);
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   21. Login Fields
+   ========================================================= */
+
+.clinic-login-field {
+    margin-bottom: 20px;
+}
+
+    .clinic-login-field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+/* ---------- Login Inputs ---------- */
+
+.clinic-login-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 13px;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    color: #0F172A;
+    font-size: 14px;
+    outline: none;
+    box-shadow: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .clinic-login-input::placeholder {
+        color: #94A3B8;
+    }
+
+    .clinic-login-input:focus {
+        border-color: var(--clinic-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+    }
+
+
+    /* ---------- Browser Autofill ---------- */
+
+    .clinic-login-input:-webkit-autofill,
+    .clinic-login-input:-webkit-autofill:hover,
+    .clinic-login-input:-webkit-autofill:focus {
+        -webkit-text-fill-color: #0F172A;
+        -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+
+/* =========================================================
+   22. Password
+   ========================================================= */
+
+.clinic-password-container {
+    position: relative;
+}
+
+.clinic-password-input {
+    padding-right: 45px;
+}
+
+.clinic-password-button {
+    position: absolute;
+    top: 50%;
+    right: 7px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--clinic-text-muted);
+    cursor: pointer;
+}
+
+    .clinic-password-button:hover {
+        color: var(--clinic-primary);
+        background-color: #EFF6FF;
+    }
+
+    .clinic-password-button:focus {
+        outline: none;
+    }
+
+    .clinic-password-button svg {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+/* =========================================================
+   23. Login Validation
+   ========================================================= */
+
+.clinic-login-validation {
+    display: block;
+    margin-top: 6px;
+    color: var(--clinic-danger);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   24. Login Error
+   ========================================================= */
+
+.clinic-login-error {
+    margin-bottom: 18px;
+    padding: 11px 13px;
+    border: 1px solid #FECACA;
+    border-radius: 8px;
+    background-color: #FEF2F2;
+    color: #B91C1C;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   25. Login Button
+   ========================================================= */
+
+.clinic-login-button {
+    width: 100%;
+    height: 45px;
+    margin-top: 5px;
+    border: 0;
+    border-radius: 8px;
+    background-color: var(--clinic-primary);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(37, 99, 235, 0.18);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+    .clinic-login-button:hover:not(:disabled) {
+        background-color: var(--clinic-primary-hover);
+        box-shadow: 0 7px 16px rgba(37, 99, 235, 0.22);
+    }
+
+    .clinic-login-button:active:not(:disabled) {
+        transform: translateY(1px);
+    }
+
+    .clinic-login-button:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+
+
+/* =========================================================
+   26. Login Spinner
+   ========================================================= */
+
+.clinic-spinner {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    margin-right: 5px;
+    vertical-align: -2px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #FFFFFF;
+    border-radius: 50%;
+    animation: clinic-spin 0.7s linear infinite;
+}
+
+@keyframes clinic-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   27. RTL
+   ========================================================= */
+
+html[dir="rtl"] .clinic-sidebar {
+    border-right: 0;
+    border-left: 1px solid var(--clinic-border);
+}
+
+html[dir="rtl"] .clinic-menu-icon {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+html[dir="rtl"] .clinic-submenu {
+    padding: 0 32px 0 0;
+}
+
+html[dir="rtl"] .clinic-submenu-icon {
+    margin-right: 0;
+    margin-left: 8px;
+}
+
+html[dir="rtl"] .clinic-password-input {
+    padding-right: 13px;
+    padding-left: 45px;
+}
+
+html[dir="rtl"] .clinic-password-button {
+    right: auto;
+    left: 7px;
+}
+
+html[dir="rtl"] .clinic-login-language {
+    right: auto;
+    left: 22px;
+}
+
+
+/* =========================================================
+   28. Responsive
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .clinic-layout {
+        flex-direction: column;
+    }
+
+    .clinic-sidebar {
+        width: 100%;
+        min-height: auto;
+        border-right: 0;
+        border-left: 0;
+        border-bottom: 1px solid var(--clinic-border);
+    }
+
+    .clinic-content {
+        padding: 16px;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .clinic-auth-page {
+        padding: 20px 15px;
+    }
+
+    .clinic-login-card {
+        padding: 32px 24px;
+    }
+
+    .clinic-login-language {
+        right: 16px;
+    }
+
+    html[dir="rtl"] .clinic-login-language {
+        right: auto;
+        left: 16px;
+    }
+
+    .clinic-brand-name {
+        display: none;
+    }
+}
