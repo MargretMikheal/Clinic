@@ -33,9 +33,9 @@ namespace Clinic.Core.Data
         public string ModifiedBy { get; set; }
         public bool IsDeleted { get; set; }
     
-        public virtual Doctor Doctor { get; set; }
         public virtual Patient Patient { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Visit> Visits { get; set; }
+        public virtual Doctor Doctor { get; set; }
     }
 }

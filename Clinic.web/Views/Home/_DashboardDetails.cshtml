@@ -1,0 +1,159 @@
+<!-- Dashboard Details - Shared Partial -->
+
+<div ng-show="selectedStatistic" style="margin-top: var(--space-6);">
+
+    <div class="c-card">
+
+        <!-- Header -->
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa" ng-class="selectedStatistic.Icon"></i>
+                {{ selectedStatistic.LocalizationKey | i18n }}
+                <span class="c-badge c-badge-primary" style="margin-left: 8px;"
+                      ng-show="selectedDetails">
+                    {{ selectedDetails.length }}
+                </span>
+            </h3>
+        </div>
+
+        <div class="c-card-body" style="padding: 0;">
+
+            <!-- Loading State -->
+            <div ng-show="isLoadingDetails" class="loading-state">
+                <div class="c-spinner"></div>
+                <div>{{ 'dashboard.Loading' | i18n }}</div>
+            </div>
+
+            <!-- Error State -->
+            <div ng-show="!isLoadingDetails && detailsError" style="padding: var(--space-5);">
+                <div class="c-alert c-alert-danger">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span>{{ detailsError }}</span>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div ng-show="!isLoadingDetails && !detailsError && selectedDetails && selectedDetails.length === 0"
+                 class="empty-state">
+                <i class="fa fa-inbox empty-state-icon"></i>
+                <h4 class="empty-state-title">{{ 'dashboard.NoData' | i18n }}</h4>
+            </div>
+
+            <!-- Data Table -->
+            <div ng-show="!isLoadingDetails && !detailsError && selectedDetails && selectedDetails.length > 0"
+                 class="table-responsive">
+
+                <!-- Doctors -->
+                <table class="c-table" ng-if="selectedStatistic.Key === 'Doctors'">
+                    <thead>
+                        <tr>
+                            <th>{{ 'dashboard.Name' | i18n }}</th>
+                            <th>{{ 'dashboard.Speciality' | i18n }}</th>
+                            <th>{{ 'dashboard.Phone' | i18n }}</th>
+                            <th>{{ 'dashboard.Email' | i18n }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in selectedDetails">
+                            <td>{{ item.Name }}</td>
+                            <td>{{ item.Speciality }}</td>
+                            <td>{{ item.Phone }}</td>
+                            <td>{{ item.Email }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Patients -->
+                <table class="c-table" ng-if="selectedStatistic.Key === 'Patients'">
+                    <thead>
+                        <tr>
+                            <th>{{ 'dashboard.Name' | i18n }}</th>
+                            <th>{{ 'dashboard.Phone' | i18n }}</th>
+                            <th>{{ 'dashboard.Email' | i18n }}</th>
+                            <th>{{ 'dashboard.Gender' | i18n }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in selectedDetails">
+                            <td>{{ item.Name }}</td>
+                            <td>{{ item.Phone }}</td>
+                            <td>{{ item.Email }}</td>
+                            <td>{{ item.Gender }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Specialities -->
+                <table class="c-table" ng-if="selectedStatistic.Key === 'Specialities'">
+                    <thead>
+                        <tr>
+                            <th>{{ 'dashboard.NameEn' | i18n }}</th>
+                            <th>{{ 'dashboard.NameAr' | i18n }}</th>
+                            <th>{{ 'dashboard.DoctorCount' | i18n }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in selectedDetails">
+                            <td>{{ item.NameEn }}</td>
+                            <td>{{ item.NameAr }}</td>
+                            <td>{{ item.DoctorCount }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Appointments -->
+                <table class="c-table" ng-if="selectedStatistic.Key === 'TodayAppointments' || selectedStatistic.Key === 'TodayCancelledAppointments' || selectedStatistic.Key === 'ConfirmedAppointments' || selectedStatistic.Key === 'RemainingAppointments'">
+                    <thead>
+                        <tr>
+                            <th>{{ 'dashboard.PatientName' | i18n }}</th>
+                            <th ng-if="dashboardType === 'Admin'">{{ 'dashboard.DoctorName' | i18n }}</th>
+                            <th>{{ 'dashboard.AppointmentTime' | i18n }}</th>
+                            <th>{{ 'dashboard.Status' | i18n }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in selectedDetails">
+                            <td>{{ item.PatientName }}</td>
+                            <td ng-if="dashboardType === 'Admin'">{{ item.DoctorName }}</td>
+                            <td>{{ formatTime(item.AppointmentTime) }}</td>
+                            <td>
+                                <span class="c-badge"
+                                      ng-class="{
+                                          'c-badge-success': item.Status === 'Confirmed' || item.Status === 'Completed',
+                                          'c-badge-danger': item.Status === 'Cancelled',
+                                          'c-badge-warning': item.Status === 'Pending',
+                                          'c-badge-primary': item.Status !== 'Confirmed' && item.Status !== 'Completed' && item.Status !== 'Cancelled' && item.Status !== 'Pending'
+                                      }">
+                                    {{ item.Status }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Visits -->
+                <table class="c-table" ng-if="selectedStatistic.Key === 'TodayCompletedVisits' || selectedStatistic.Key === 'CompletedAppointments'">
+                    <thead>
+                        <tr>
+                            <th>{{ 'dashboard.PatientName' | i18n }}</th>
+                            <th ng-if="dashboardType === 'Admin'">{{ 'dashboard.DoctorName' | i18n }}</th>
+                            <th>{{ 'dashboard.VisitDate' | i18n }}</th>
+                            <th>{{ 'dashboard.Notes' | i18n }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in selectedDetails">
+                            <td>{{ item.PatientName }}</td>
+                            <td ng-if="dashboardType === 'Admin'">{{ item.DoctorName }}</td>
+                            <td>{{ item.VisitDate | date:'yyyy-MM-dd' }}</td>
+                            <td>{{ item.Notes }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -171,6 +171,7 @@
     <Compile Include="Areas\Auth\AuthAreaRegistration.cs" />
     <Compile Include="Areas\Auth\Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountApiController.cs" />
+    <Compile Include="Controllers\DashboardApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Filters\GlobalMvcExceptionFilter.cs" />
     <Compile Include="Filters\GlobalWebApiExceptionFilter.cs" />
@@ -212,7 +213,7 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\clinic-menu.js" />
-    <Content Include="Scripts\app\services\localizationService.js" />
+    <Content Include="Scripts\app\services\dashboardService.js" />
     <Content Include="Scripts\app\filters\i18nFilter.js" />
     <Content Include="Scripts\app\controllers\LanguageController.js" />
     <Content Include="Areas\Auth\Scripts\Services\authService.js" />
@@ -264,6 +265,10 @@
     <Content Include="Areas\Auth\Views\Account\AccessDenied.cshtml" />
     <Content Include="Views\Shared\_LayoutRTL.cshtml" />
     <Content Include="Views\Shared\_LayoutLTR.cshtml" />
+    <Content Include="Views\Home\_AdminDashboard.cshtml" />
+    <Content Include="Views\Home\_ReceptionistDashboard.cshtml" />
+    <Content Include="Views\Home\_DoctorDashboard.cshtml" />
+    <Content Include="Views\Home\_DashboardDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Auth\Views\web.config" />
@@ -273,6 +278,8 @@
     <Content Include="Localization\ar\common.lang.json" />
     <Content Include="Localization\en\menu.lang.json" />
     <Content Include="Localization\ar\menu.lang.json" />
+    <Content Include="Localization\en\dashboard.lang.json" />
+    <Content Include="Localization\ar\dashboard.lang.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

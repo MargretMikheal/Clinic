@@ -1,841 +1,716 @@
-﻿/* =========================================================
-   Clinic Management System
-   Main Theme
-   ========================================================= */
-
-
 /* =========================================================
-   1. Theme Variables
+   Clinic Management System - Modern Premium Theme
    ========================================================= */
 
 :root {
-    --clinic-primary: #2563EB;
-    --clinic-primary-hover: #1D4ED8;
-    --clinic-background: #F8FAFC;
-    --clinic-surface: #FFFFFF;
-    --clinic-text: #1E293B;
-    --clinic-text-muted: #64748B;
-    --clinic-border: #E2E8F0;
-    --clinic-success: #16A34A;
-    --clinic-warning: #F59E0B;
-    --clinic-danger: #DC2626;
-    --clinic-radius: 10px;
-    --clinic-sidebar-width: 240px;
-}
+    /* Colors */
+    --c-primary: #2563eb;
+    --c-primary-hover: #1d4ed8;
+    --c-primary-light: #eff6ff;
+    
+    --c-success: #16a34a;
+    --c-success-light: #f0fdf4;
+    
+    --c-warning: #f59e0b;
+    --c-warning-light: #fef3c7;
+    
+    --c-danger: #dc2626;
+    --c-danger-light: #fef2f2;
+    
+    --c-info: #0ea5e9;
+    --c-info-light: #f0f9ff;
 
+    --c-bg: #f8fafc;
+    --c-surface: #ffffff;
+    
+    --c-text: #1e293b;
+    --c-text-muted: #64748b;
+    --c-border: #e2e8f0;
+    
+    /* Typography */
+    --font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    
+    /* Layout */
+    --sidebar-width: 260px;
+    --navbar-height: 64px;
+}
 
 /* =========================================================
-   2. Global
+   Reset & Base
    ========================================================= */
-
-html,
-body {
-    min-height: 100%;
-}
 
 body {
     margin: 0;
-    background-color: var(--clinic-background);
-    color: var(--clinic-text);
-    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: var(--c-bg);
+    color: var(--c-text);
+    font-family: var(--font-family);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
 }
 
 a {
-    color: var(--clinic-primary);
+    color: var(--c-primary);
+    text-decoration: none;
+    transition: color 0.2s;
 }
 
-    a:hover,
-    a:focus {
-        color: var(--clinic-primary-hover);
-        text-decoration: none;
-    }
-
-
-/* =========================================================
-   3. Main Navbar
-   ========================================================= */
-
-.clinic-navbar {
-    min-height: 60px;
-    margin-bottom: 0;
-    background-color: var(--clinic-surface);
-    border: 0;
-    border-bottom: 1px solid var(--clinic-border);
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
-}
-
-.clinic-navbar-inner {
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-
-/* ---------- Brand ---------- */
-
-.clinic-brand {
-    display: flex;
-    align-items: center;
-    color: var(--clinic-text);
+a:hover {
+    color: var(--c-primary-hover);
     text-decoration: none;
 }
 
-    .clinic-brand:hover,
-    .clinic-brand:focus {
-        color: var(--clinic-text);
-        text-decoration: none;
-    }
-
-.clinic-brand-name {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--clinic-text);
-}
-
-
-/* ---------- Navbar Actions ---------- */
-
-.clinic-navbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-
 /* =========================================================
-   4. Logo
+   Layout
    ========================================================= */
 
-.clinic-logo {
-    width: 50px;
-    height: 50px;
+.app-layout {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 100vh;
+}
+
+.app-sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--c-surface);
+    border-right: 1px solid var(--c-border);
+    display: flex;
+    flex-direction: column;
     flex-shrink: 0;
-    overflow: hidden;
-    border-radius: 50%;
-    border: 2px solid var(--clinic-border);
-    background-color: var(--clinic-surface);
+    z-index: 10;
+    box-shadow: var(--shadow-sm);
 }
 
-    .clinic-logo img {
-        width: 100%;
-        height: 100%;
-        display: block;
-        object-fit: cover;
-    }
-
-
-/* ---------- Logo Sizes ---------- */
-
-.clinic-logo-sm {
-    width: 42px;
-    height: 42px;
-}
-
-.clinic-logo-lg {
-    width: 100px;
-    height: 100px;
-}
-
-
-/* =========================================================
-   5. Language
-   ========================================================= */
-
-.clinic-language-switcher {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-    .clinic-language-switcher a {
-        color: var(--clinic-text-muted);
-        font-size: 13px;
-        font-weight: 500;
-    }
-
-        .clinic-language-switcher a:hover {
-            color: var(--clinic-primary);
-        }
-
-.clinic-language-separator {
-    color: var(--clinic-border);
-}
-
-
-/* =========================================================
-   6. Page Layout
-   ========================================================= */
-
-.clinic-page {
-    min-height: calc(100vh - 60px);
-    background-color: var(--clinic-background);
-}
-
-.clinic-layout {
-    display: flex;
-    min-height: calc(100vh - 60px);
-}
-
-
-/* =========================================================
-   7. Sidebar
-   ========================================================= */
-
-.clinic-sidebar {
-    width: var(--clinic-sidebar-width);
-    min-height: calc(100vh - 60px);
-    flex-shrink: 0;
-    background-color: var(--clinic-surface);
-    border-right: 1px solid var(--clinic-border);
-}
-
-
-/* =========================================================
-   8. Main Content
-   ========================================================= */
-
-.clinic-content {
+.app-main {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     min-width: 0;
-    padding: 24px;
 }
 
-
-/* =========================================================
-   9. Page Header
-   ========================================================= */
-
-.clinic-page-header {
-    margin-bottom: 24px;
-}
-
-.clinic-page-title {
-    margin: 0;
-    color: var(--clinic-text);
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.clinic-page-subtitle {
-    margin-top: 6px;
-    color: var(--clinic-text-muted);
-    font-size: 14px;
-}
-
-
-/* =========================================================
-   10. Cards
-   ========================================================= */
-
-.clinic-card {
-    margin-bottom: 20px;
-    background-color: var(--clinic-surface);
-    border: 1px solid var(--clinic-border);
-    border-radius: var(--clinic-radius);
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
-}
-
-.clinic-card-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--clinic-border);
-    font-weight: 600;
-}
-
-.clinic-card-body {
-    padding: 20px;
-}
-
-
-/* =========================================================
-   11. Buttons
-   ========================================================= */
-
-.btn-clinic-primary {
-    color: #FFFFFF;
-    background-color: var(--clinic-primary);
-    border-color: var(--clinic-primary);
-}
-
-    .btn-clinic-primary:hover,
-    .btn-clinic-primary:focus {
-        color: #FFFFFF;
-        background-color: var(--clinic-primary-hover);
-        border-color: var(--clinic-primary-hover);
-    }
-
-
-/* =========================================================
-   12. Tables
-   ========================================================= */
-
-.clinic-table {
-    width: 100%;
-    background-color: var(--clinic-surface);
-    border: 1px solid var(--clinic-border);
-}
-
-    .clinic-table > thead > tr > th {
-        background-color: #F8FAFC;
-        color: var(--clinic-text);
-        font-weight: 600;
-        border-bottom: 1px solid var(--clinic-border);
-    }
-
-    .clinic-table > tbody > tr:hover {
-        background-color: #F8FAFC;
-    }
-
-
-/* =========================================================
-   13. Forms
-   ========================================================= */
-
-.clinic-form-control {
-    height: 40px;
-    border: 1px solid var(--clinic-border);
-    border-radius: 7px;
-    box-shadow: none;
-}
-
-    .clinic-form-control:focus {
-        border-color: var(--clinic-primary);
-        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.10);
-    }
-
-
-/* =========================================================
-   14. Status Badges
-   ========================================================= */
-
-.clinic-badge {
-    display: inline-block;
-    padding: 4px 9px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.clinic-badge-primary {
-    color: #1D4ED8;
-    background-color: #DBEAFE;
-}
-
-.clinic-badge-success {
-    color: #166534;
-    background-color: #DCFCE7;
-}
-
-.clinic-badge-warning {
-    color: #92400E;
-    background-color: #FEF3C7;
-}
-
-.clinic-badge-danger {
-    color: #991B1B;
-    background-color: #FEE2E2;
-}
-
-
-/* =========================================================
-   15. Alerts
-   ========================================================= */
-
-.clinic-alert {
-    padding: 12px 14px;
-    border: 1px solid;
-    border-radius: 8px;
-    font-size: 13px;
-}
-
-.clinic-alert-danger {
-    color: #B91C1C;
-    background-color: #FEF2F2;
-    border-color: #FECACA;
-}
-
-
-/* =========================================================
-   16. Utility
-   ========================================================= */
-
-.clinic-muted {
-    color: var(--clinic-text-muted);
-}
-
-
-/* =========================================================
-   17. Sidebar Menu
-   ========================================================= */
-
-.clinic-menu {
-    list-style: none;
-    margin: 0;
-    padding: 12px;
-}
-
-.clinic-menu-item {
-    list-style: none;
-    margin-bottom: 4px;
-}
-
-.clinic-menu-link {
+.app-navbar {
+    height: var(--navbar-height);
+    background-color: var(--c-surface);
+    border-bottom: 1px solid var(--c-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 44px;
-    padding: 0 12px;
-    color: var(--clinic-text);
-    border-radius: 8px;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    padding: 0 var(--space-6);
+    flex-shrink: 0;
+    z-index: 5;
 }
 
-    .clinic-menu-link:hover,
-    .clinic-menu-link:focus {
-        color: var(--clinic-primary);
-        background-color: #EFF6FF;
-        text-decoration: none;
-    }
+.app-content {
+    flex: 1;
+    padding: var(--space-6);
+    overflow-y: auto;
+}
 
-.clinic-menu-left {
+/* =========================================================
+   Navbar Components
+   ========================================================= */
+
+.nav-brand {
     display: flex;
     align-items: center;
+    gap: var(--space-3);
+    height: var(--navbar-height);
+    padding: 0 var(--space-6);
+    border-bottom: 1px solid var(--c-border);
+    text-decoration: none;
+}
+
+.nav-brand-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    object-fit: contain;
+}
+
+.nav-brand-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--c-text);
+    letter-spacing: -0.5px;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.lang-link {
+    color: var(--c-text-muted);
+}
+
+.lang-link.active,
+.lang-link:hover {
+    color: var(--c-primary);
+}
+
+.lang-sep {
+    color: var(--c-border);
+}
+
+/* =========================================================
+   Sidebar Navigation
+   ========================================================= */
+
+.side-menu {
+    list-style: none;
+    padding: var(--space-4);
+    margin: 0;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.side-menu-item {
+    margin-bottom: var(--space-1);
+}
+
+.side-menu-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    color: var(--c-text-muted);
+    font-weight: 500;
+    font-size: 15px;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.side-menu-link i {
+    width: 20px;
+    text-align: center;
+    font-size: 18px;
+    color: var(--c-text-muted);
+    transition: color 0.2s;
+}
+
+.side-menu-link:hover {
+    background-color: var(--c-bg);
+    color: var(--c-text);
+}
+
+.side-menu-link.active {
+    background-color: var(--c-primary-light);
+    color: var(--c-primary);
+}
+
+.side-menu-link.active i {
+    color: var(--c-primary);
+}
+
+/* =========================================================
+   Page Header
+   ========================================================= */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: var(--space-6);
+}
+
+.page-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.page-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--c-text);
+    letter-spacing: -0.5px;
+}
+
+.page-subtitle {
+    margin: 0;
+    font-size: 15px;
+    color: var(--c-text-muted);
+}
+
+.page-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+/* =========================================================
+   Cards
+   ========================================================= */
+
+.c-card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--space-6);
+    overflow: hidden;
+}
+
+.c-card-header {
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--c-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--c-surface);
+}
+
+.c-card-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--c-text);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.c-card-title i {
+    color: var(--c-text-muted);
+}
+
+.c-card-body {
+    padding: var(--space-5);
+}
+
+/* =========================================================
+   Dashboard Statistics
+   ========================================================= */
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-5);
+    margin-bottom: var(--space-6);
+}
+
+.stat-card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--c-primary);
+}
+
+.stat-card.active {
+    border-color: var(--c-primary);
+    background-color: var(--c-primary-light);
+    box-shadow: 0 0 0 1px var(--c-primary);
+}
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.stat-content {
+    flex: 1;
     min-width: 0;
 }
 
-.clinic-menu-icon {
-    width: 20px;
-    margin-right: 10px;
-    text-align: center;
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--c-text);
+    line-height: 1.1;
+    margin-bottom: 2px;
 }
 
-.clinic-menu-text {
+.stat-label {
+    font-size: 14px;
+    color: var(--c-text-muted);
+    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.clinic-menu-arrow {
-    font-size: 12px;
-    transition: transform 0.2s ease;
-}
-
-
-/* =========================================================
-   18. Sidebar Submenu
-   ========================================================= */
-
-.clinic-submenu {
-    display: none;
-    list-style: none;
-    margin: 4px 0 6px;
-    padding: 0 0 0 32px;
-}
-
-.clinic-submenu-item {
-    list-style: none;
-}
-
-.clinic-submenu-link {
-    display: flex;
-    align-items: center;
-    min-height: 38px;
-    padding: 0 10px;
-    color: var(--clinic-text-muted);
-    border-radius: 7px;
-    font-size: 14px;
-}
-
-    .clinic-submenu-link:hover,
-    .clinic-submenu-link:focus {
-        color: var(--clinic-primary);
-        background-color: #F8FAFC;
-        text-decoration: none;
-    }
-
-.clinic-submenu-icon {
-    width: 18px;
-    margin-right: 8px;
-    text-align: center;
-    font-size: 11px;
-}
-
+/* Stat Variants */
+.stat-primary .stat-icon { background: var(--c-primary-light); color: var(--c-primary); }
+.stat-success .stat-icon { background: var(--c-success-light); color: var(--c-success); }
+.stat-warning .stat-icon { background: var(--c-warning-light); color: var(--c-warning); }
+.stat-danger .stat-icon { background: var(--c-danger-light); color: var(--c-danger); }
+.stat-info .stat-icon { background: var(--c-info-light); color: var(--c-info); }
 
 /* =========================================================
-   19. Open Menu Parent
+   Tables
    ========================================================= */
 
-.clinic-menu-parent.is-open > .clinic-submenu {
-    display: block;
+.table-responsive {
+    overflow-x: auto;
 }
 
-.clinic-menu-parent.is-open > .clinic-menu-link {
-    color: var(--clinic-primary);
-    background-color: #EFF6FF;
-}
-
-    .clinic-menu-parent.is-open > .clinic-menu-link .clinic-menu-arrow {
-        transform: rotate(180deg);
-    }
-
-
-/* =========================================================
-   20. Login Page
-   ========================================================= */
-
-.clinic-auth-page {
-    min-height: 100vh;
+.c-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
     margin: 0;
-    padding: 40px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--clinic-background);
 }
 
-.clinic-auth-container {
-    width: 100%;
-    max-width: 430px;
-}
-
-
-/* ---------- Login Card ---------- */
-
-.clinic-login-card {
-    position: relative;
-    width: 100%;
-    padding: 38px 40px 40px;
-    background-color: var(--clinic-surface);
-    border: 1px solid var(--clinic-border);
-    border-radius: 14px;
-    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.07);
-}
-
-
-/* ---------- Login Language ---------- */
-
-.clinic-login-language {
-    position: absolute;
-    top: 20px;
-    right: 22px;
-    display: flex;
-    align-items: center;
-}
-
-.clinic-language-option {
-    padding: 3px 6px;
-    border: 0;
-    background: transparent;
-    color: var(--clinic-text-muted);
-    font-size: 12px;
+.c-table th {
+    background-color: var(--c-bg);
+    color: var(--c-text-muted);
     font-weight: 600;
-    cursor: pointer;
-}
-
-    .clinic-language-option:hover {
-        color: var(--clinic-primary);
-    }
-
-    .clinic-language-option:focus {
-        outline: none;
-    }
-
-
-/* ---------- Login Brand ---------- */
-
-.clinic-login-brand {
-    margin-top: 50px;
-    margin-bottom: 32px;
-    text-align: center;
-}
-
-    .clinic-login-brand .clinic-logo {
-        margin: 0 auto 20px;
-    }
-
-.clinic-login-title {
-    margin: 0;
-    color: var(--clinic-text);
-    font-size: 25px;
-    font-weight: 600;
-    line-height: 1.3;
-}
-
-
-/* =========================================================
-   21. Login Fields
-   ========================================================= */
-
-.clinic-login-field {
-    margin-bottom: 20px;
-}
-
-    .clinic-login-field label {
-        display: block;
-        margin-bottom: 7px;
-        color: #334155;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-
-/* ---------- Login Inputs ---------- */
-
-.clinic-login-input {
-    width: 100%;
-    height: 44px;
-    padding: 0 13px;
-    border: 1px solid #CBD5E1;
-    border-radius: 8px;
-    background-color: #FFFFFF;
-    color: #0F172A;
-    font-size: 14px;
-    outline: none;
-    box-shadow: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-    .clinic-login-input::placeholder {
-        color: #94A3B8;
-    }
-
-    .clinic-login-input:focus {
-        border-color: var(--clinic-primary);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
-    }
-
-
-    /* ---------- Browser Autofill ---------- */
-
-    .clinic-login-input:-webkit-autofill,
-    .clinic-login-input:-webkit-autofill:hover,
-    .clinic-login-input:-webkit-autofill:focus {
-        -webkit-text-fill-color: #0F172A;
-        -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset;
-        transition: background-color 5000s ease-in-out 0s;
-    }
-
-
-/* =========================================================
-   22. Password
-   ========================================================= */
-
-.clinic-password-container {
-    position: relative;
-}
-
-.clinic-password-input {
-    padding-right: 45px;
-}
-
-.clinic-password-button {
-    position: absolute;
-    top: 50%;
-    right: 7px;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 0;
-    border-radius: 6px;
-    background: transparent;
-    color: var(--clinic-text-muted);
-    cursor: pointer;
-}
-
-    .clinic-password-button:hover {
-        color: var(--clinic-primary);
-        background-color: #EFF6FF;
-    }
-
-    .clinic-password-button:focus {
-        outline: none;
-    }
-
-    .clinic-password-button svg {
-        width: 18px;
-        height: 18px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 1.8;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-    }
-
-
-/* =========================================================
-   23. Login Validation
-   ========================================================= */
-
-.clinic-login-validation {
-    display: block;
-    margin-top: 6px;
-    color: var(--clinic-danger);
-    font-size: 12px;
-}
-
-
-/* =========================================================
-   24. Login Error
-   ========================================================= */
-
-.clinic-login-error {
-    margin-bottom: 18px;
-    padding: 11px 13px;
-    border: 1px solid #FECACA;
-    border-radius: 8px;
-    background-color: #FEF2F2;
-    color: #B91C1C;
     font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--c-border);
+    text-align: left;
 }
 
+html[dir="rtl"] .c-table th {
+    text-align: right;
+}
 
-/* =========================================================
-   25. Login Button
-   ========================================================= */
-
-.clinic-login-button {
-    width: 100%;
-    height: 45px;
-    margin-top: 5px;
-    border: 0;
-    border-radius: 8px;
-    background-color: var(--clinic-primary);
-    color: #FFFFFF;
+.c-table td {
+    padding: var(--space-4);
     font-size: 14px;
+    color: var(--c-text);
+    border-bottom: 1px solid var(--c-border);
+    vertical-align: middle;
+}
+
+.c-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.c-table tbody tr:hover td {
+    background-color: var(--c-bg);
+}
+
+/* =========================================================
+   Badges
+   ========================================================= */
+
+.c-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
     font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.c-badge-primary { background-color: var(--c-primary-light); color: var(--c-primary); }
+.c-badge-success { background-color: var(--c-success-light); color: var(--c-success); }
+.c-badge-warning { background-color: var(--c-warning-light); color: var(--c-warning); }
+.c-badge-danger { background-color: var(--c-danger-light); color: var(--c-danger); }
+.c-badge-info { background-color: var(--c-info-light); color: var(--c-info); }
+.c-badge-neutral { background-color: var(--c-bg); color: var(--c-text-muted); border: 1px solid var(--c-border); }
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
     cursor: pointer;
-    box-shadow: 0 5px 12px rgba(37, 99, 235, 0.18);
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    transition: all 0.2s;
+    line-height: 1.5;
 }
 
-    .clinic-login-button:hover:not(:disabled) {
-        background-color: var(--clinic-primary-hover);
-        box-shadow: 0 7px 16px rgba(37, 99, 235, 0.22);
-    }
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
-    .clinic-login-button:active:not(:disabled) {
-        transform: translateY(1px);
-    }
+.btn i {
+    font-size: 14px;
+}
 
-    .clinic-login-button:disabled {
-        opacity: 0.65;
-        cursor: not-allowed;
-    }
+.btn-primary {
+    background-color: var(--c-primary);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
 
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--c-primary-hover);
+    color: white;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border-color: var(--c-border);
+    color: var(--c-text);
+}
+
+.btn-outline:hover:not(:disabled) {
+    background-color: var(--c-bg);
+    border-color: var(--c-text-muted);
+}
+
+.btn-danger {
+    background-color: var(--c-danger);
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background-color: #b91c1c;
+    color: white;
+}
 
 /* =========================================================
-   26. Login Spinner
+   Forms
    ========================================================= */
 
-.clinic-spinner {
-    display: inline-block;
-    width: 13px;
-    height: 13px;
-    margin-right: 5px;
-    vertical-align: -2px;
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    border-top-color: #FFFFFF;
+.form-group {
+    margin-bottom: var(--space-4);
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--c-text);
+    margin-bottom: var(--space-2);
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--c-text);
+    background-color: var(--c-surface);
+    background-clip: padding-box;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-md);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    color: var(--c-text);
+    background-color: var(--c-surface);
+    border-color: var(--c-primary);
+    outline: 0;
+    box-shadow: 0 0 0 3px var(--c-primary-light);
+}
+
+.form-error {
+    display: block;
+    font-size: 13px;
+    color: var(--c-danger);
+    margin-top: var(--space-1);
+}
+
+/* =========================================================
+   States (Empty, Loading, Alerts)
+   ========================================================= */
+
+.empty-state {
+    text-align: center;
+    padding: var(--space-10) var(--space-4);
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    color: var(--c-border);
+    margin-bottom: var(--space-4);
+}
+
+.empty-state-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--c-text);
+    margin: 0 0 var(--space-2) 0;
+}
+
+.empty-state-desc {
+    font-size: 14px;
+    color: var(--c-text-muted);
+    margin: 0;
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8);
+    color: var(--c-text-muted);
+    gap: var(--space-3);
+}
+
+.c-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--c-border);
+    border-top-color: var(--c-primary);
     border-radius: 50%;
-    animation: clinic-spin 0.7s linear infinite;
+    animation: spin 1s linear infinite;
 }
 
-@keyframes clinic-spin {
-    to {
-        transform: rotate(360deg);
-    }
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
+.c-alert {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+}
+
+.c-alert i {
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.c-alert-danger {
+    background-color: var(--c-danger-light);
+    color: var(--c-danger);
+    border: 1px solid #fecaca;
+}
+
+.c-alert-info {
+    background-color: var(--c-info-light);
+    color: var(--c-info);
+    border: 1px solid #bae6fd;
+}
 
 /* =========================================================
-   27. RTL
+   Auth & Login
    ========================================================= */
 
-html[dir="rtl"] .clinic-sidebar {
-    border-right: 0;
-    border-left: 1px solid var(--clinic-border);
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--c-bg);
+    padding: var(--space-4);
 }
 
-html[dir="rtl"] .clinic-menu-icon {
-    margin-right: 0;
-    margin-left: 10px;
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--c-surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-8);
+    border: 1px solid var(--c-border);
 }
 
-html[dir="rtl"] .clinic-submenu {
-    padding: 0 32px 0 0;
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--space-6);
 }
 
-html[dir="rtl"] .clinic-submenu-icon {
-    margin-right: 0;
-    margin-left: 8px;
+.auth-logo {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--space-4);
+    border-radius: var(--radius-md);
 }
 
-html[dir="rtl"] .clinic-password-input {
-    padding-right: 13px;
-    padding-left: 45px;
+.auth-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0;
 }
-
-html[dir="rtl"] .clinic-password-button {
-    right: auto;
-    left: 7px;
-}
-
-html[dir="rtl"] .clinic-login-language {
-    right: auto;
-    left: 22px;
-}
-
 
 /* =========================================================
-   28. Responsive
+   RTL Overrides
    ========================================================= */
 
-@media (max-width: 991px) {
+html[dir="rtl"] .app-sidebar {
+    border-right: none;
+    border-left: 1px solid var(--c-border);
+}
 
-    .clinic-layout {
+html[dir="rtl"] .nav-actions {
+    flex-direction: row-reverse;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .app-layout {
         flex-direction: column;
     }
-
-    .clinic-sidebar {
+    
+    .app-sidebar {
         width: 100%;
-        min-height: auto;
-        border-right: 0;
-        border-left: 0;
-        border-bottom: 1px solid var(--clinic-border);
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--c-border);
     }
-
-    .clinic-content {
-        padding: 16px;
-    }
-}
-
-
-@media (max-width: 480px) {
-
-    .clinic-auth-page {
-        padding: 20px 15px;
-    }
-
-    .clinic-login-card {
-        padding: 32px 24px;
-    }
-
-    .clinic-login-language {
-        right: 16px;
-    }
-
-    html[dir="rtl"] .clinic-login-language {
-        right: auto;
-        left: 16px;
-    }
-
-    .clinic-brand-name {
-        display: none;
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-4);
     }
 }

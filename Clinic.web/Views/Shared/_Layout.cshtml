@@ -6,79 +6,71 @@
 <html ng-app="clinicApp" lang="@currentLang" dir="@currentDir">
 <head>
     <meta charset="utf-8" />
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>
-        @ViewBag.Title - Clinic Management System
-    </title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Clinic Management System</title>
     @Styles.Render("~/Content/css")
-
+    <link href="~/Content/clinic-theme.css" rel="stylesheet" />
     @if (currentLang == "ar")
     {
         <link href="~/Content/rtl.css" rel="stylesheet" />
     }
-
     @Scripts.Render("~/bundles/modernizr")
 </head>
-
 <body>
-    <div style="text-align: right; padding: 10px; background-color: #f8f9fa; border-bottom: 1px solid #ddd;">
-        <span class="pull-left" ng-controller="LogoutController" style="margin-left: 10px; margin-right: 10px;">
+    <!-- Top Navbar -->
+    <header class="app-navbar">
+        <a href="@Url.Action("Index", "Home", new { area = "" })" class="nav-brand">
+            <img src="~/Content/Images/clinic-logo.png" alt="Clinic Management System" class="nav-brand-logo" />
+            <span class="nav-brand-text">Clinic Management</span>
+        </a>
+
+        <div class="nav-actions">
+            <span class="lang-switcher" ng-controller="LanguageController">
+                <a href="#" class="lang-link @(currentLang == "en" ? "active" : "")" ng-click="changeLanguage('en')">English</a>
+                <span class="lang-sep">|</span>
+                <a href="#" class="lang-link @(currentLang == "ar" ? "active" : "")" ng-click="changeLanguage('ar')">العربية</a>
+            </span>
+
             @if (Request.IsAuthenticated)
             {
-                <button type="button" class="btn btn-sm btn-danger" ng-click="logout()"><i class="fa fa-sign-out"></i> {{ 'common.Logout' | i18n }}</button>
+                <button type="button" class="btn btn-danger" ng-controller="LogoutController" ng-click="logout()">
+                    <i class="fa fa-sign-out"></i> {{ 'common.Logout' | i18n }}
+                </button>
             }
-        </span>
-        <a href="#" ng-controller="LanguageController" ng-click="changeLanguage('en')">English</a> | 
-        <a href="#" ng-controller="LanguageController" ng-click="changeLanguage('ar')">العربية</a>
-    </div>
+        </div>
+    </header>
 
-    <!-- Main Application -->
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar Navigation -->
-            <div class="col-md-3 col-lg-2 sidebar">
-                @Html.Partial("_Menu")
-            </div>
+    <!-- Page Layout -->
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="app-sidebar">
+            @Html.Partial("_Menu")
+        </aside>
 
-            <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 main-content">
+        <!-- Content -->
+        <main class="app-main">
+            <div class="app-content">
                 @RenderBody()
             </div>
-        </div>
+        </main>
     </div>
 
-
-    <!-- ===================================================== -->
-    <!-- JavaScript -->
-    <!-- ===================================================== -->
-
+    <!-- Scripts -->
     @Scripts.Render("~/bundles/jquery")
-
     @Scripts.Render("~/bundles/bootstrap")
 
-
-    <!-- AngularJS -->
     <script src="~/Scripts/angular.js"></script>
-
-
     <script src="~/Scripts/angular-cookies.js"></script>
     <script src="~/Scripts/angular-sanitize.js"></script>
     <script src="~/Scripts/angular-localization.js"></script>
 
-    <!-- Clinic Angular Application -->
     <script src="~/Scripts/app/app.js"></script>
     <script src="~/Scripts/app/controllers/LanguageController.js"></script>
+    <script src="~/Scripts/app/clinic-menu.js"></script>
     <script src="~/Areas/Auth/Scripts/Services/authService.js"></script>
     <script src="~/Scripts/app/controllers/DashboardController.js"></script>
     <script src="~/Areas/Auth/Scripts/Controllers/AccountController.js"></script>
 
-
-    <!-- Page Specific Scripts -->
     @RenderSection("scripts", required: false)
-
 </body>
 </html>

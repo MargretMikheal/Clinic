@@ -2,26 +2,48 @@
     ViewBag.Title = "Dashboard";
 }
 
-<div class="row" ng-controller="DashboardController">
-    <div class="col-md-12">
-        <h1 class="page-header">{{ 'common.Dashboard' | i18n }}</h1>
-    </div>
+<div ng-controller="DashboardController">
 
-    <div class="col-md-12" ng-show="isLoading">
-        <p><i class="fa fa-spinner fa-spin"></i> {{ 'common.Loading' | i18n }}</p>
-    </div>
-
-    <div class="col-md-12" ng-show="!isLoading && errorMessage">
-        <div class="alert alert-danger">{{ errorMessage }}</div>
-    </div>
-
-    <div class="col-md-12" ng-show="!isLoading && !errorMessage">
-        <div class="jumbotron text-center">
-            <h2>{{ 'common.Welcome' | i18n }}, {{ userInfo.DisplayName }}!</h2>
-            <p>
-                <strong>{{ 'common.Role' | i18n }}:</strong> 
-                <span ng-repeat="role in userInfo.Roles" class="label label-primary" style="margin-right: 5px;">{{ role }}</span>
-            </p>
+    <div class="page-header">
+        <div class="page-title-wrap">
+            <h1 class="page-title">
+                {{ 'common.Dashboard' | i18n }}
+            </h1>
         </div>
     </div>
+
+    <div class="c-card" ng-show="isLoading">
+        <div class="c-card-body loading-state">
+            <div class="c-spinner"></div>
+            <span>{{ 'common.Loading' | i18n }}</span>
+        </div>
+    </div>
+
+    <div class="c-card" ng-show="!isLoading && errorMessage">
+        <div class="c-card-body">
+            <div class="c-alert c-alert-danger">
+                <i class="fa fa-exclamation-triangle"></i>
+                <span>{{ errorMessage }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="!isLoading && !errorMessage">
+
+        <div ng-if="dashboardType === 'Admin'">
+            @Html.Partial("_AdminDashboard")
+        </div>
+
+        <div ng-if="dashboardType === 'Receptionist'">
+            @Html.Partial("_ReceptionistDashboard")
+        </div>
+
+        <div ng-if="dashboardType === 'Doctor'">
+            @Html.Partial("_DoctorDashboard")
+        </div>
+
+        @Html.Partial("_DashboardDetails")
+
+    </div>
+
 </div>

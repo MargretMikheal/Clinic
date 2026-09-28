@@ -35,7 +35,6 @@ namespace Clinic.Core.Data
         public int PatientId { get; set; }
     
         public virtual Appointment Appointment { get; set; }
-        public virtual Doctor Doctor { get; set; }
         public virtual Patient Patient { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Prescription> Prescriptions { get; set; }
@@ -43,5 +42,6 @@ namespace Clinic.Core.Data
         public virtual ICollection<VisitDiagnosi> VisitDiagnosis { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<VisitSymptom> VisitSymptoms { get; set; }
+        public virtual Doctor Doctor { get; set; }
     }
 }

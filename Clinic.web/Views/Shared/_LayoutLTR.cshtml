@@ -15,92 +15,83 @@
     </title>
 
     @Styles.Render("~/Content/css")
-
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Content/clinic-theme.css" rel="stylesheet" />
 
     @Scripts.Render("~/bundles/modernizr")
 </head>
 
 <body>
-
     <!-- Top Navbar -->
-    <header class="clinic-navbar">
+    <header class="app-navbar">
 
-        <div class="container-fluid">
+        <!-- Logo - Left -->
+        <a href="@Url.Action("Index", "Home", new { area = "" })"
+           class="nav-brand">
 
-            <div class="clinic-navbar-inner">
+            <img src="~/Content/Images/clinic-logo.png"
+                 alt="Clinic Management System" 
+                 class="nav-brand-logo" />
 
-                <a href="@Url.Action("Index", "Home", new { area = "" })"
-                   class="clinic-brand">
+            <span class="nav-brand-text">
+                Clinic Management
+            </span>
 
-                    <div class="clinic-logo">
-                        <img src="~/Content/Images/clinic-logo.png"
-                             alt="Clinic Management System" />
-                    </div>
+        </a>
 
-                    <span class="clinic-brand-name">
-                          Clinic Management 
-                    </span>
+        <!-- Actions - Right -->
+        <div class="nav-actions">
 
+            <span class="lang-switcher"
+                  ng-controller="LanguageController">
+
+                <a href="#"
+                   class="lang-link active"
+                   ng-click="changeLanguage('en')">
+                    English
                 </a>
 
-                <div class="clinic-navbar-actions">
+                <span class="lang-sep">|</span>
 
-                    @if (Request.IsAuthenticated)
-                    {
-                        <button type="button"
-                                class="btn btn-sm btn-danger"
-                                ng-controller="LogoutController"
-                                ng-click="logout()">
+                <a href="#"
+                   class="lang-link"
+                   ng-click="changeLanguage('ar')">
+                    العربية
+                </a>
 
-                            <i class="fa fa-sign-out"></i>
-                            {{ 'common.Logout' | i18n }}
+            </span>
 
-                        </button>
-                    }
+            @if (Request.IsAuthenticated)
+            {
+                <button type="button"
+                        class="btn btn-danger"
+                        ng-controller="LogoutController"
+                        ng-click="logout()">
 
-                    <span class="clinic-language-switcher"
-                          ng-controller="LanguageController">
+                    <i class="fa fa-sign-out"></i>
+                    {{ 'common.Logout' | i18n }}
 
-                        <a href="#"
-                           ng-click="changeLanguage('en')">
-                            English
-                        </a>
-
-                        <span class="clinic-language-separator">|</span>
-
-                        <a href="#"
-                           ng-click="changeLanguage('ar')">
-                            العربية
-                        </a>
-
-                    </span>
-
-                </div>
-
-            </div>
+                </button>
+            }
 
         </div>
 
     </header>
 
+    <!-- Page Layout -->
+    <div class="app-layout">
 
-    <!-- Page -->
-    <div class="clinic-page">
+        <!-- Sidebar -->
+        <aside class="app-sidebar">
+            @Html.Partial("_Menu")
+        </aside>
 
-        <div class="clinic-layout">
-
-            <!-- Sidebar -->
-            <aside class="clinic-sidebar">
-                @Html.Partial("_Menu")
-            </aside>
-
-            <!-- Content -->
-            <main class="clinic-content">
+        <!-- Content -->
+        <main class="app-main">
+            <div class="app-content">
                 @RenderBody()
-            </main>
-
-        </div>
+            </div>
+        </main>
 
     </div>
 
@@ -121,6 +112,7 @@
 
     <script src="~/Areas/Auth/Scripts/Services/authService.js"></script>
 
+    <script src="~/Scripts/app/services/dashboardService.js"></script>
     <script src="~/Scripts/app/controllers/DashboardController.js"></script>
 
     <script src="~/Areas/Auth/Scripts/Controllers/AccountController.js"></script>

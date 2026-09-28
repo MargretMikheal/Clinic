@@ -1,0 +1,23 @@
+<div class="stat-grid">
+
+    <div ng-repeat="stat in dashboardData.Statistics track by stat.Key"
+         class="stat-card"
+         ng-class="{'active': selectedStatistic.Key === stat.Key}"
+         ng-click="selectStatistic(stat)">
+
+        <div class="stat-icon" ng-class="stat.ColorClass.replace('clinic-dashboard-stat-icon-', 'stat-')">
+            <i class="fa" ng-class="stat.Icon"></i>
+        </div>
+
+        <div class="stat-content">
+            <div class="stat-value">
+                {{ stat.Count }}
+            </div>
+            <div class="stat-label" title="{{ stat.LocalizationKey | i18n }}">
+                {{ stat.LocalizationKey | i18n }}
+            </div>
+        </div>
+
+    </div>
+
+</div>

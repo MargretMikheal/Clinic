@@ -30,6 +30,7 @@
     </title>
 
     @Styles.Render("~/Content/css")
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
 
     <link href="~/Content/clinic-theme.css"
           rel="stylesheet" />
@@ -44,13 +45,9 @@
 
 </head>
 
-<body class="clinic-auth-page">
+<body class="auth-page">
 
-    <div class="clinic-auth-container">
-
-        @RenderBody()
-
-    </div>
+    @RenderBody()
 
 
     @Scripts.Render("~/bundles/jquery")

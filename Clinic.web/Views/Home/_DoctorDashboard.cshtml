@@ -1,0 +1,111 @@
+<!-- Doctor Dashboard -->
+
+<!-- Statistics -->
+<div class="stat-grid">
+
+    <div ng-repeat="stat in dashboardData.Statistics track by stat.Key"
+         class="stat-card"
+         ng-class="{'active': selectedStatistic.Key === stat.Key}"
+         ng-click="selectStatistic(stat)">
+
+        <div class="stat-icon" ng-class="stat.ColorClass.replace('clinic-dashboard-stat-icon-', 'stat-')">
+            <i class="fa" ng-class="stat.Icon"></i>
+        </div>
+
+        <div class="stat-content">
+            <div class="stat-value">
+                {{ stat.Count }}
+            </div>
+            <div class="stat-label" title="{{ stat.LocalizationKey | i18n }}">
+                {{ stat.LocalizationKey | i18n }}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Today's Schedule -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="c-card">
+            <div class="c-card-header">
+                <h3 class="c-card-title">
+                    <i class="fa fa-clock-o"></i>
+                    {{ 'dashboard.TodaySchedule' | i18n }}
+                </h3>
+            </div>
+            <div class="c-card-body" style="padding: 0;">
+
+                <!-- Empty -->
+                <div ng-show="!dashboardData.TodaySchedule || dashboardData.TodaySchedule.length === 0"
+                     class="empty-state">
+                    <i class="fa fa-calendar-o empty-state-icon"></i>
+                    <h4 class="empty-state-title">{{ 'dashboard.NoData' | i18n }}</h4>
+                </div>
+
+                <!-- Schedule Table -->
+                <div class="table-responsive" ng-show="dashboardData.TodaySchedule && dashboardData.TodaySchedule.length > 0">
+                    <table class="c-table">
+                        <thead>
+                            <tr>
+                                <th>{{ 'dashboard.StartTime' | i18n }}</th>
+                                <th>{{ 'dashboard.EndTime' | i18n }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="schedule in dashboardData.TodaySchedule">
+                                <td>{{ formatTime(schedule.StartTime) }}</td>
+                                <td>{{ formatTime(schedule.EndTime) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Patients -->
+    <div class="col-md-6">
+        <div class="c-card">
+            <div class="c-card-header">
+                <h3 class="c-card-title">
+                    <i class="fa fa-users"></i>
+                    {{ 'dashboard.RecentPatients' | i18n }}
+                </h3>
+            </div>
+            <div class="c-card-body" style="padding: 0;">
+
+                <!-- Empty -->
+                <div ng-show="!dashboardData.RecentPatients || dashboardData.RecentPatients.length === 0"
+                     class="empty-state">
+                    <i class="fa fa-users empty-state-icon"></i>
+                    <h4 class="empty-state-title">{{ 'dashboard.NoData' | i18n }}</h4>
+                </div>
+
+                <!-- Patients Table -->
+                <div class="table-responsive" ng-show="dashboardData.RecentPatients && dashboardData.RecentPatients.length > 0">
+                    <table class="c-table">
+                        <thead>
+                            <tr>
+                                <th>{{ 'dashboard.Patient' | i18n }}</th>
+                                <th>{{ 'dashboard.Phone' | i18n }}</th>
+                                <th>{{ 'dashboard.Gender' | i18n }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="patient in dashboardData.RecentPatients">
+                                <td>{{ patient.Name }}</td>
+                                <td>{{ patient.Phone }}</td>
+                                <td>{{ patient.Gender }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

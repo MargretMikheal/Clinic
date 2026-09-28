@@ -3,16 +3,16 @@
 @using MvcSiteMapProvider.Web.Html
 @using MvcSiteMapProvider
 
-<ul class="clinic-menu">
+<ul class="side-menu">
 
     <!-- Home -->
-    <li class="clinic-menu-item">
+    <li class="side-menu-item">
         <a href="@Url.Action("Index", "Home", new { area = "" })"
-           class="clinic-menu-link">
+           class="side-menu-link">
 
-            <i class="fa fa-home clinic-menu-icon"></i>
+            <i class="fa fa-home"></i>
 
-            <span class="clinic-menu-text">
+            <span>
                 {{ 'common.Home' | i18n }}
             </span>
 
@@ -41,59 +41,49 @@
              */
             if (parentNode.HasChildNodes)
             {
-                <li class="clinic-menu-item clinic-menu-parent">
+                <li class="side-menu-item">
 
                     <a href="#"
-                       class="clinic-menu-link clinic-menu-toggle">
+                       class="side-menu-link">
 
-                        <span class="clinic-menu-left">
+                        <i class="fa @parentIcon"></i>
 
-                            <i class="fa @parentIcon clinic-menu-icon"></i>
-
-                            <span class="clinic-menu-text">
-                                {{ '@parentNode.Title' | i18n }}
-                            </span>
-
+                        <span>
+                            {{ '@parentNode.Title' | i18n }}
                         </span>
-
-                        <i class="fa fa-angle-down clinic-menu-arrow"></i>
 
                     </a>
 
-
-                    <ul class="clinic-submenu">
-
-                        @foreach (var childNode in parentNode.ChildNodes)
+                    <!-- Submenu items currently flattened or handle with nested classes if needed -->
+                    @foreach (var childNode in parentNode.ChildNodes)
+                    {
+                        if (!childNode.IsVisible(new Dictionary<string, object>()))
                         {
-                            if (!childNode.IsVisible(new Dictionary<string, object>()))
-                            {
-                                continue;
-                            }
-
-                            var childIcon =
-                                childNode.Attributes.ContainsKey("icon")
-                                    ? childNode.Attributes["icon"].ToString()
-                                    : "fa-circle-o";
-
-                            string url = childNode.Url ?? "#";
-
-                            <li class="clinic-submenu-item">
-
-                                <a href="@url"
-                                   class="clinic-submenu-link">
-
-                                    <i class="fa @childIcon clinic-submenu-icon"></i>
-
-                                    <span>
-                                        {{ '@childNode.Title' | i18n }}
-                                    </span>
-
-                                </a>
-
-                            </li>
+                            continue;
                         }
 
-                    </ul>
+                        var childIcon =
+                            childNode.Attributes.ContainsKey("icon")
+                                ? childNode.Attributes["icon"].ToString()
+                                : "fa-circle-o";
+
+                        string url = childNode.Url ?? "#";
+
+                        <li class="side-menu-item" style="padding-right: 20px;">
+
+                            <a href="@url"
+                               class="side-menu-link">
+
+                                <i class="fa @childIcon"></i>
+
+                                <span>
+                                    {{ '@childNode.Title' | i18n }}
+                                </span>
+
+                            </a>
+
+                        </li>
+                    }
 
                 </li>
             }
@@ -102,19 +92,15 @@
 
                 string url = parentNode.Url ?? "#";
 
-                <li class="clinic-menu-item">
+                <li class="side-menu-item">
 
                     <a href="@url"
-                       class="clinic-menu-link">
+                       class="side-menu-link">
 
-                        <span class="clinic-menu-left">
+                        <i class="fa @parentIcon"></i>
 
-                            <i class="fa @parentIcon clinic-menu-icon"></i>
-
-                            <span class="clinic-menu-text">
-                                {{ '@parentNode.Title' | i18n }}
-                            </span>
-
+                        <span>
+                            {{ '@parentNode.Title' | i18n }}
                         </span>
 
                     </a>

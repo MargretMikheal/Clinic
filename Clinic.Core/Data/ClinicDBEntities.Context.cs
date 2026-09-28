@@ -25,14 +25,12 @@ namespace Clinic.Core.Data
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
         public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
-        public virtual DbSet<Doctor> Doctors { get; set; }
         public virtual DbSet<DoctorSchedule> DoctorSchedules { get; set; }
         public virtual DbSet<Patient> Patients { get; set; }
         public virtual DbSet<Prescription> Prescriptions { get; set; }
@@ -44,5 +42,6 @@ namespace Clinic.Core.Data
         public virtual DbSet<Visit> Visits { get; set; }
         public virtual DbSet<VisitDiagnosi> VisitDiagnosis { get; set; }
         public virtual DbSet<VisitSymptom> VisitSymptoms { get; set; }
+        public virtual DbSet<Doctor> Doctors { get; set; }
     }
 }

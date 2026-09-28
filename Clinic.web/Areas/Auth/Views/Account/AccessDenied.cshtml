@@ -3,22 +3,21 @@
     ViewBag.Title = "Access Denied";
 }
 
-<div class="clinic-auth-card text-center">
+<div class="auth-card empty-state" style="max-width: 450px; margin: 0 auto; background: var(--c-surface);">
 
-    <div class="clinic-auth-title">
-        <i class="fa fa-lock"></i>
+    <i class="fa fa-lock empty-state-icon" style="color: var(--c-danger);"></i>
+    
+    <h3 class="empty-state-title" style="color: var(--c-danger); margin-bottom: var(--space-4);">
         {{ 'common.AccessDenied' | i18n }}
-    </div>
+    </h3>
 
-    <p class="clinic-muted">
+    <p class="empty-state-desc" style="margin-bottom: var(--space-6);">
         {{ 'common.NoPermission' | i18n }}
     </p>
 
     <a href="@Url.Action("Index", "Home", new { area = "" })"
-       class="btn btn-clinic-primary">
-
+       class="btn btn-primary" style="min-width: 150px;">
         {{ 'common.ReturnHome' | i18n }}
-
     </a>
 
 </div>

@@ -80,6 +80,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Interfaces\IAdminDashboardService.cs" />
+    <Compile Include="BLL\Interfaces\IReceptionistDashboardService.cs" />
+    <Compile Include="BLL\Interfaces\IDoctorDashboardService.cs" />
+    <Compile Include="BLL\Services\AdminDashboardService.cs" />
+    <Compile Include="BLL\Services\ReceptionistDashboardService.cs" />
+    <Compile Include="BLL\Services\DoctorDashboardService.cs" />
+    <Compile Include="Common\DTOs\Dashboard\DashboardStatisticDto.cs" />
+    <Compile Include="Common\DTOs\Dashboard\DashboardDetailsResponse.cs" />
+    <Compile Include="Common\DTOs\Dashboard\AdminDashboardResponse.cs" />
+    <Compile Include="Common\DTOs\Dashboard\ReceptionistDashboardResponse.cs" />
+    <Compile Include="Common\DTOs\Dashboard\DoctorDashboardResponse.cs" />
+    <Compile Include="Common\DTOs\Dashboard\DoctorDashboardItemDto.cs" />
+    <Compile Include="Common\DTOs\Dashboard\PatientDashboardItemDto.cs" />
+    <Compile Include="Common\DTOs\Dashboard\SpecialityDashboardItemDto.cs" />
+    <Compile Include="Common\DTOs\Dashboard\AppointmentDashboardItemDto.cs" />
+    <Compile Include="Common\DTOs\Dashboard\VisitDashboardItemDto.cs" />
+    <Compile Include="Common\DTOs\Dashboard\ScheduleDashboardItemDto.cs" />
     <Compile Include="Data\Appointment.cs">
       <DependentUpon>ClinicDBEntities.tt</DependentUpon>
     </Compile>
@@ -109,9 +126,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ClinicDBEntities.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Data\C__MigrationHistory.cs">
-      <DependentUpon>ClinicDBEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Data\Diagnosi.cs">
       <DependentUpon>ClinicDBEntities.tt</DependentUpon>

@@ -4,25 +4,34 @@
     ViewBag.Title = "Error";
 }
 
-<div class="row">
-    <div class="col-md-12 text-center" style="margin-top: 50px;">
-        <h2 class="text-danger"><i class="fa fa-exclamation-triangle"></i> {{ 'common.Error' | i18n }}</h2>
+<div class="c-card" style="max-width: 600px; margin: 40px auto;">
+    <div class="c-card-body empty-state">
+        <i class="fa fa-exclamation-triangle empty-state-icon" style="color: var(--c-danger);"></i>
+        
+        <h3 class="empty-state-title" style="color: var(--c-danger); margin-bottom: var(--space-4);">
+            {{ 'common.Error' | i18n }}
+        </h3>
         
         @if (ViewData["ErrorMessage"] != null)
         {
-            <p class="lead">@ViewData["ErrorMessage"]</p>
+            <p class="empty-state-desc" style="margin-bottom: var(--space-2);">@ViewData["ErrorMessage"]</p>
         }
         else
         {
-            <p class="lead">{{ 'common.SomethingWentWrong' | i18n }}</p>
+            <p class="empty-state-desc" style="margin-bottom: var(--space-2);">{{ 'common.SomethingWentWrong' | i18n }}</p>
         }
 
         @if (ViewData["ErrorId"] != null)
         {
-            <p class="text-muted">Error ID: @ViewData["ErrorId"]</p>
+            <p class="empty-state-desc" style="font-size: 12px; margin-bottom: var(--space-6);">Error ID: @ViewData["ErrorId"]</p>
+        }
+        else
+        {
+            <div style="margin-bottom: var(--space-6);"></div>
         }
 
-        <br />
-        <a href="@Url.Action("Index", "Home", new { area = "" })" class="btn btn-primary">{{ 'common.ReturnHome' | i18n }}</a>
+        <a href="@Url.Action("Index", "Home", new { area = "" })" class="btn btn-primary">
+            {{ 'common.ReturnHome' | i18n }}
+        </a>
     </div>
 </div>
