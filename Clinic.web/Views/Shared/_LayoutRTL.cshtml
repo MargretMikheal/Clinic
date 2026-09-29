@@ -26,19 +26,24 @@
     <!-- Top Navbar -->
     <header class="app-navbar">
 
-        <!-- Logo - Right/Left handled by flex row-reverse in RTL -->
-        <a href="@Url.Action("Index", "Home", new { area = "" })"
-           class="nav-brand">
+        <!-- Logo and Toggle - Right/Left handled by flex row-reverse in RTL -->
+        <div style="display: flex; align-items: center; height: 100%;">
+            <button type="button" id="sidebarToggle" class="sidebar-toggle">
+                <i class="fa fa-bars"></i>
+            </button>
+            <a href="@Url.Action("Index", "Home", new { area = "" })"
+               class="nav-brand">
 
-            <img src="~/Content/Images/clinic-logo.png"
-                 alt="Clinic Management System" 
-                 class="nav-brand-logo" />
+                <img src="~/Content/Images/clinic-logo.png"
+                     alt="Clinic Management System" 
+                     class="nav-brand-logo" />
 
-            <span class="nav-brand-text">
-                Clinic Management
-            </span>
+                <span class="nav-brand-text">
+                    Clinic Management
+                </span>
 
-        </a>
+            </a>
+        </div>
 
         <!-- Actions -->
         <div class="nav-actions">

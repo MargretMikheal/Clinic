@@ -92,8 +92,8 @@ a:hover {
 
 .app-sidebar {
     width: var(--sidebar-width);
-    background-color: var(--c-surface);
-    border-right: 1px solid var(--c-border);
+    background-color: var(--c-primary);
+    border-right: none;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -135,8 +135,7 @@ a:hover {
     align-items: center;
     gap: var(--space-3);
     height: var(--navbar-height);
-    padding: 0 var(--space-6);
-    border-bottom: 1px solid var(--c-border);
+    padding: 0 var(--space-6) 0 var(--space-3);
     text-decoration: none;
 }
 
@@ -202,7 +201,7 @@ a:hover {
     align-items: center;
     gap: var(--space-3);
     padding: var(--space-3);
-    color: var(--c-text-muted);
+    color: #ffffff;
     font-weight: 500;
     font-size: 15px;
     border-radius: var(--radius-md);
@@ -213,21 +212,78 @@ a:hover {
     width: 20px;
     text-align: center;
     font-size: 18px;
-    color: var(--c-text-muted);
+    color: #ffffff;
     transition: color 0.2s;
 }
 
 .side-menu-link:hover {
-    background-color: var(--c-bg);
-    color: var(--c-text);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
 }
 
 .side-menu-link.active {
-    background-color: var(--c-primary-light);
-    color: var(--c-primary);
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
 }
 
 .side-menu-link.active i {
+    color: #ffffff;
+}
+
+.clinic-menu-child {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.clinic-menu-parent.is-open > .clinic-menu-child {
+    display: block;
+}
+
+.clinic-menu-child .side-menu-link {
+    padding-left: var(--space-8);
+    font-size: 14px;
+}
+
+html[dir="rtl"] .clinic-menu-child .side-menu-link {
+    padding-left: var(--space-3);
+    padding-right: var(--space-8);
+}
+
+.toggle-icon {
+    margin-left: auto;
+    transition: transform 0.2s;
+}
+
+html[dir="rtl"] .toggle-icon {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.clinic-menu-parent.is-open > .side-menu-link > .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+html[dir="rtl"] .clinic-menu-parent.is-open > .side-menu-link > .toggle-icon {
+    transform: rotate(90deg);
+}
+
+.sidebar-collapsed .app-sidebar {
+    display: none;
+}
+
+.sidebar-toggle {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 var(--space-3);
+    color: var(--c-text-muted);
+    transition: color 0.2s;
+}
+
+.sidebar-toggle:hover {
     color: var(--c-primary);
 }
 
@@ -685,7 +741,7 @@ html[dir="rtl"] .c-table th {
 
 html[dir="rtl"] .app-sidebar {
     border-right: none;
-    border-left: 1px solid var(--c-border);
+    border-left: none;
 }
 
 html[dir="rtl"] .nav-actions {
