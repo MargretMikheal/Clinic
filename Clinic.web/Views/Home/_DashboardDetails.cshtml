@@ -21,7 +21,7 @@
             <!-- Loading State -->
             <div ng-show="isLoadingDetails" class="loading-state">
                 <div class="c-spinner"></div>
-                <div>{{ 'dashboard.Loading' | i18n }}</div>
+                <div>{{ 'common.Loading' | i18n }}</div>
             </div>
 
             <!-- Error State -->
@@ -36,7 +36,7 @@
             <div ng-show="!isLoadingDetails && !detailsError && selectedDetails && selectedDetails.length === 0"
                  class="empty-state">
                 <i class="fa fa-inbox empty-state-icon"></i>
-                <h4 class="empty-state-title">{{ 'dashboard.NoData' | i18n }}</h4>
+                <h4 class="empty-state-title">{{ 'common.NoData' | i18n }}</h4>
             </div>
 
             <!-- Data Table -->
@@ -50,7 +50,7 @@
                             <th>{{ 'dashboard.Name' | i18n }}</th>
                             <th>{{ 'dashboard.Speciality' | i18n }}</th>
                             <th>{{ 'dashboard.Phone' | i18n }}</th>
-                            <th>{{ 'dashboard.Email' | i18n }}</th>
+                            <th>{{ 'common.Email' | i18n }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,7 +69,7 @@
                         <tr>
                             <th>{{ 'dashboard.Name' | i18n }}</th>
                             <th>{{ 'dashboard.Phone' | i18n }}</th>
-                            <th>{{ 'dashboard.Email' | i18n }}</th>
+                            <th>{{ 'common.Email' | i18n }}</th>
                             <th>{{ 'dashboard.Gender' | i18n }}</th>
                         </tr>
                     </thead>

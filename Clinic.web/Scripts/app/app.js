@@ -4,7 +4,7 @@
     // Clinic AngularJS Application
     // =========================================================
 
-    var app = angular.module("clinicApp", ['ngCookies', 'ngSanitize', 'ngLocalize']);
+    var app = angular.module("clinicApp", ['ngCookies', 'ngSanitize', 'ngLocalize', 'ngMaterial']);
 
     // Configure angular-localization
     angular.module('ngLocalize.Config', [])

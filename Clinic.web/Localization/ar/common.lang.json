@@ -41,5 +41,12 @@
     "Actions":  "الإجراءات",
     "Page":  "صفحة",
     "Email":  "الايميل",
-    "SelectRole":  "اختار دور"
+    "SelectRole":  "اختار دور",
+    "Sunday": "الأحد",
+    "Monday": "الإثنين",
+    "Tuesday": "الثلاثاء",
+    "Wednesday": "الأربعاء",
+    "Thursday": "الخميس",
+    "Friday": "الجمعة",
+    "Saturday": "السبت"
 }

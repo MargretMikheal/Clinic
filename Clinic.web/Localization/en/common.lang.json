@@ -41,5 +41,12 @@
     "Actions":  "Actions",
     "Page":  "Page",
     "Email":  "Email",
-    "SelectRole":  "Select Role"
+    "SelectRole":  "Select Role",
+    "Sunday": "Sunday",
+    "Monday": "Monday",
+    "Tuesday": "Tuesday",
+    "Wednesday": "Wednesday",
+    "Thursday": "Thursday",
+    "Friday": "Friday",
+    "Saturday": "Saturday"
 }

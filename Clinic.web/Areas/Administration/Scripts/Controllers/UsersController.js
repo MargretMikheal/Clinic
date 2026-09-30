@@ -10,6 +10,9 @@
             "$filter",
             function ($scope, $http, notificationService, confirmationService, $filter) {
 
+                // ----------------------------------------------------
+                // USERS STATE & LOGIC
+                // ----------------------------------------------------
                 $scope.users = [];
                 $scope.roles = [];
                 $scope.searchQuery = "";
@@ -21,44 +24,26 @@
                 $scope.viewState = "list"; 
 
                 $scope.currentUser = {};
-                $scope.currentPage = 1;
-                $scope.pageSize = 10;
+                $scope.pagination = {
+                    page: 1,
+                    pageSize: 10,
+                    totalItems: 0
+                };
+                $scope.filteredUsers = [];
+
+                $scope.$watchGroup(['users', 'searchQuery'], function() {
+                    $scope.filteredUsers = $filter("filter")($scope.users, $scope.searchQuery) || [];
+                    $scope.pagination.totalItems = $scope.filteredUsers.length;
+                    var totalPages = Math.ceil($scope.filteredUsers.length / $scope.pagination.pageSize) || 1;
+                    if ($scope.pagination.page > totalPages) {
+                        $scope.pagination.page = totalPages;
+                    }
+                });
 
                 $scope.getPaginatedUsers = function () {
-                    var filtered = $filter("filter")(
-                        $scope.users,
-                        $scope.searchQuery
-                    );
-
-                    var begin = (($scope.currentPage - 1) * $scope.pageSize);
-                    var end = begin + $scope.pageSize;
-
-                    return filtered ? filtered.slice(begin, end) : [];
-                };
-
-                $scope.getTotalPages = function () {
-                    var filtered = $filter("filter")(
-                        $scope.users,
-                        $scope.searchQuery
-                    );
-
-                    if (!filtered) {
-                        return 1;
-                    }
-
-                    return Math.ceil(filtered.length / $scope.pageSize) || 1;
-                };
-
-                $scope.nextPage = function () {
-                    if ($scope.currentPage < $scope.getTotalPages()) {
-                        $scope.currentPage++;
-                    }
-                };
-
-                $scope.prevPage = function () {
-                    if ($scope.currentPage > 1) {
-                        $scope.currentPage--;
-                    }
+                    var begin = (($scope.pagination.page - 1) * $scope.pagination.pageSize);
+                    var end = begin + $scope.pagination.pageSize;
+                    return $scope.filteredUsers.slice(begin, end);
                 };
 
                 function loadUsers() {
@@ -69,10 +54,6 @@
                         .then(function (response) {
                             if (response.data.IsSuccess) {
                                 $scope.users = response.data.Data || [];
-                                var totalPages = $scope.getTotalPages();
-                                if ($scope.currentPage > totalPages) {
-                                    $scope.currentPage = totalPages;
-                                }
                             }
                             else {
                                 $scope.isError = true;
@@ -131,7 +112,7 @@
                 $scope.cancel = function () {
                     $scope.viewState = "list";
                     $scope.currentUser = {};
-                    $scope.currentPage = 1;
+                    $scope.pagination.page = 1;
 
                     loadUsers();
                 };
@@ -156,7 +137,7 @@
 
                                 $scope.viewState = "list";
                                 $scope.currentUser = {};
-                                $scope.currentPage = 1;
+                                $scope.pagination.page = 1;
                                 return loadUsers();
                             }
                             notificationService.error(
@@ -174,49 +155,6 @@
                 };
 
                 $scope.deleteUser = function (id) {
-                    if ($scope.isLoading) {
-                        return;
-                    }
-
-                    confirmationService.confirm(
-                        $filter("i18n")("users.ConfirmDeleteUser")
-                    ).then(function (confirm) {
-                        if (!confirm) {
-                            return;
-                        }
-
-                        $scope.isLoading = true;
-
-                        $http.post(
-                            "/Administration/Users/DeleteUser",
-                            { id: id }
-                        )
-                            .then(function (response) {
-
-                                if (response.data.IsSuccess) {
-
-                                    notificationService.success(
-                                        $filter("i18n")("users.UserDeletedSuccess")
-                                    );
-
-                                    return loadUsers();
-                                }
-
-                                notificationService.error(
-                                    response.data.Message
-                                );
-                            })
-                            .catch(function () {
-
-                                notificationService.error(
-                                    "An error occurred while deleting the user."
-                                );
-                            })
-                            .finally(function () {
-                                $scope.isLoading = false;
-                            });
-                    });
-                }; $scope.deleteUser = function (id) {
                     if ($scope.isLoading) {
                         return;
                     }

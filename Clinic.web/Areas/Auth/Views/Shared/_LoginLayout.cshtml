@@ -30,15 +30,14 @@
     </title>
 
     @Styles.Render("~/Content/css")
-    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
 
-    <link href="~/Content/clinic-theme.css"
-          rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/angular-material.min.css" rel="stylesheet" />
+    <link href="~/Content/clinic-theme.css" rel="stylesheet" />
 
     @if (currentLang == "ar")
     {
-        <link href="~/Content/rtl.css"
-              rel="stylesheet" />
+        <link href="~/Content/rtl.css" rel="stylesheet" />
     }
 
     @Scripts.Render("~/bundles/modernizr")
@@ -49,30 +48,25 @@
 
     @RenderBody()
 
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
 
-
     <!-- AngularJS -->
-
     <script src="~/Scripts/angular.js"></script>
+    <script src="~/Scripts/angular-animate.min.js"></script>
+    <script src="~/Scripts/angular-aria.min.js"></script>
+    <script src="~/Scripts/angular-material.min.js"></script>
 
     <script src="~/Scripts/angular-cookies.js"></script>
-
     <script src="~/Scripts/angular-sanitize.js"></script>
-
     <script src="~/Scripts/angular-localization.js"></script>
 
-
     <!-- Clinic Angular Application -->
-
     <script src="~/Scripts/app/app.js"></script>
 
     <script src="~/Scripts/app/controllers/LanguageController.js"></script>
 
     <script src="~/Areas/Auth/Scripts/Services/authService.js"></script>
-
     <script src="~/Areas/Auth/Scripts/Controllers/AccountController.js"></script>
 
 </body>

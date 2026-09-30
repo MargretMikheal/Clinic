@@ -1,0 +1,214 @@
+    <!-- Error State -->
+    <div class="c-alert c-alert-danger" ng-if="isDoctorError">
+        <i class="fa fa-exclamation-circle"></i>
+        <span>{{ 'users.ErrorLoadingDoctors' | i18n }}</span>
+    </div>
+
+    <!-- List View -->
+    <div class="c-card" ng-show="doctorViewState === 'list' && !isDoctorError">
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa fa-user-md"></i>
+                {{ 'users.DoctorsListTitle' | i18n }}
+            </h3>
+            <div class="page-actions" style="margin-left: auto;">
+                <button type="button" class="btn btn-primary" ng-click="openAddDoctor()">
+                    <i class="fa fa-plus"></i>
+                    {{ 'users.AddDoctor' | i18n }}
+                </button>
+            </div>
+        </div>
+
+        <div class="c-card-body">
+            <!-- Loading -->
+            <div class="loading-state" ng-if="isDoctorLoading">
+                <div class="c-spinner"></div>
+                <span>{{ 'common.Loading' | i18n }}</span>
+            </div>
+
+            <!-- Empty -->
+            <div class="empty-state" ng-if="!isDoctorLoading && doctors.length === 0">
+                <i class="fa fa-folder-open-o empty-state-icon"></i>
+                <h4 class="empty-state-title">{{ 'users.NoDoctorsFound' | i18n }}</h4>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive" ng-if="!isDoctorLoading && doctors.length > 0">
+                <table class="c-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'users.DoctorCode' | i18n }}</th>
+                            <th>{{ 'users.DoctorName' | i18n }}</th>
+                            <th>{{ 'users.Speciality' | i18n }}</th>
+                            <th>{{ 'users.ReceptionistName' | i18n }}</th>
+                            <th>{{ 'users.SlotDuration' | i18n }}</th>
+                            <th>{{ 'users.Status' | i18n }}</th>
+                            <th style="width: 100px; text-align: center;">{{ 'common.Actions' | i18n }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="doctor in doctors track by doctor.Id">
+                            <td>{{ doctor.DoctorCode }}</td>
+                            <td>{{ doctor.Name }}</td>
+                            <td>{{ doctor.SpecialityName }}</td>
+                            <td>{{ doctor.ReceptionistName || ('users.NotAssigned' | i18n) }}</td>
+                            <td>{{ doctor.SlotDuration }} {{ 'users.Minutes' | i18n }}</td>
+                            <td>
+                                <span class="c-badge" ng-class="doctor.IsActive ? 'c-badge-primary' : 'c-badge-danger'">
+                                    {{ doctor.IsActive ? ('users.Active' | i18n) : ('users.Inactive' | i18n) }}
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                                <button type="button" class="btn btn-outline" style="padding: 4px 8px;"
+                                        ng-click="openEditDoctor(doctor)" title="{{ 'common.Edit' | i18n }}">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit View -->
+    <div class="c-card" ng-show="doctorViewState === 'add' || doctorViewState === 'edit'">
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa" ng-class="doctorViewState === 'add' ? 'fa-plus' : 'fa-pencil'"></i>
+                {{ doctorViewState === 'add' ? ('users.AddDoctor' | i18n) : ('users.EditDoctor' | i18n) }}
+            </h3>
+        </div>
+
+        <div class="c-card-body">
+            <form ng-submit="saveDoctor()">
+                
+                <h4 style="margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <i class="fa fa-lock"></i> {{ 'users.LoginInformation' | i18n }}
+                </h4>
+                
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">{{ 'common.Username' | i18n }}</label>
+                        <input type="text" class="form-control" ng-model="currentDoctor.UserName" ng-disabled="doctorViewState === 'edit'" required />
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">{{ 'common.Email' | i18n }}</label>
+                        <input type="email" class="form-control" ng-model="currentDoctor.Email" required />
+                    </div>
+                    <div class="col-md-6 form-group" ng-if="doctorViewState === 'add'">
+                        <label class="form-label">{{ 'common.Password' | i18n }}</label>
+                        <input type="password" class="form-control" ng-model="currentDoctor.Password" required />
+                    </div>
+                </div>
+
+                <h4 style="margin-top: 30px; margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <i class="fa fa-user-md"></i> {{ 'users.DoctorInformation' | i18n }}
+                </h4>
+                
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">{{ 'users.DoctorCode' | i18n }}</label>
+                        <input type="text" class="form-control" ng-model="currentDoctor.DoctorCode" disabled />
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">{{ 'users.DoctorName' | i18n }}</label>
+                        <input type="text" class="form-control" ng-model="currentDoctor.Name" required />
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">{{ 'users.Speciality' | i18n }}</label>
+                        <select class="form-control" ng-model="currentDoctor.SpecialityId"
+                                ng-options="spec.Id as spec.Name for spec in specialities" required>
+                            <option value="">{{ 'users.SelectSpeciality' | i18n }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">{{ 'users.Phone' | i18n }}</label>
+                        <input type="text" class="form-control" ng-model="currentDoctor.Phone" />
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label class="form-label">{{ 'users.ExaminationPrice' | i18n }}</label>
+                        <input type="number" class="form-control" ng-model="currentDoctor.ExaminationPrice" min="0" step="0.01" required />
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label class="form-label">{{ 'users.SlotDuration' | i18n }} ({{ 'users.Minutes' | i18n }})</label>
+                        <input type="number" class="form-control" ng-model="currentDoctor.SlotDuration" min="1" required />
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label class="form-label">{{ 'users.Status' | i18n }}</label>
+                        <div style="margin-top: 8px;">
+                            <label style="margin-right: 15px;">
+                                <input type="radio" ng-model="currentDoctor.IsActive" ng-value="true" /> {{ 'users.Active' | i18n }}
+                            </label>
+                            <label>
+                                <input type="radio" ng-model="currentDoctor.IsActive" ng-value="false" /> {{ 'users.Inactive' | i18n }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="margin-top: 30px; margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <i class="fa fa-user"></i> {{ 'users.Receptionist' | i18n }}
+                </h4>
+                
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="form-label">{{ 'users.SelectReceptionist' | i18n }}</label>
+                        <select class="form-control" ng-model="currentDoctor.ReceptionistUserId"
+                                ng-options="rec.UserId as rec.UserName for rec in receptionists">
+                            <option value="">-- {{ 'users.None' | i18n }} --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4 style="margin-top: 30px; margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <i class="fa fa-calendar"></i> {{ 'users.WeeklySchedule' | i18n }}
+                </h4>
+                
+                <div class="table-responsive">
+                    <table class="c-table">
+                        <thead>
+                            <tr>
+                                <th>{{ 'users.Day' | i18n }}</th>
+                                <th>{{ 'users.StartTime' | i18n }}</th>
+                                <th>{{ 'users.EndTime' | i18n }}</th>
+                                <th style="width: 100px; text-align: center;">{{ 'common.Actions' | i18n }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="schedule in currentDoctor.Schedules track by $index">
+                                <td>
+                                    <select class="form-control" ng-model="schedule.DayOfWeek" ng-options="day.id as day.name for day in daysOfWeek" required></select>
+                                </td>
+                                <td>
+                                    <input type="time" class="form-control" ng-model="schedule.StartTimeObj" required />
+                                </td>
+                                <td>
+                                    <input type="time" class="form-control" ng-model="schedule.EndTimeObj" required />
+                                </td>
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <button type="button" class="btn btn-outline" style="color: var(--c-danger);" ng-click="removeSchedule($index)" title="{{ 'users.RemoveSchedule' | i18n }}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button type="button" class="btn btn-outline" style="margin-top: 10px;" ng-click="addSchedule()">
+                    <i class="fa fa-plus"></i> {{ 'users.AddSchedule' | i18n }}
+                </button>
+
+                <div style="margin-top: 40px; display: flex; gap: 12px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <button type="submit" class="btn btn-primary" ng-disabled="isDoctorSaving">
+                        <i class="fa fa-save"></i>
+                        {{ 'common.Save' | i18n }}
+                    </button>
+                    <button type="button" class="btn btn-outline" ng-click="cancelDoctor()" ng-disabled="isDoctorSaving">
+                        {{ 'common.Cancel' | i18n }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>

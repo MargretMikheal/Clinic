@@ -99,6 +99,11 @@ namespace Clinic.Core.BLL
 
                 if (!string.IsNullOrEmpty(dto.Role))
                 {
+                    if (dto.Role == nameof(Clinic.Core.Enums.UserRole.Doctor))
+                    {
+                         await _userManager.DeleteAsync(user);
+                         return BaseResponse<UserDto>.Fail("Doctor role cannot be assigned from here.");
+                    }
                     if (!Enum.TryParse(dto.Role, out Clinic.Core.Enums.UserRole _))
                     {
                          return BaseResponse<UserDto>.Fail("Invalid role specified.");
@@ -212,7 +217,9 @@ namespace Clinic.Core.BLL
         {
             try
             {
-                var roles = _context.AspNetRoles.Select(r => r.Name).ToList();
+                var roles = _context.AspNetRoles
+                    .Where(r => r.Name != nameof(Clinic.Core.Enums.UserRole.Doctor))
+                    .Select(r => r.Name).ToList();
                 return BaseResponse<List<string>>.Success(roles);
             }
             catch (Exception ex)

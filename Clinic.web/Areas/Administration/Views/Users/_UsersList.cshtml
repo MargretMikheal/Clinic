@@ -1,0 +1,248 @@
+    <!-- Header -->
+    <div class="page-header" ng-show="viewState === 'list'">
+        <div class="page-title-wrap">
+            <h1 class="page-title">
+                {{ 'users.UsersTitle' | i18n }}
+            </h1>
+
+            <p class="page-subtitle">
+                {{ 'users.UsersSubtitle' | i18n }}
+            </p>
+        </div>
+
+        <div class="page-actions">
+            <button type="button"
+                    class="btn btn-primary"
+                    ng-click="openAdd()">
+                <i class="fa fa-plus"></i>
+                {{ 'users.AddUser' | i18n }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="c-alert c-alert-danger" ng-if="isError">
+        <i class="fa fa-exclamation-circle"></i>
+        <span>
+            {{ 'users.ErrorLoadingUsers' | i18n }}
+        </span>
+    </div>
+
+    <!-- List View -->
+    <div class="c-card"
+         ng-show="viewState === 'list' && !isError">
+
+        <div class="c-card-header">
+
+            <h3 class="c-card-title">
+                <i class="fa fa-users"></i>
+                {{ 'users.UsersListTitle' | i18n }}
+            </h3>
+
+            <div flex>
+                <input type="text"
+                       class="form-control"
+                       ng-model="searchQuery"
+                       placeholder="{{ 'users.SearchUsers' | i18n }}" />
+            </div>
+
+        </div>
+
+        <div class="c-card-body">
+
+            <!-- Loading -->
+            <div class="loading-state" ng-if="isLoading">
+
+                <div class="c-spinner"></div>
+
+                <span>
+                    {{ 'common.Loading' | i18n }}
+                </span>
+
+            </div>
+
+            <!-- Empty -->
+            <div class="empty-state"
+                 ng-if="!isLoading && users.length === 0">
+
+                <i class="fa fa-folder-open-o empty-state-icon"></i>
+
+                <h4 class="empty-state-title">
+                    {{ 'users.NoUsersFound' | i18n }}
+                </h4>
+
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive"
+                 ng-if="!isLoading && users.length > 0">
+
+                <table class="c-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'common.Username' | i18n }}</th>
+                            <th>{{ 'common.Email' | i18n }}</th>
+                            <th>{{ 'common.Role' | i18n }}</th>
+
+                            <th style="width: 150px; text-align: center;">
+                                {{ 'common.Actions' | i18n }}
+                            </th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr ng-repeat="user in getPaginatedUsers() track by user.Id">
+                            <td>{{ user.UserName }}</td>
+                            <td>{{ user.Email }}</td>
+                            <td><span class="c-badge c-badge-primary">
+                                    {{ user.Role }}
+                                </span>
+                            </td>
+
+                            <td style="text-align: center;">
+
+                                <button type="button"
+                                        class="btn btn-outline"
+                                        style="padding: 4px 8px;"
+                                        ng-click="openEdit(user)"
+                                        title="{{ 'common.Edit' | i18n }}">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-outline"
+                                        style="padding: 4px 8px; color: var(--c-danger);"
+                                        ng-click="deleteUser(user.Id)"
+                                        title="{{ 'common.Delete' | i18n }}">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Pagination -->
+            <clinic-pagination pagination="pagination" ng-if="!isLoading && users.length > 0"></clinic-pagination>
+
+        </div>
+
+    </div>
+
+    <!-- Add/Edit View -->
+    <div class="c-card" ng-show="viewState === 'add' || viewState === 'edit'">
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa"
+                   ng-class="viewState === 'add'
+                       ? 'fa-plus'
+                       : 'fa-pencil'">
+                </i>
+                {{ viewState === 'add'
+                    ? ('users.AddUser' | i18n)
+                    : ('users.EditUser' | i18n) }}
+            </h3>
+        </div>
+
+        <div class="c-card-body">
+            <form ng-submit="saveUser()">
+                <div class="form-group">
+                    <label class="form-label">
+                        {{ 'common.Username' | i18n }}
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           ng-model="currentUser.UserName" required />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {{ 'common.Email' | i18n }}
+                    </label>
+                    <input type="email"
+                           class="form-control"
+                           ng-model="currentUser.Email"
+                           required />
+                </div>
+
+                <div class="form-group">
+
+                    <label class="form-label">
+
+                        {{ 'common.Password' | i18n }}
+
+                        <span ng-if="viewState === 'edit'"
+                              style="color: var(--c-text-muted);
+                                     font-weight: normal;">
+
+                            ({{ 'users.PasswordLeaveBlank' | i18n }})
+
+                        </span>
+
+                    </label>
+
+                    <input type="password"
+                           class="form-control"
+                           ng-model="currentUser.Password"
+                           ng-required="viewState === 'add'" />
+
+                </div>
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        {{ 'common.Role' | i18n }}
+                    </label>
+
+                    <select class="form-control"
+                            ng-model="currentUser.Role"
+                            ng-options="role for role in roles"
+                            required>
+
+                        <option value="">
+                            {{ 'common.SelectRole' | i18n }}
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div style="margin-top: 24px;
+                            display: flex;
+                            gap: 12px;">
+
+                    <!-- Save -->
+                    <button type="submit"
+                            class="btn btn-primary"
+                            ng-disabled="isSaving">
+
+                        <i class="fa fa-save"></i>
+
+                        {{ 'common.Save' | i18n }}
+
+                    </button>
+
+                    <!-- Cancel -->
+                    <button type="button"
+                            class="btn btn-outline"
+                            ng-click="cancel()"
+                            ng-disabled="isSaving">
+
+                        {{ 'common.Cancel' | i18n }}
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
