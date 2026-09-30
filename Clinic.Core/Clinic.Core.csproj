@@ -86,17 +86,17 @@
     <Compile Include="BLL\Services\AdminDashboardService.cs" />
     <Compile Include="BLL\Services\ReceptionistDashboardService.cs" />
     <Compile Include="BLL\Services\DoctorDashboardService.cs" />
-    <Compile Include="Common\DTOs\Dashboard\DashboardStatisticDto.cs" />
-    <Compile Include="Common\DTOs\Dashboard\DashboardDetailsResponse.cs" />
-    <Compile Include="Common\DTOs\Dashboard\AdminDashboardResponse.cs" />
-    <Compile Include="Common\DTOs\Dashboard\ReceptionistDashboardResponse.cs" />
-    <Compile Include="Common\DTOs\Dashboard\DoctorDashboardResponse.cs" />
-    <Compile Include="Common\DTOs\Dashboard\DoctorDashboardItemDto.cs" />
-    <Compile Include="Common\DTOs\Dashboard\PatientDashboardItemDto.cs" />
-    <Compile Include="Common\DTOs\Dashboard\SpecialityDashboardItemDto.cs" />
-    <Compile Include="Common\DTOs\Dashboard\AppointmentDashboardItemDto.cs" />
-    <Compile Include="Common\DTOs\Dashboard\VisitDashboardItemDto.cs" />
-    <Compile Include="Common\DTOs\Dashboard\ScheduleDashboardItemDto.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\DashboardStatisticDto.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\DashboardDetailsResponse.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\AdminDashboardResponse.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\ReceptionistDashboardResponse.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\DoctorDashboardResponse.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\DoctorDashboardItemDto.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\PatientDashboardItemDto.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\SpecialityDashboardItemDto.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\AppointmentDashboardItemDto.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\VisitDashboardItemDto.cs" />
+    <Compile Include="BLL\Dashboard\DTOs\ScheduleDashboardItemDto.cs" />
     <Compile Include="Data\Appointment.cs">
       <DependentUpon>ClinicDBEntities.tt</DependentUpon>
     </Compile>
@@ -176,15 +176,20 @@
     </Compile>
     <Compile Include="BLL\Interfaces\IAuthenticationService.cs" />
     <Compile Include="BLL\Services\AuthenticationService.cs" />
-    <Compile Include="Common\DTOs\LoginRequest.cs" />
-    <Compile Include="Common\DTOs\LoginResponse.cs" />
-    <Compile Include="Common\DTOs\UserInfo.cs" />
+    <Compile Include="BLL\Auth\DTOs\LoginRequest.cs" />
+    <Compile Include="BLL\Auth\DTOs\LoginResponse.cs" />
+    <Compile Include="BLL\Users\DTOs\UserInfo.cs" />
     <Compile Include="Common\Responses\BaseResponse.cs" />
     <Compile Include="Common\Responses\BaseResponseGeneric.cs" />
     <Compile Include="Identity\ApplicationUser.cs" />
     <Compile Include="Identity\ApplicationRole.cs" />
     <Compile Include="Identity\Stores\ApplicationRoleStore.cs" />
     <Compile Include="Identity\Stores\ApplicationUserStore.cs" />
+    <Compile Include="Common\LanguageHelper.cs" />
+    <Compile Include="Enums\UserRole.cs" />
+    <Compile Include="Enums\AppointmentStatus.cs" />
+    <Compile Include="BLL\Users\UsersBLL.cs" />
+    <Compile Include="BLL\Users\DTOs\UserDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

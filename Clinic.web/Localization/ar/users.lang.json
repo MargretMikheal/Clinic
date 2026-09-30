@@ -1,0 +1,14 @@
+{
+    "AddUser":  "إضافة مستخدم",
+    "UserSavedSuccess":  "تم حفظ المستخدم بنجاح.",
+    "SearchUsers":  "البحث عن مستخدمين...",
+    "UsersListTitle":  "قائمة المستخدمين",
+    "UsersSubtitle":  "إدارة مستخدمي النظام وأدوارهم.",
+    "EditUser":  "تعديل المستخدم",
+    "UserDeletedSuccess":  "تم حذف المستخدم بنجاح.",
+    "UsersTitle":  "إدارة المستخدمين",
+    "ConfirmDeleteUser":  "هل أنت متأكد أنك تريد حذف هذا المستخدم؟",
+    "PasswordLeaveBlank":  "اتركه فارغاً للاحتفاظ بكلمة المرور الحالية",
+    "ErrorLoadingUsers":  "حدث خطأ أثناء تحميل المستخدمين.",
+    "NoUsersFound":  "لم يتم العثور على مستخدمين."
+}

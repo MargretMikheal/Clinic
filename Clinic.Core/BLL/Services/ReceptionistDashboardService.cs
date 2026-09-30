@@ -1,5 +1,5 @@
 using Clinic.Core.BLL.Interfaces;
-using Clinic.Core.Common.DTOs.Dashboard;
+using Clinic.Core.BLL.Dashboard.DTOs;
 using Clinic.Core.Data;
 using System;
 using System.Collections.Generic;
@@ -55,8 +55,12 @@ namespace Clinic.Core.BLL.Services
                     })
                     .ToListAsync();
 
+                var confirmedStatus = Clinic.Core.Enums.AppointmentStatus.Confirmed.ToString();
+                var cancelledStatus = Clinic.Core.Enums.AppointmentStatus.Cancelled.ToString();
+                var completedStatus = Clinic.Core.Enums.AppointmentStatus.Completed.ToString();
+
                 var confirmedAppointmentsList = await db.Appointments
-                    .Where(a => !a.IsDeleted && a.DoctorId == doctorId && a.AppointmentDate == today && a.Status == "Confirmed")
+                    .Where(a => !a.IsDeleted && a.DoctorId == doctorId && a.AppointmentDate == today && a.Status == confirmedStatus)
                     .Select(a => new AppointmentDashboardItemDto
                     {
                         Id = a.Id,
@@ -81,7 +85,7 @@ namespace Clinic.Core.BLL.Services
                     .ToListAsync();
 
                 var remainingAppointmentsList = await db.Appointments
-                    .Where(a => !a.IsDeleted && a.DoctorId == doctorId && a.AppointmentDate == today && a.Status != "Cancelled" && a.Status != "Completed" && !db.Visits.Any(v => !v.IsDeleted && v.AppointmentId == a.Id))
+                    .Where(a => !a.IsDeleted && a.DoctorId == doctorId && a.AppointmentDate == today && a.Status != cancelledStatus && a.Status != completedStatus && !db.Visits.Any(v => !v.IsDeleted && v.AppointmentId == a.Id))
                     .Select(a => new AppointmentDashboardItemDto
                     {
                         Id = a.Id,

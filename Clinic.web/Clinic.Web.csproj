@@ -168,6 +168,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
+    <Compile Include="Areas\Administration\Controllers\UsersController.cs" />
     <Compile Include="Areas\Auth\AuthAreaRegistration.cs" />
     <Compile Include="Areas\Auth\Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountApiController.cs" />
@@ -184,6 +186,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Administration\Scripts\Controllers\UsersController.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -230,6 +233,9 @@
     <Content Include="Content\toastr.scss" />
     <Content Include="Content\toastr.less" />
     <Content Include="Mvc.sitemap" />
+    <Content Include="Areas\Administration\Views\Users\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\web.config" />
+    <Content Include="Areas\Administration\Views\_ViewStart.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -243,6 +249,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\sweetalert2\sweetalert2.all.min.js" />
+    <Content Include="Scripts\sweetalert2\sweetalert2.min.css" />
     <Content Include="Scripts\toastr.js" />
     <Content Include="Scripts\toastr.min.js" />
     <Content Include="Web.config" />

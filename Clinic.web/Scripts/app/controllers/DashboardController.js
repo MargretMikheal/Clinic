@@ -68,14 +68,13 @@
 
                         $scope.userInfo = response.Data;
 
-                        if (!$scope.userInfo.Roles ||
-                            $scope.userInfo.Roles.length === 0) {
+                        if (!$scope.userInfo.Role) {
 
                             $scope.errorMessage = "User has no role.";
                             return null;
                         }
 
-                        var role = $scope.userInfo.Roles[0];
+                        var role = $scope.userInfo.Role;
 
                         switch (role) {
 

@@ -15,10 +15,12 @@
     </title>
 
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/toastr")
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Content/clinic-theme.css" rel="stylesheet" />
-
+    <link href="~/Scripts/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
     @Scripts.Render("~/bundles/modernizr")
+
 </head>
 
 <body>
@@ -34,7 +36,7 @@
                class="nav-brand">
 
                 <img src="~/Content/Images/clinic-logo.png"
-                     alt="Clinic Management System" 
+                     alt="Clinic Management System"
                      class="nav-brand-logo" />
 
                 <span class="nav-brand-text">
@@ -104,12 +106,13 @@
     <!-- Scripts -->
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/toastr")
 
     <script src="~/Scripts/angular.js"></script>
     <script src="~/Scripts/angular-cookies.js"></script>
     <script src="~/Scripts/angular-sanitize.js"></script>
     <script src="~/Scripts/angular-localization.js"></script>
-
+    <script src="~/Scripts/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="~/Scripts/app/app.js"></script>
 
     <script src="~/Scripts/app/controllers/LanguageController.js"></script>

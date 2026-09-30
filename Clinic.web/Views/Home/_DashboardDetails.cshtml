@@ -87,15 +87,13 @@
                 <table class="c-table" ng-if="selectedStatistic.Key === 'Specialities'">
                     <thead>
                         <tr>
-                            <th>{{ 'dashboard.NameEn' | i18n }}</th>
-                            <th>{{ 'dashboard.NameAr' | i18n }}</th>
+                            <th>{{ 'dashboard.Name' | i18n }}</th>
                             <th>{{ 'dashboard.DoctorCount' | i18n }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="item in selectedDetails">
-                            <td>{{ item.NameEn }}</td>
-                            <td>{{ item.NameAr }}</td>
+                            <td>{{ item.Name }}</td>
                             <td>{{ item.DoctorCount }}</td>
                         </tr>
                     </tbody>

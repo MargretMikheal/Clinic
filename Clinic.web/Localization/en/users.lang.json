@@ -1,0 +1,14 @@
+{
+    "AddUser":  "Add User",
+    "UserSavedSuccess":  "User saved successfully.",
+    "SearchUsers":  "Search users...",
+    "UsersListTitle":  "Users List",
+    "UsersSubtitle":  "Manage system users and their roles.",
+    "EditUser":  "Edit User",
+    "UserDeletedSuccess":  "User deleted successfully.",
+    "UsersTitle":  "Users Management",
+    "ConfirmDeleteUser":  "Are you sure you want to delete this user?",
+    "PasswordLeaveBlank":  "Leave blank to keep current password",
+    "ErrorLoadingUsers":  "An error occurred while loading users.",
+    "NoUsersFound":  "No users found."
+}

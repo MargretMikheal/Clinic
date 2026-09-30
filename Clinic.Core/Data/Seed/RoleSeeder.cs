@@ -14,9 +14,9 @@ namespace Clinic.Core.Data.Seed
                 var store = new ApplicationRoleStore(context);
                 var roleManager = new RoleManager<Clinic.Core.Identity.ApplicationRole>(store);
 
-                roleManager.Create(new Clinic.Core.Identity.ApplicationRole { Id = Guid.NewGuid().ToString(), Name = "Admin" });
-                roleManager.Create(new Clinic.Core.Identity.ApplicationRole { Id = Guid.NewGuid().ToString(), Name = "Doctor" });
-                roleManager.Create(new Clinic.Core.Identity.ApplicationRole { Id = Guid.NewGuid().ToString(), Name = "Receptionist" });
+                roleManager.Create(new Clinic.Core.Identity.ApplicationRole { Id = Guid.NewGuid().ToString(), Name = Clinic.Core.Enums.UserRole.Admin.ToString() });
+                roleManager.Create(new Clinic.Core.Identity.ApplicationRole { Id = Guid.NewGuid().ToString(), Name = Clinic.Core.Enums.UserRole.Doctor.ToString() });
+                roleManager.Create(new Clinic.Core.Identity.ApplicationRole { Id = Guid.NewGuid().ToString(), Name = Clinic.Core.Enums.UserRole.Receptionist.ToString() });
             }
         }
     }

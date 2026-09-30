@@ -1,4 +1,4 @@
-using Clinic.Core.Common.DTOs.Dashboard;
+using Clinic.Core.BLL.Dashboard.DTOs;
 using System.Threading.Tasks;
 
 namespace Clinic.Core.BLL.Interfaces

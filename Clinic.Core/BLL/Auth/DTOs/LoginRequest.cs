@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Clinic.Core.Common.DTOs
+namespace Clinic.Core.BLL.Auth.DTOs
 {
     public class LoginRequest
     {

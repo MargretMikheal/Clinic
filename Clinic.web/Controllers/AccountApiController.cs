@@ -1,6 +1,7 @@
 using Clinic.Core.BLL.Interfaces;
 using Clinic.Core.BLL.Services;
-using Clinic.Core.Common.DTOs;
+using Clinic.Core.BLL.Auth.DTOs;
+using Clinic.Core.BLL.Users.DTOs;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;

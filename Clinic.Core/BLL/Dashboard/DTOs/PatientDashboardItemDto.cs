@@ -1,4 +1,4 @@
-namespace Clinic.Core.Common.DTOs.Dashboard
+namespace Clinic.Core.BLL.Dashboard.DTOs
 {
     public class PatientDashboardItemDto
     {

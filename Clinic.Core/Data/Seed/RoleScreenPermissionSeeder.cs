@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,14 +12,17 @@ namespace Clinic.Core.Data.Seed
             if (context.RoleScreenPermissions.Any())
                 return;
 
+            var adminRoleName = Clinic.Core.Enums.UserRole.Admin.ToString();
             var adminRole = context.AspNetRoles
-                .FirstOrDefault(x => x.Name == "Admin");
+                .FirstOrDefault(x => x.Name == adminRoleName);
 
+            var doctorRoleName = Clinic.Core.Enums.UserRole.Doctor.ToString();
             var doctorRole = context.AspNetRoles
-                .FirstOrDefault(x => x.Name == "Doctor");
+                .FirstOrDefault(x => x.Name == doctorRoleName);
 
+            var receptionistRoleName = Clinic.Core.Enums.UserRole.Receptionist.ToString();
             var receptionistRole = context.AspNetRoles
-                .FirstOrDefault(x => x.Name == "Receptionist");
+                .FirstOrDefault(x => x.Name == receptionistRoleName);
 
             if (adminRole == null ||
                 doctorRole == null ||

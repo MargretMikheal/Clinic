@@ -1,5 +1,6 @@
 using Clinic.Core.BLL.Interfaces;
-using Clinic.Core.Common.DTOs;
+using Clinic.Core.BLL.Auth.DTOs;
+using Clinic.Core.BLL.Users.DTOs;
 using Clinic.Core.Common.Responses;
 using Clinic.Core.Data;
 using Clinic.Core.Identity;
@@ -66,7 +67,7 @@ namespace Clinic.Core.BLL.Services
                 UserId = user.Id,
                 UserName = user.UserName,
                 DisplayName = user.UserName,
-                Roles = roles.ToList()
+                Role = roles.FirstOrDefault()
             };
 
             return BaseResponse<LoginResponse>.Success(responseData, "Login successful.");
@@ -101,7 +102,7 @@ namespace Clinic.Core.BLL.Services
                 UserId = user.Id,
                 UserName = user.UserName,
                 DisplayName = user.UserName,
-                Roles = roles.ToList()
+                Role = roles.FirstOrDefault()
             };
 
             return BaseResponse<UserInfo>.Success(userInfo);

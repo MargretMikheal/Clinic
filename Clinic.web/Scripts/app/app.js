@@ -106,21 +106,18 @@
                     title || $filter('i18n')("common.Success")
                 );
             },
-
             error: function (message, title) {
                 toastr.error(
                     message,
                     title || $filter('i18n')("common.Error")
                 );
             },
-
             warning: function (message, title) {
                 toastr.warning(
                     message,
                     title || $filter('i18n')("common.Warning")
                 );
             },
-
             info: function (message, title) {
                 toastr.info(
                     message,
@@ -130,7 +127,33 @@
         };
     }]);
 
+    // =========================================================
+    // Confirmation Service
+    // =========================================================
 
+    app.factory("confirmationService", ["$filter", function ($filter) {
+        return {
+            confirm: function (message, options) {
+                options = options || {};
+                return Swal.fire({
+                    title: options.title ||
+                        $filter("i18n")("common.Confirm"),
+                    text: message,
+                    icon: options.icon || "warning",
+                    showCancelButton: true,
+                    confirmButtonText: options.confirmText ||
+                        $filter("i18n")("common.Delete"),
+                    cancelButtonText: options.cancelText ||
+                        $filter("i18n")("common.Cancel"),
+                    reverseButtons: true,
+                    focusCancel: true,
+                    buttonsStyling: true
+                }).then(function (result) {
+                    return result.isConfirmed;
+                });
+            }
+        };
+    }]);
     // =========================================================
     // Toastr Configuration
     // =========================================================

@@ -1,4 +1,5 @@
-using Clinic.Core.Common.DTOs;
+using Clinic.Core.BLL.Auth.DTOs;
+using Clinic.Core.BLL.Users.DTOs;
 using Clinic.Core.Common.Responses;
 using Microsoft.Owin;
 using System.Threading.Tasks;

@@ -1,5 +1,5 @@
 using Clinic.Core.BLL.Interfaces;
-using Clinic.Core.Common.DTOs.Dashboard;
+using Clinic.Core.BLL.Dashboard.DTOs;
 using Clinic.Core.Data;
 using System;
 using System.Collections.Generic;
@@ -17,6 +17,7 @@ namespace Clinic.Core.BLL.Services
             {
                 var today = DateTime.Today;
                 var tomorrow = today.AddDays(1);
+                var currentLang = Clinic.Core.Common.LanguageHelper.GetCurrentLanguage();
 
                 var doctors = await db.Doctors
                     .Where(d => !d.IsDeleted && d.IsActive)
@@ -24,7 +25,7 @@ namespace Clinic.Core.BLL.Services
                     {
                         Id = d.Id,
                         Name = d.Name,
-                        Speciality = d.Speciality.NameEn,
+                        Speciality = currentLang == "en" ? d.Speciality.NameEn : d.Speciality.NameAr,
                         Phone = d.Phone,
                         Email = d.Email
                     })
@@ -47,8 +48,7 @@ namespace Clinic.Core.BLL.Services
                     .Select(s => new SpecialityDashboardItemDto
                     {
                         Id = s.Id,
-                        NameAr = s.NameAr,
-                        NameEn = s.NameEn,
+                        Name = currentLang == "en" ? s.NameEn : s.NameAr,
                         DoctorCount = s.Doctors.Count(d => !d.IsDeleted && d.IsActive)
                     })
                     .ToListAsync();
@@ -78,8 +78,10 @@ namespace Clinic.Core.BLL.Services
                     })
                     .ToListAsync();
 
+                var cancelledStatus = Clinic.Core.Enums.AppointmentStatus.Cancelled.ToString();
+
                 var todayCancelledAppointmentsList = await db.Appointments
-                    .Where(a => !a.IsDeleted && a.AppointmentDate == today && a.Status == "Cancelled")
+                    .Where(a => !a.IsDeleted && a.AppointmentDate == today && a.Status == cancelledStatus)
                     .Select(a => new AppointmentDashboardItemDto
                     {
                         Id = a.Id,

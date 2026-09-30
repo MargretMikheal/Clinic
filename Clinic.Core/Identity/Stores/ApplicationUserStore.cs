@@ -187,6 +187,9 @@ namespace Clinic.Core.Identity.Stores
         // IUserRoleStore
         public Task AddToRoleAsync(ApplicationUser user, string roleName)
         {
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (string.IsNullOrWhiteSpace(roleName)) throw new ArgumentNullException(nameof(roleName));
+
             var entity = _context.AspNetUsers.Find(user.Id);
             var role = _context.AspNetRoles.FirstOrDefault(r => r.Name == roleName);
             if (entity != null && role != null)
@@ -202,6 +205,9 @@ namespace Clinic.Core.Identity.Stores
 
         public Task RemoveFromRoleAsync(ApplicationUser user, string roleName)
         {
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (string.IsNullOrWhiteSpace(roleName)) throw new ArgumentNullException(nameof(roleName));
+
             var entity = _context.AspNetUsers.Find(user.Id);
             var role = _context.AspNetRoles.FirstOrDefault(r => r.Name == roleName);
             if (entity != null && role != null)
@@ -217,24 +223,27 @@ namespace Clinic.Core.Identity.Stores
 
         public Task<IList<string>> GetRolesAsync(ApplicationUser user)
         {
-            var entity = _context.AspNetUsers.Find(user.Id);
-            if (entity != null)
-            {
-                IList<string> roles = entity.AspNetRoles.Select(r => r.Name).ToList();
-                return Task.FromResult(roles);
-            }
-            return Task.FromResult<IList<string>>(new List<string>());
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            var roles = _context.AspNetUsers
+                .Where(u => u.Id == user.Id)
+                .SelectMany(u => u.AspNetRoles.Select(r => r.Name))
+                .ToList();
+
+            return Task.FromResult<IList<string>>(roles);
         }
 
         public Task<bool> IsInRoleAsync(ApplicationUser user, string roleName)
         {
-            var entity = _context.AspNetUsers.Find(user.Id);
-            if (entity != null)
-            {
-                bool isInRole = entity.AspNetRoles.Any(r => r.Name == roleName);
-                return Task.FromResult(isInRole);
-            }
-            return Task.FromResult(false);
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (string.IsNullOrWhiteSpace(roleName)) throw new ArgumentNullException(nameof(roleName));
+
+            bool isInRole = _context.AspNetUsers
+                .Where(u => u.Id == user.Id)
+                .SelectMany(u => u.AspNetRoles)
+                .Any(r => r.Name == roleName);
+
+            return Task.FromResult(isInRole);
         }
 
         // IUserClaimStore
