@@ -1,5 +1,4 @@
 <Solution>
   <Project Path="Clinic.Core/Clinic.Core.csproj" Id="a09baa6b-b66a-4bb1-81ce-611e64346211" />
-  <Project Path="Clinic.Tests/Clinic.Tests.csproj" Id="74f68e34-bff1-4694-a6c9-c2ef8adb0e63" />
   <Project Path="Clinic.web/Clinic.Web.csproj" Id="8037684e-fe7e-465d-b859-14b14e060a36" />
 </Solution>
