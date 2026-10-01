@@ -40,5 +40,10 @@
     "Wednesday":  "Wednesday",
     "Thursday":  "Thursday",
     "Friday":  "Friday",
-    "Saturday":  "Saturday"
+    "Saturday":  "Saturday",
+    "AppointmentsThisMonth": "Appointments This Month",
+    "MostBookedDoctors": "Most Booked Doctors",
+    "DoctorCode": "Doctor Code",
+    "AppointmentCount": "Appointment Count",
+    "appointments": "appointments"
 }

@@ -1,0 +1,65 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ 'rolepermission.RolePermission' | i18n }}</h3>
+    </div>
+    <div class="panel-body">
+        <div layout="row" layout-align="start center" class="margin-bottom-20">
+            <md-input-container>
+                <label>{{ 'rolepermission.SelectRole' | i18n }}</label>
+                <md-select ng-model="selectedRoleId" ng-change="onRoleChanged()">
+                    <md-option ng-repeat="role in roles" ng-value="role.RoleId">
+                        {{ role.RoleName }}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+
+        <div class="table-responsive" ng-show="permissions.length > 0">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>{{ 'rolepermission.Screen' | i18n }}</th>
+                        <th class="text-center">{{ 'rolepermission.Show' | i18n }}</th>
+                        <th class="text-center">{{ 'rolepermission.Add' | i18n }}</th>
+                        <th class="text-center">{{ 'rolepermission.Edit' | i18n }}</th>
+                        <th class="text-center">{{ 'rolepermission.Delete' | i18n }}</th>
+                        <th class="text-center">{{ 'rolepermission.Print' | i18n }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="perm in getPaginatedScreens()">
+                        <td>{{ perm.ScreenName }}</td>
+                        <td class="text-center">
+                            <md-checkbox ng-model="perm.ScreenShow" aria-label="Show"></md-checkbox>
+                        </td>
+                        <td class="text-center">
+                            <md-checkbox ng-model="perm.ScreenAdd" aria-label="Add"></md-checkbox>
+                        </td>
+                        <td class="text-center">
+                            <md-checkbox ng-model="perm.ScreenEdit" aria-label="Edit"></md-checkbox>
+                        </td>
+                        <td class="text-center">
+                            <md-checkbox ng-model="perm.ScreenDelete" aria-label="Delete"></md-checkbox>
+                        </td>
+                        <td class="text-center">
+                            <md-checkbox ng-model="perm.ScreenPrint" aria-label="Print"></md-checkbox>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <clinic-pagination pagination="screenPagination" ng-if="permissions.length > 0"></clinic-pagination>
+            
+            
+            <div layout="row" layout-align="end center">
+                <md-button class="md-raised md-primary" ng-click="savePermissions()" ng-disabled="isSaving">
+                    {{ 'rolepermission.SavePermissions' | i18n }}
+                </md-button>
+            </div>
+        </div>
+        
+        <div ng-show="selectedRoleId && permissions.length === 0 && !isLoading">
+            <p>{{ 'common.NoData' | i18n }}</p>
+        </div>
+    </div>
+</div>

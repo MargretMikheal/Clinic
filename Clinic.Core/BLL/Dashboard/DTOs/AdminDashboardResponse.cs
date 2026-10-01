@@ -4,6 +4,10 @@ namespace Clinic.Core.BLL.Dashboard.DTOs
 {
     public class AdminDashboardResponse
     {
+        public List<AppointmentDashboardItemDto> AppointmentsThisMonth { get; set; }
+
+        public List<MostBookedDoctorDto> MostBookedDoctors { get; set; }
+
         public List<DashboardStatisticDto> Statistics { get; set; }
 
         public List<DoctorDashboardItemDto> Doctors { get; set; }
@@ -20,6 +24,8 @@ namespace Clinic.Core.BLL.Dashboard.DTOs
 
         public AdminDashboardResponse()
         {
+            AppointmentsThisMonth = new List<AppointmentDashboardItemDto>();
+            MostBookedDoctors = new List<MostBookedDoctorDto>();
             Statistics = new List<DashboardStatisticDto>();
             Doctors = new List<DoctorDashboardItemDto>();
             Patients = new List<PatientDashboardItemDto>();

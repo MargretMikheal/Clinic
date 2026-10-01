@@ -14,6 +14,16 @@ namespace Clinic.Web.Infrastructure.SiteMap
         private static List<int> activeScreens;
         private static bool isInitialized = false;
 
+        public static void ClearCache()
+        {
+            lock (lockObject)
+            {
+                isInitialized = false;
+                screenRoleCache = null;
+                activeScreens = null;
+            }
+        }
+
         private void EnsureCache()
         {
             if (!isInitialized)

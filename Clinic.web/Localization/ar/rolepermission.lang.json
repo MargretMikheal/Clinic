@@ -1,0 +1,22 @@
+{
+    "RolePermission": "صلاحيات الأدوار",
+    "Role": "الدور",
+    "AddNewRole": "إضافة دور جديد",
+    "RoleName": "اسم الدور",
+    "AddRole": "إضافة دور",
+    "SelectRole": "اختر الدور",
+    "Screen": "الشاشة",
+    "Show": "عرض",
+    "Add": "إضافة",
+    "Edit": "تعديل",
+    "Delete": "حذف",
+    "Print": "طباعة",
+    "SavePermissions": "حفظ الصلاحيات",
+    "RoleAddedSuccessfully": "تمت إضافة الدور بنجاح",
+    "PermissionsSavedSuccessfully": "تم حفظ الصلاحيات بنجاح",
+    "RoleIsRequired": "الدور مطلوب",
+    "RoleNameRequired": "اسم الدور مطلوب",
+    "DuplicateRole": "دور مكرر",
+    "ExistingRoles": "الأدوار الحالية",
+    "NumberOfUsers": "عدد المستخدمين"
+}

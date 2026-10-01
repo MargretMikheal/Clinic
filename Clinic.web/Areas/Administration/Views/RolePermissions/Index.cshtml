@@ -1,0 +1,22 @@
+@{
+    ViewBag.Title = "Role Permissions";
+}
+
+<div ng-cloak ng-controller="RolePermissionController">
+    <md-tabs md-dynamic-height md-border-bottom md-selected="selectedTabIndex">
+        <md-tab label="{{ 'rolepermission.AddNewRole' | i18n }}">
+            <md-content class="md-padding">
+                @Html.Partial("_AddRole")
+            </md-content>
+        </md-tab>
+        <md-tab label="{{ 'rolepermission.RolePermission' | i18n }}">
+            <md-content class="md-padding">
+                @Html.Partial("_ScreenPermissions")
+            </md-content>
+        </md-tab>
+    </md-tabs>
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Administration/Scripts/Controllers/RolePermissionsController.js"></script>
+}

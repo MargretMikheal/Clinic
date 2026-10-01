@@ -40,5 +40,10 @@
     "Wednesday":  "الأربعاء",
     "Thursday":  "الخميس",
     "Friday":  "الجمعة",
-    "Saturday":  "السبت"
+    "Saturday":  "السبت",
+    "AppointmentsThisMonth": "مواعيد هذا الشهر",
+    "MostBookedDoctors": "الأطباء الأكثر حجزاً",
+    "DoctorCode": "كود الطبيب",
+    "AppointmentCount": "عدد المواعيد",
+    "appointments": "مواعيد"
 }

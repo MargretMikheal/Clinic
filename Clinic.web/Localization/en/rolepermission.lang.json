@@ -1,0 +1,22 @@
+{
+    "RolePermission": "Role Permission",
+    "Role": "Role",
+    "AddNewRole": "Add New Role",
+    "RoleName": "Role Name",
+    "AddRole": "Add Role",
+    "SelectRole": "Select Role",
+    "Screen": "Screen",
+    "Show": "Show",
+    "Add": "Add",
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "Print": "Print",
+    "SavePermissions": "Save Permissions",
+    "RoleAddedSuccessfully": "Role added successfully",
+    "PermissionsSavedSuccessfully": "Permissions saved successfully",
+    "RoleIsRequired": "Role is required",
+    "RoleNameRequired": "Role name is required",
+    "DuplicateRole": "Duplicate role",
+    "ExistingRoles": "Existing Roles",
+    "NumberOfUsers": "Number of Users"
+}

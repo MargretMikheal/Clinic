@@ -26,7 +26,7 @@
                 $scope.currentUser = {};
                 $scope.pagination = {
                     page: 1,
-                    pageSize: 10,
+                    pageSize: 5,
                     totalItems: 0
                 };
                 $scope.filteredUsers = [];

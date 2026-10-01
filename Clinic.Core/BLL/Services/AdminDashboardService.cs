@@ -18,6 +18,9 @@ namespace Clinic.Core.BLL.Services
                 var today = DateTime.Today;
                 var tomorrow = today.AddDays(1);
                 var currentLang = Clinic.Core.Common.LanguageHelper.GetCurrentLanguage();
+                
+                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+                var startOfNextMonth = startOfMonth.AddMonths(1);
 
                 var doctors = await db.Doctors
                     .Where(d => !d.IsDeleted && d.IsActive)
@@ -93,8 +96,37 @@ namespace Clinic.Core.BLL.Services
                     })
                     .ToListAsync();
 
+                var appointmentsThisMonthList = await db.Appointments
+                    .Where(a => !a.IsDeleted && a.AppointmentDate >= startOfMonth && a.AppointmentDate < startOfNextMonth)
+                    .Select(a => new AppointmentDashboardItemDto
+                    {
+                        Id = a.Id,
+                        PatientName = a.Patient.Name,
+                        DoctorName = a.Doctor.Name,
+                        AppointmentDate = a.AppointmentDate,
+                        AppointmentTime = a.AppointmentTime,
+                        Status = a.Status
+                    })
+                    .ToListAsync();
+
+                var mostBookedDoctors = await db.Appointments
+                    .Where(a => !a.IsDeleted && a.Doctor.IsActive && !a.Doctor.IsDeleted)
+                    .GroupBy(a => new { a.Doctor.Id, a.Doctor.Name, a.Doctor.DoctorCode })
+                    .Select(g => new MostBookedDoctorDto
+                    {
+                        DoctorId = g.Key.Id,
+                        DoctorName = g.Key.Name,
+                        DoctorCode = g.Key.DoctorCode,
+                        AppointmentCount = g.Count()
+                    })
+                    .OrderByDescending(d => d.AppointmentCount)
+                    .Take(5)
+                    .ToListAsync();
+
                 var response = new AdminDashboardResponse
                 {
+                    AppointmentsThisMonth = appointmentsThisMonthList,
+                    MostBookedDoctors = mostBookedDoctors,
                     Statistics = new List<DashboardStatisticDto>
                     {
                         new DashboardStatisticDto { Key = "Doctors", Count = doctors.Count },
@@ -102,7 +134,8 @@ namespace Clinic.Core.BLL.Services
                         new DashboardStatisticDto { Key = "Specialities", Count = specialities.Count },
                         new DashboardStatisticDto { Key = "TodayAppointments", Count = todayAppointmentsList.Count },
                         new DashboardStatisticDto { Key = "TodayCompletedVisits", Count = todayCompletedVisitsList.Count },
-                        new DashboardStatisticDto { Key = "TodayCancelledAppointments", Count = todayCancelledAppointmentsList.Count }
+                        new DashboardStatisticDto { Key = "TodayCancelledAppointments", Count = todayCancelledAppointmentsList.Count },
+                        new DashboardStatisticDto { Key = "AppointmentsThisMonth", Count = appointmentsThisMonthList.Count }
                     },
                     Doctors = doctors,
                     Patients = patients,

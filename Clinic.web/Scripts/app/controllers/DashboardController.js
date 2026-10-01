@@ -34,7 +34,8 @@
                 TodayCancelledAppointments: { icon: "fa-times-circle", colorClass: "stat-danger", localizationKey: "dashboard.TodayCancelledAppointments" },
                 ConfirmedAppointments: { icon: "fa-calendar-check-o", colorClass: "stat-success", localizationKey: "dashboard.ConfirmedAppointments" },
                 CompletedAppointments: { icon: "fa-check-circle", colorClass: "stat-success", localizationKey: "dashboard.CompletedAppointments" },
-                RemainingAppointments: { icon: "fa-clock-o", colorClass: "stat-warning", localizationKey: "dashboard.RemainingAppointments" }
+                RemainingAppointments: { icon: "fa-clock-o", colorClass: "stat-warning", localizationKey: "dashboard.RemainingAppointments" },
+                AppointmentsThisMonth: { icon: "fa-calendar", colorClass: "stat-primary", localizationKey: "dashboard.AppointmentsThisMonth" }
             };
 
             var detailsMap = {
@@ -46,7 +47,8 @@
                 TodayCancelledAppointments: "TodayCancelledAppointments",
                 ConfirmedAppointments: "ConfirmedAppointments",
                 CompletedAppointments: "CompletedAppointments",
-                RemainingAppointments: "RemainingAppointments"
+                RemainingAppointments: "RemainingAppointments",
+                AppointmentsThisMonth: "AppointmentsThisMonth"
             };
 
             // =========================================================
@@ -137,6 +139,11 @@
 
             $scope.selectStatistic = function (statistic) {
 
+                // If this statistic does not have details configured, do not select it
+                if (!detailsMap[statistic.Key]) {
+                    return;
+                }
+
                 // Toggle off if clicking the same statistic
                 if ($scope.selectedStatistic &&
                     $scope.selectedStatistic.Key === statistic.Key) {
@@ -154,13 +161,13 @@
 
                 if ($scope.dashboardData) {
                     var propertyName = detailsMap[statistic.Key];
-                    if (propertyName && $scope.dashboardData[propertyName]) {
-                        $scope.selectedDetails = $scope.dashboardData[propertyName];
+                    if (propertyName) {
+                        if ($scope.dashboardData[propertyName]) {
+                            $scope.selectedDetails = $scope.dashboardData[propertyName];
+                        } else {
+                            $scope.detailsError = "Details not found for " + statistic.Key;
+                        }
                     }
-                }
-                
-                if (!$scope.selectedDetails) {
-                    $scope.detailsError = "Details not found for " + statistic.Key;
                 }
             };
 
