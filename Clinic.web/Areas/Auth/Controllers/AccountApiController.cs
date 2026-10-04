@@ -1,14 +1,12 @@
+using Clinic.Core.BLL.Auth.DTOs;
 using Clinic.Core.BLL.Interfaces;
 using Clinic.Core.BLL.Services;
-using Clinic.Core.BLL.Auth.DTOs;
-using Clinic.Core.BLL.Users.DTOs;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web.Http;
-using System.Security.Claims;
-using System.Web;
 using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Http;
 
 namespace Clinic.Web.Controllers
 {
@@ -53,13 +51,13 @@ namespace Clinic.Web.Controllers
                 var val = cookie["clinic_lang"].Value;
                 if (val == "ar" || val == "en") return val;
             }
-            
+
             if (request.Headers.AcceptLanguage != null && request.Headers.AcceptLanguage.Count > 0)
             {
                 var firstLang = request.Headers.AcceptLanguage.First().Value.ToLowerInvariant();
                 if (firstLang.StartsWith("ar")) return "ar";
             }
-            return "ar"; 
+            return "ar";
         }
 
         [Authorize]
