@@ -65,7 +65,7 @@
                         .catch(function () {
                             $scope.isError = true;
                             notificationService.error(
-                                "An error occurred while loading users."
+                                $filter("i18n")("users.ErrorLoadingUsers")
                             );
                         })
                         .finally(function () {
@@ -87,7 +87,7 @@
                         })
                         .catch(function () {
                             notificationService.error(
-                                "An error occurred while loading roles."
+                                $filter("i18n")("users.ErrorLoadingRoles")
                             );
                         });
                 }
@@ -146,7 +146,7 @@
                         })
                         .catch(function () {
                             notificationService.error(
-                                "An error occurred while saving the user."
+                                $filter("i18n")("users.ErrorSavingUser")
                             );
                         })
                         .finally(function () {
@@ -190,7 +190,7 @@
                             .catch(function () {
 
                                 notificationService.error(
-                                    "An error occurred while deleting the user."
+                                    $filter("i18n")("users.ErrorDeletingUser")
                                 );
                             })
                             .finally(function () {

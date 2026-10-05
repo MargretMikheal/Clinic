@@ -204,6 +204,12 @@
     <Compile Include="BLL\Doctors\DTOs\DoctorSpecialityOptionDto.cs" />
     <Compile Include="BLL\Doctors\DTOs\DoctorScheduleDto.cs" />
     <Compile Include="BLL\Doctors\DTOs\ReceptionistAssignmentOptionDto.cs" />
+    <Compile Include="BLL\Specialities\DTOs\SpecialityDto.cs" />
+    <Compile Include="BLL\Specialities\SpecialitiesBLL.cs" />
+    <Compile Include="BLL\Symptoms\DTOs\SymptomDto.cs" />
+    <Compile Include="BLL\Symptoms\SymptomsBLL.cs" />
+    <Compile Include="BLL\Diagnoses\DTOs\DiagnosisDto.cs" />
+    <Compile Include="BLL\Diagnoses\DiagnosesBLL.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

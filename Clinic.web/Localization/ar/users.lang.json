@@ -44,5 +44,8 @@
     "DoctorSavedSuccess": "تم حفظ الطبيب بنجاح.",
     "InvalidSchedule": "يجب أن يكون وقت البدء قبل وقت الانتهاء.",
     "ReceptionistName": "اسم موظف الاستقبال",
-    "ErrorLoadingDoctorDetails": "حدث خطأ أثناء تحميل بيانات الطبيب."
+    "ErrorLoadingDoctorDetails": "حدث خطأ أثناء تحميل بيانات الطبيب.",
+    "ErrorLoadingRoles": "حدث خطأ أثناء تحميل الأدوار.",
+    "ErrorSavingUser": "حدث خطأ أثناء حفظ المستخدم.",
+    "ErrorDeletingUser": "حدث خطأ أثناء حذف المستخدم."
 }

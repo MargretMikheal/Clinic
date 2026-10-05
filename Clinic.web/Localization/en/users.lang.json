@@ -44,5 +44,8 @@
     "DoctorSavedSuccess": "Doctor saved successfully.",
     "InvalidSchedule": "Start time must be before end time.",
     "ReceptionistName": "Receptionist Name",
-    "ErrorLoadingDoctorDetails": "An error occurred while loading doctor details."
+    "ErrorLoadingDoctorDetails": "An error occurred while loading doctor details.",
+    "ErrorLoadingRoles": "An error occurred while loading roles.",
+    "ErrorSavingUser": "An error occurred while saving the user.",
+    "ErrorDeletingUser": "An error occurred while deleting the user."
 }

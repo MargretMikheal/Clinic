@@ -186,6 +186,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Areas\Administration\Controllers\DoctorsController.cs" />
+    <Compile Include="Areas\Administration\Controllers\SpecialityController.cs" />
+    <Compile Include="Areas\Administration\Controllers\SymptomController.cs" />
+    <Compile Include="Areas\Administration\Controllers\DiagnosisController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Administration\Scripts\Controllers\DoctorsController.js" />
@@ -305,6 +308,18 @@
     <Content Include="Localization\ar\dashboard.lang.json" />
     <Content Include="Localization\en\rolepermission.lang.json" />
     <Content Include="Localization\ar\rolepermission.lang.json" />
+    <Content Include="Localization\en\speciality.lang.json" />
+    <Content Include="Localization\ar\speciality.lang.json" />
+    <Content Include="Localization\en\symptom.lang.json" />
+    <Content Include="Localization\ar\symptom.lang.json" />
+    <Content Include="Localization\en\diagnosis.lang.json" />
+    <Content Include="Localization\ar\diagnosis.lang.json" />
+    <Content Include="Areas\Administration\Scripts\Controllers\SpecialityController.js" />
+    <Content Include="Areas\Administration\Scripts\Controllers\SymptomController.js" />
+    <Content Include="Areas\Administration\Scripts\Controllers\DiagnosisController.js" />
+    <Content Include="Areas\Administration\Views\Speciality\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\Symptom\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\Diagnosis\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

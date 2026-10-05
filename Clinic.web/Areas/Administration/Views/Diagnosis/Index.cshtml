@@ -1,0 +1,183 @@
+@{
+    ViewBag.Title = "Diagnoses Management";
+}
+
+<div ng-cloak ng-controller="DiagnosisController">
+    <!-- Header -->
+    <div class="page-header" ng-show="viewState === 'list'">
+        <div class="page-title-wrap">
+            <h1 class="page-title">
+                {{ 'diagnosis.Title' | i18n }}
+            </h1>
+        </div>
+
+        <div class="page-actions">
+            <button type="button"
+                    class="btn btn-primary"
+                    ng-click="openAdd()">
+                <i class="fa fa-plus"></i>
+                {{ 'diagnosis.Add' | i18n }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="c-alert c-alert-danger" ng-if="isError">
+        <i class="fa fa-exclamation-circle"></i>
+        <span>
+            {{ 'common.SomethingWentWrong' | i18n }}
+        </span>
+    </div>
+
+    <!-- List View -->
+    <div class="c-card"
+         ng-show="viewState === 'list' && !isError">
+
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa fa-medkit"></i>
+                {{ 'diagnosis.Title' | i18n }}
+            </h3>
+            <div flex>
+                <input type="text"
+                       class="form-control"
+                       ng-model="searchQuery"
+                       placeholder="{{ 'common.Search' | i18n }}" />
+            </div>
+        </div>
+
+        <div class="c-card-body">
+
+            <!-- Loading -->
+            <div class="loading-state" ng-if="isLoading">
+                <div class="c-spinner"></div>
+                <span>
+                    {{ 'common.Loading' | i18n }}
+                </span>
+            </div>
+
+            <!-- Empty -->
+            <div class="empty-state"
+                 ng-if="!isLoading && diagnoses.length === 0">
+                <i class="fa fa-folder-open-o empty-state-icon"></i>
+                <h4 class="empty-state-title">
+                    {{ 'common.NoData' | i18n }}
+                </h4>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive"
+                 ng-if="!isLoading && diagnoses.length > 0">
+
+                <table class="c-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'diagnosis.NameAr' | i18n }}</th>
+                            <th>{{ 'diagnosis.NameEn' | i18n }}</th>
+                            <th>{{ 'common.Status' | i18n }}</th>
+                            <th style="width: 150px; text-align: center;">
+                                {{ 'common.Actions' | i18n }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in getPaginatedDiagnoses() track by item.Id">
+                            <td>{{ item.NameAr }}</td>
+                            <td>{{ item.NameEn }}</td>
+                            <td>
+                                <span class="c-badge" ng-class="item.IsActive ? 'c-badge-primary' : 'c-badge-danger'">
+                                    {{ item.IsActive ? ('common.Active' | i18n) : ('common.Inactive' | i18n) }}
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                                <button type="button"
+                                        class="btn btn-outline"
+                                        style="padding: 4px 8px;"
+                                        ng-click="openEdit(item)"
+                                        title="{{ 'common.Edit' | i18n }}">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button type="button"
+                                        class="btn btn-outline"
+                                        style="padding: 4px 8px; color: var(--c-danger);"
+                                        ng-click="deleteDiagnosis(item.Id)"
+                                        title="{{ 'common.Delete' | i18n }}">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <clinic-pagination pagination="pagination" ng-if="!isLoading && diagnoses.length > 0"></clinic-pagination>
+
+        </div>
+    </div>
+
+    <!-- Add/Edit View -->
+    <div class="c-card" ng-show="viewState === 'add' || viewState === 'edit'">
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa"
+                   ng-class="viewState === 'add'
+                       ? 'fa-plus'
+                       : 'fa-pencil'">
+                </i>
+                {{ viewState === 'add'
+                    ? ('diagnosis.Add' | i18n)
+                    : ('diagnosis.Edit' | i18n) }}
+            </h3>
+        </div>
+
+        <div class="c-card-body">
+            <form ng-submit="saveDiagnosis()">
+                <div class="form-group">
+                    <label class="form-label">
+                        {{ 'diagnosis.NameAr' | i18n }}
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           ng-model="currentDiagnosis.NameAr" required />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        {{ 'diagnosis.NameEn' | i18n }}
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           ng-model="currentDiagnosis.NameEn"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" ng-model="currentDiagnosis.IsActive" />
+                        {{ 'common.Active' | i18n }}
+                    </label>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; gap: 12px;">
+                    <button type="submit"
+                            class="btn btn-primary"
+                            ng-disabled="isSaving">
+                        <i class="fa fa-save"></i>
+                        {{ 'common.Save' | i18n }}
+                    </button>
+                    <button type="button"
+                            class="btn btn-outline"
+                            ng-click="cancel()"
+                            ng-disabled="isSaving">
+                        {{ 'common.Cancel' | i18n }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Administration/Scripts/Controllers/DiagnosisController.js"></script>
+}

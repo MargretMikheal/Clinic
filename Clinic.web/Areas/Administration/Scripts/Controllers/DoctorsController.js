@@ -57,7 +57,7 @@
                         })
                         .catch(function () {
                             $scope.isDoctorError = true;
-                            notificationService.error($filter("i18n")("users.ErrorLoadingDoctors") || "An error occurred while loading doctors.");
+                            notificationService.error($filter("i18n")("users.ErrorLoadingDoctors"));
                         })
                         .finally(function () {
                             $scope.isDoctorLoading = false;
@@ -134,7 +134,7 @@
                         })
                         .catch(function (error) {
                             console.error("Error loading doctor details:", error);
-                            notificationService.error($filter("i18n")("users.ErrorLoadingDoctorDetails") || "An error occurred while loading doctor details.");
+                            notificationService.error($filter("i18n")("users.ErrorLoadingDoctorDetails"));
                         })
                         .finally(function () {
                             $scope.isDoctorLoading = false;
@@ -183,7 +183,7 @@
                         for (var i = 0; i < payload.Schedules.length; i++) {
                             var s = payload.Schedules[i];
                             if (s.StartTimeObj >= s.EndTimeObj) {
-                                notificationService.error($filter("i18n")("users.InvalidSchedule") || "Start time must be before end time");
+                                notificationService.error($filter("i18n")("users.InvalidSchedule"));
                                 $scope.isDoctorSaving = false;
                                 return;
                             }
@@ -199,7 +199,7 @@
                     $http.post(url, payload)
                         .then(function (response) {
                             if (response.data.IsSuccess) {
-                                notificationService.success($filter("i18n")("users.DoctorSavedSuccess") || "Doctor saved successfully.");
+                                notificationService.success($filter("i18n")("users.DoctorSavedSuccess"));
                                 $scope.doctorViewState = "list";
                                 $scope.currentDoctor = {};
                                 loadDoctors();
@@ -209,7 +209,7 @@
                         })
                         .catch(function (error) {
                             console.error("Error saving doctor:", error);
-                            notificationService.error($filter("i18n")("common.SomethingWentWrong") || "An error occurred while saving the doctor.");
+                            notificationService.error($filter("i18n")("common.SomethingWentWrong"));
                         })
                         .finally(function () {
                             $scope.isDoctorSaving = false;

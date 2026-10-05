@@ -48,5 +48,8 @@
     "Wednesday": "الأربعاء",
     "Thursday": "الخميس",
     "Friday": "الجمعة",
-    "Saturday": "السبت"
+    "Saturday": "السبت",
+    "Status": "الحالة",
+    "Active": "نشط",
+    "Inactive": "غير نشط"
 }
