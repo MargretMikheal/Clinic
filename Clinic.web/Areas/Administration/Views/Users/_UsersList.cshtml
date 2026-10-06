@@ -13,6 +13,7 @@
         <div class="page-actions">
             <button type="button"
                     class="btn btn-primary"
+                    ng-if="permissions.Add"
                     ng-click="openAdd()">
                 <i class="fa fa-plus"></i>
                 {{ 'users.AddUser' | i18n }}
@@ -106,6 +107,7 @@
                                 <button type="button"
                                         class="btn btn-outline"
                                         style="padding: 4px 8px;"
+                                        ng-if="permissions.Edit"
                                         ng-click="openEdit(user)"
                                         title="{{ 'common.Edit' | i18n }}">
                                     <i class="fa fa-pencil"></i>
@@ -114,6 +116,7 @@
                                 <button type="button"
                                         class="btn btn-outline"
                                         style="padding: 4px 8px; color: var(--c-danger);"
+                                        ng-if="permissions.Delete"
                                         ng-click="deleteUser(user.Id)"
                                         title="{{ 'common.Delete' | i18n }}">
                                     <i class="fa fa-trash"></i>

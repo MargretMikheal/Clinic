@@ -193,64 +193,55 @@
     var regexIso8601 =
         /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2}):(\d{2})(\.(\d{1,3}))?$/;
 
+    var regexMicrosoftDate =
+        /^\/Date\((-?\d+)(?:[+-]\d{4})?\)\/$/;
 
     function convertDateStringsToDates(input) {
-
-        // Ignore null / undefined values
         if (input === null || input === undefined) {
             return input;
         }
 
-
-        // Ignore values that are not objects
         if (typeof input !== "object") {
             return input;
         }
 
-
-        // Loop through object properties
         for (var key in input) {
-
             if (!input.hasOwnProperty(key)) {
                 continue;
             }
 
-
             var value = input[key];
 
-            var match;
+            if (typeof value === "string") {
 
+                // Microsoft JSON Date
+                var microsoftMatch = value.match(regexMicrosoftDate);
 
-            // -------------------------------------------------
-            // String that looks like an ISO date
-            // -------------------------------------------------
+                if (microsoftMatch) {
+                    var microsoftMilliseconds = parseInt(microsoftMatch[1], 10);
 
-            if (
-                typeof value === "string" &&
-                (match = value.match(regexIso8601))
-            ) {
+                    if (!isNaN(microsoftMilliseconds)) {
+                        input[key] = new Date(microsoftMilliseconds);
+                        continue;
+                    }
+                }
 
-                var milliseconds = Date.parse(match[0]);
+                // ISO Date
+                var isoMatch = value.match(regexIso8601);
 
-                if (!isNaN(milliseconds)) {
+                if (isoMatch) {
+                    var milliseconds = Date.parse(value);
 
-                    input[key] = new Date(milliseconds);
+                    if (!isNaN(milliseconds)) {
+                        input[key] = new Date(milliseconds);
+                    }
                 }
             }
-
-
-            // -------------------------------------------------
-            // Nested object / array
-            // -------------------------------------------------
-
-            else if (
-                typeof value === "object" &&
-                value !== null
-            ) {
-
+            else if (typeof value === "object" && value !== null) {
                 convertDateStringsToDates(value);
             }
         }
+
         return input;
     }
 

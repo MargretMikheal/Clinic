@@ -155,7 +155,7 @@ namespace Clinic.Core.BLL
         {
             try
             {
-                var roleName = nameof(Clinic.Core.Enums.UserRole.Receptionist);
+                var roleName = "Receptionist";
                 var role = _context.AspNetRoles.FirstOrDefault(r => r.Name == roleName);
                 if (role == null) return BaseResponse<List<ReceptionistAssignmentOptionDto>>.Success(new List<ReceptionistAssignmentOptionDto>());
 
@@ -214,7 +214,7 @@ namespace Clinic.Core.BLL
                     var result = await _userManager.CreateAsync(user, dto.Password);
                     if (!result.Succeeded) return BaseResponse<bool>.Fail(string.Join(", ", result.Errors));
 
-                    var roleResult = await _userManager.AddToRoleAsync(user.Id, nameof(Clinic.Core.Enums.UserRole.Doctor));
+                    var roleResult = await _userManager.AddToRoleAsync(user.Id, "Doctor");
                     if (!roleResult.Succeeded) return BaseResponse<bool>.Fail("Failed to assign Doctor role.");
 
                     var generatedCode = await GenerateNextDoctorCodeAsync();

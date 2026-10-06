@@ -1,0 +1,206 @@
+@{
+    ViewBag.Title = "Patients Management";
+}
+
+<div ng-cloak ng-controller="PatientController">
+    <!-- Header -->
+    <div class="page-header" ng-show="viewState === 'list' && permissions.Show">
+        <div class="page-title-wrap">
+            <h1 class="page-title">
+                {{ 'patient.PatientsTitle' | i18n }}
+            </h1>
+            <p class="page-subtitle">
+                {{ 'patient.PatientsSubtitle' | i18n }}
+            </p>
+        </div>
+
+        <div class="page-actions">
+            <button type="button"
+                    class="btn btn-primary"
+                    ng-if="permissions.Add"
+                    ng-click="openAdd()">
+                <i class="fa fa-plus"></i>
+                {{ 'patient.AddPatient' | i18n }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="c-alert c-alert-danger" ng-if="isError">
+        <i class="fa fa-exclamation-circle"></i>
+        <span>
+            {{ 'patient.ErrorLoadingPatients' | i18n }}
+        </span>
+    </div>
+
+    <!-- List View -->
+    <div class="c-card" ng-show="viewState === 'list' && !isError && permissions.Show">
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa fa-users"></i>
+                {{ 'patient.PatientsListTitle' | i18n }}
+            </h3>
+
+            <div flex>
+                <input type="text"
+                       class="form-control"
+                       ng-model="searchQuery"
+                       placeholder="{{ 'patient.SearchPatients' | i18n }}" />
+            </div>
+        </div>
+
+        <div class="c-card-body">
+            <!-- Loading -->
+            <div class="loading-state" ng-if="isLoading">
+                <div class="c-spinner"></div>
+                <span>{{ 'common.Loading' | i18n }}</span>
+            </div>
+
+            <!-- Empty -->
+            <div class="empty-state" ng-if="!isLoading && patients.length === 0">
+                <i class="fa fa-folder-open-o empty-state-icon"></i>
+                <h4 class="empty-state-title">
+                    {{ 'patient.NoPatientsFound' | i18n }}
+                </h4>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive" ng-if="!isLoading && patients.length > 0">
+                <table class="c-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'patient.PatientCode' | i18n }}</th>
+                            <th>{{ 'patient.Name' | i18n }}</th>
+                            <th>{{ 'patient.Phone' | i18n }}</th>
+                            <th>{{ 'patient.Gender' | i18n }}</th>
+                            <th>{{ 'patient.RegistrationDate' | i18n }}</th>
+                            <th style="width: 150px; text-align: center;">{{ 'common.Actions' | i18n }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="patient in getPaginatedPatients() track by patient.Id">
+                            <td><span class="c-badge c-badge-primary">{{ patient.PatientCode }}</span></td>
+                            <td>{{ patient.Name }}</td>
+                            <td>{{ patient.Phone }}</td>
+                            <td>{{ patient.Gender }}</td>
+                            <td>{{ patient.RegistrationDate | date:'shortDate' }}</td>
+                            <td style="text-align: center;">
+                                <button type="button" class="btn btn-outline" style="padding: 4px 8px;" ng-click="openView(patient)" title="{{ 'patient.View' | i18n }}">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline" style="padding: 4px 8px;" ng-if="permissions.Edit" ng-click="openEdit(patient)" title="{{ 'common.Edit' | i18n }}">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline" style="padding: 4px 8px; color: var(--c-danger);" ng-if="permissions.Delete" ng-click="deletePatient(patient.Id)" title="{{ 'common.Delete' | i18n }}">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <clinic-pagination pagination="pagination" ng-if="!isLoading && patients.length > 0"></clinic-pagination>
+        </div>
+    </div>
+
+    <!-- View State -->
+    <div class="c-card" ng-show="viewState === 'view'">
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa fa-user"></i>
+                {{ 'patient.PatientDetails' | i18n }}
+            </h3>
+        </div>
+        <div class="c-card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>{{ 'patient.PatientCode' | i18n }}:</strong> {{ currentPatient.PatientCode }}</p>
+                    <p><strong>{{ 'patient.Name' | i18n }}:</strong> {{ currentPatient.Name }}</p>
+                    <p><strong>{{ 'patient.Gender' | i18n }}:</strong> {{ currentPatient.Gender }}</p>
+                    <p><strong>{{ 'patient.BirthDate' | i18n }}:</strong> {{ currentPatient.BirthDate | date:'shortDate' }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>{{ 'patient.Phone' | i18n }}:</strong> {{ currentPatient.Phone }}</p>
+                    <p><strong>{{ 'patient.Email' | i18n }}:</strong> {{ currentPatient.Email }}</p>
+                    <p><strong>{{ 'patient.Address' | i18n }}:</strong> {{ currentPatient.Address }}</p>
+                    <p><strong>{{ 'patient.RegistrationDate' | i18n }}:</strong> {{ currentPatient.RegistrationDate | date:'shortDate' }}</p>
+                </div>
+            </div>
+            <div style="margin-top: 24px; display: flex; gap: 12px;">
+                <button type="button" class="btn btn-outline" ng-click="cancel()">
+                    {{ 'common.Cancel' | i18n }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit View -->
+    <div class="c-card" ng-show="viewState === 'add' || viewState === 'edit'">
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa" ng-class="viewState === 'add' ? 'fa-plus' : 'fa-pencil'"></i>
+                {{ viewState === 'add' ? ('patient.AddPatient' | i18n) : ('patient.EditPatient' | i18n) }}
+            </h3>
+        </div>
+
+        <div class="c-card-body">
+            <form ng-submit="savePatient()">
+                
+                <div class="form-group" ng-if="viewState === 'edit'">
+                    <label class="form-label">{{ 'patient.PatientCode' | i18n }}</label>
+                    <input type="text" class="form-control" ng-model="currentPatient.PatientCode" disabled />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ 'patient.Name' | i18n }}</label>
+                    <input type="text" class="form-control" ng-model="currentPatient.Name" required maxlength="200" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ 'patient.Gender' | i18n }}</label>
+                    <select class="form-control" ng-model="currentPatient.Gender" required>
+                        <option value="">{{ 'common.Select' | i18n }}</option>
+                        <option value="Male">{{ 'patient.Male' | i18n }}</option>
+                        <option value="Female">{{ 'patient.Female' | i18n }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ 'patient.BirthDate' | i18n }}</label>
+                    <input type="date" class="form-control" ng-model="currentPatient.BirthDate" required />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ 'patient.Phone' | i18n }}</label>
+                    <input type="text" class="form-control" ng-model="currentPatient.Phone" required maxlength="30" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ 'patient.Email' | i18n }}</label>
+                    <input type="email" class="form-control" ng-model="currentPatient.Email" maxlength="256" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ 'patient.Address' | i18n }}</label>
+                    <textarea class="form-control" ng-model="currentPatient.Address" maxlength="500"></textarea>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; gap: 12px;">
+                    <button type="submit" class="btn btn-primary" ng-disabled="isSaving">
+                        <i class="fa fa-save"></i>
+                        {{ 'common.Save' | i18n }}
+                    </button>
+                    <button type="button" class="btn btn-outline" ng-click="cancel()" ng-disabled="isSaving">
+                        {{ 'common.Cancel' | i18n }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Reception/Scripts/Controllers/PatientController.js"></script>
+}

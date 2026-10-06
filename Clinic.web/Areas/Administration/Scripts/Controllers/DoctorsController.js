@@ -8,7 +8,9 @@
             "notificationService",
             "confirmationService",
             "$filter",
-            function ($scope, $http, notificationService, confirmationService, $filter) {
+            "permissionService",
+            "ScreenKeys",
+            function ($scope, $http, notificationService, confirmationService, $filter, permissionService, ScreenKeys) {
 
                 // ----------------------------------------------------
                 // DOCTORS STATE & LOGIC
@@ -20,6 +22,8 @@
                 $scope.isDoctorLoading = false;
                 $scope.isDoctorSaving = false;
                 $scope.isDoctorError = false;
+
+                $scope.permissions = { Show: false, Add: false, Edit: false, Delete: false, Print: false };
 
                 $scope.doctorViewState = "list";
                 $scope.currentDoctor = {};
@@ -35,10 +39,20 @@
                 ];
 
                 $scope.$watch('selectedTabIndex', function(newVal) {
-                    if (newVal === 1 && $scope.doctors.length === 0) {
-                        loadDoctors();
-                        loadSpecialities();
-                        loadReceptionists();
+                    if (newVal === 1) {
+                        permissionService.loadPermissions().then(function () {
+                            $scope.permissions.Show = permissionService.hasPermission(ScreenKeys.Users, "Show");
+                            $scope.permissions.Add = permissionService.hasPermission(ScreenKeys.Users, "Add");
+                            $scope.permissions.Edit = permissionService.hasPermission(ScreenKeys.Users, "Edit");
+                            $scope.permissions.Delete = permissionService.hasPermission(ScreenKeys.Users, "Delete");
+                            $scope.permissions.Print = permissionService.hasPermission(ScreenKeys.Users, "Print");
+
+                            if ($scope.permissions.Show && $scope.doctors.length === 0) {
+                                loadDoctors();
+                                loadSpecialities();
+                                loadReceptionists();
+                            }
+                        });
                     }
                 });
 
@@ -83,6 +97,7 @@
                 }
 
                 $scope.openAddDoctor = function () {
+                    if (!$scope.permissions.Add) return;
                     $scope.doctorViewState = "add";
                     $scope.currentDoctor = {
                         UserName: "",
@@ -112,6 +127,7 @@
                 };
 
                 $scope.openEditDoctor = function (doctor) {
+                    if (!$scope.permissions.Edit) return;
                     $scope.isDoctorLoading = true;
                     $http.get("/Administration/Doctors/GetDoctor?id=" + doctor.Id)
                         .then(function (response) {

@@ -7,6 +7,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
+using Clinic.Core.Data;
 
 namespace Clinic.Web.Controllers
 {
@@ -94,6 +96,42 @@ namespace Clinic.Web.Controllers
             }
 
             return BadRequest(response.Message);
+        }
+        [Authorize]
+        [HttpGet]
+        [Route("permissions")]
+        public IHttpActionResult GetPermissions()
+        {
+            var userId = User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            using (var db = new Entities())
+            {
+                var user = db.AspNetUsers.Include("AspNetRoles").FirstOrDefault(u => u.Id == userId);
+                if (user == null) return Unauthorized();
+
+                var roleIds = user.AspNetRoles.Select(r => r.Id).ToList();
+                var permissions = db.RoleScreenPermissions
+                    .Where(p => roleIds.Contains(p.RoleId))
+                    .GroupBy(p => p.ScreenId)
+                    .Select(g => new
+                    {
+                        ScreenId = g.Key,
+                        Show = g.Any(x => x.ScreenShow),
+                        Add = g.Any(x => x.ScreenAdd),
+                        Edit = g.Any(x => x.ScreenEdit),
+                        Delete = g.Any(x => x.ScreenDelete),
+                        Print = g.Any(x => x.ScreenPrint)
+                    }).ToList();
+
+                var permissionDict = permissions.ToDictionary(p => p.ScreenId, p => new { p.Show, p.Add, p.Edit, p.Delete, p.Print });
+
+                return Ok(new Clinic.Core.Common.Responses.BaseResponse<object>
+                {
+                    IsSuccess = true,
+                    Data = permissionDict
+                });
+            }
         }
     }
 }

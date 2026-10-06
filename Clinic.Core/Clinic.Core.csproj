@@ -187,7 +187,8 @@
     <Compile Include="Data\Identity\Stores\ApplicationRoleStore.cs" />
     <Compile Include="Data\Identity\Stores\ApplicationUserStore.cs" />
     <Compile Include="Common\LanguageHelper.cs" />
-    <Compile Include="Data\Enums\UserRole.cs" />
+    <Compile Include="Data\Enums\ScreenPermission.cs" />
+    <Compile Include="Data\Constants\ScreenKeys.cs" />
     <Compile Include="Data\Enums\AppointmentStatus.cs" />
     <Compile Include="BLL\Users\UsersBLL.cs" />
     <Compile Include="BLL\Users\DTOs\UserDto.cs" />
@@ -210,6 +211,10 @@
     <Compile Include="BLL\Symptoms\SymptomsBLL.cs" />
     <Compile Include="BLL\Diagnoses\DTOs\DiagnosisDto.cs" />
     <Compile Include="BLL\Diagnoses\DiagnosesBLL.cs" />
+    <Compile Include="BLL\Patients\DTOs\PatientDto.cs" />
+    <Compile Include="BLL\Patients\DTOs\PatientCreateDto.cs" />
+    <Compile Include="BLL\Patients\DTOs\PatientUpdateDto.cs" />
+    <Compile Include="BLL\Patients\PatientsBLL.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

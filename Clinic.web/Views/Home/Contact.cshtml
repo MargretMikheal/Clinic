@@ -1,0 +1,78 @@
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<div ng-controller="DashboardController">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-title-wrap">
+            <h1 class="page-title">
+                {{ 'common.Dashboard' | i18n }}
+            </h1>
+        </div>
+    </div>
+
+
+    <!-- Loading -->
+    <div class="c-card"
+         ng-show="isLoading">
+
+        <div class="c-card-body loading-state">
+            <div class="c-spinner"></div>
+            <span>
+                {{ 'common.Loading' | i18n }}
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- Error -->
+    <div class="c-card"
+         ng-show="!isLoading && errorMessage">
+
+        <div class="c-card-body">
+
+            <div class="c-alert c-alert-danger">
+                <i class="fa fa-exclamation-triangle"></i>
+                <span>{{ errorMessage }}</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Dashboard Content -->
+    <div ng-show="!isLoading && !errorMessage">
+
+        <!-- Welcome Card -->
+        <div class="c-card">
+
+            <div class="c-card-body text-center" style="padding: var(--space-8);">
+
+                <h2 style="font-weight: 700; margin-bottom: var(--space-2);">
+                    {{ 'common.Welcome' | i18n }},
+                    {{ userInfo.DisplayName }}!
+                </h2>
+
+                <p style="color: var(--c-text-muted);">
+
+                    <strong>
+                        {{ 'common.Role' | i18n }}:
+                    </strong>
+
+                    <span class="c-badge c-badge-primary" style="margin-left: 4px;">
+                        {{ userInfo.Role }}
+                    </span>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

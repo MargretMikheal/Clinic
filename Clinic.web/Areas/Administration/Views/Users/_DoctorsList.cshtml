@@ -12,7 +12,7 @@
                 {{ 'users.DoctorsListTitle' | i18n }}
             </h3>
             <div class="page-actions" style="margin-left: auto;">
-                <button type="button" class="btn btn-primary" ng-click="openAddDoctor()">
+                <button type="button" class="btn btn-primary" ng-if="permissions.Add" ng-click="openAddDoctor()">
                     <i class="fa fa-plus"></i>
                     {{ 'users.AddDoctor' | i18n }}
                 </button>
@@ -60,6 +60,7 @@
                             </td>
                             <td style="text-align: center;">
                                 <button type="button" class="btn btn-outline" style="padding: 4px 8px;"
+                                        ng-if="permissions.Edit"
                                         ng-click="openEditDoctor(doctor)" title="{{ 'common.Edit' | i18n }}">
                                     <i class="fa fa-pencil"></i>
                                 </button>

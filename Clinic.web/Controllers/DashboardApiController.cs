@@ -28,7 +28,7 @@ namespace Clinic.Web.Controllers
 
         [HttpGet]
         [Route("admin")]
-        [Authorize(Roles = nameof(Clinic.Core.Enums.UserRole.Admin))]
+        [Authorize(Roles = "Admin")]
         public async Task<IHttpActionResult> GetAdminDashboard()
         {
             var response = await _adminDashboardService.GetDashboardAsync();
@@ -42,7 +42,7 @@ namespace Clinic.Web.Controllers
 
         [HttpGet]
         [Route("receptionist")]
-        [Authorize(Roles = nameof(Clinic.Core.Enums.UserRole.Receptionist))]
+        [Authorize(Roles = "Receptionist")]
         public async Task<IHttpActionResult> GetReceptionistDashboard()
         {
             var userId = GetCurrentUserId();
@@ -58,7 +58,7 @@ namespace Clinic.Web.Controllers
 
         [HttpGet]
         [Route("doctor")]
-        [Authorize(Roles = nameof(Clinic.Core.Enums.UserRole.Doctor))]
+        [Authorize(Roles = "Doctor")]
         public async Task<IHttpActionResult> GetDoctorDashboard()
         {
             var userId = GetCurrentUserId();
@@ -87,3 +87,4 @@ namespace Clinic.Web.Controllers
         }
     }
 }
+

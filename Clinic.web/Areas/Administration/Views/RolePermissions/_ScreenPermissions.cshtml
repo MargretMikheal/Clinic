@@ -52,7 +52,7 @@
             
             
             <div layout="row" layout-align="end center">
-                <md-button class="md-raised md-primary" ng-click="savePermissions()" ng-disabled="isSaving">
+                <md-button class="md-raised md-primary" ng-if="permissionsObj.Edit" ng-click="savePermissions()" ng-disabled="isSaving">
                     {{ 'rolepermission.SavePermissions' | i18n }}
                 </md-button>
             </div>

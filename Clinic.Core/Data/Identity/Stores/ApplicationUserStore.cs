@@ -294,3 +294,4 @@ namespace Clinic.Core.Identity.Stores
         }
     }
 }
+

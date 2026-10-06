@@ -14,6 +14,7 @@
         <div class="page-actions">
             <button type="button"
                     class="btn btn-primary"
+                    ng-if="permissions.Add"
                     ng-click="openAdd()">
                 <i class="fa fa-plus"></i>
                 {{ 'diagnosis.Add' | i18n }}
@@ -93,6 +94,7 @@
                                 <button type="button"
                                         class="btn btn-outline"
                                         style="padding: 4px 8px;"
+                                        ng-if="permissions.Edit"
                                         ng-click="openEdit(item)"
                                         title="{{ 'common.Edit' | i18n }}">
                                     <i class="fa fa-pencil"></i>
@@ -100,6 +102,7 @@
                                 <button type="button"
                                         class="btn btn-outline"
                                         style="padding: 4px 8px; color: var(--c-danger);"
+                                        ng-if="permissions.Delete"
                                         ng-click="deleteDiagnosis(item.Id)"
                                         title="{{ 'common.Delete' | i18n }}">
                                     <i class="fa fa-trash"></i>
@@ -181,3 +184,5 @@
 @section Scripts {
     <script src="~/Areas/Administration/Scripts/Controllers/DiagnosisController.js"></script>
 }
+
+

@@ -12,15 +12,15 @@ namespace Clinic.Core.Data.Seed
             if (context.RoleScreenPermissions.Any())
                 return;
 
-            var adminRoleName = Clinic.Core.Enums.UserRole.Admin.ToString();
+            var adminRoleName = "Admin";
             var adminRole = context.AspNetRoles
                 .FirstOrDefault(x => x.Name == adminRoleName);
 
-            var doctorRoleName = Clinic.Core.Enums.UserRole.Doctor.ToString();
+            var doctorRoleName = "Doctor";
             var doctorRole = context.AspNetRoles
                 .FirstOrDefault(x => x.Name == doctorRoleName);
 
-            var receptionistRoleName = Clinic.Core.Enums.UserRole.Receptionist.ToString();
+            var receptionistRoleName = "Receptionist";
             var receptionistRole = context.AspNetRoles
                 .FirstOrDefault(x => x.Name == receptionistRoleName);
 

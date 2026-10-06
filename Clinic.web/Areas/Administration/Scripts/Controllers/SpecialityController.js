@@ -8,7 +8,9 @@
             "notificationService",
             "confirmationService",
             "$filter",
-            function ($scope, $http, notificationService, confirmationService, $filter) {
+            "permissionService",
+            "ScreenKeys",
+            function ($scope, $http, notificationService, confirmationService, $filter, permissionService, ScreenKeys) {
 
                 $scope.specialities = [];
                 $scope.searchQuery = "";
@@ -16,6 +18,8 @@
                 $scope.isLoading = false;
                 $scope.isSaving = false;
                 $scope.isError = false;
+
+                $scope.permissions = { Show: false, Add: false, Edit: false, Delete: false, Print: false };
 
                 $scope.viewState = "list"; 
 
@@ -70,6 +74,7 @@
                 }
 
                 $scope.openAdd = function () {
+                    if (!$scope.permissions.Add) return;
                     $scope.viewState = "add";
 
                     $scope.currentSpeciality = {
@@ -80,6 +85,7 @@
                 };
 
                 $scope.openEdit = function (speciality) {
+                    if (!$scope.permissions.Edit) return;
                     $scope.viewState = "edit";
                     $scope.currentSpeciality = angular.copy(speciality);
                 };
@@ -129,7 +135,7 @@
                 };
 
                 $scope.deleteSpeciality = function (id) {
-                    if ($scope.isLoading) {
+                    if ($scope.isLoading || !$scope.permissions.Delete) {
                         return;
                     }
 
@@ -174,7 +180,21 @@
                 };
 
                 $scope.init = function () {
-                    loadSpecialities();
+                    permissionService.loadPermissions().then(function () {
+                        $scope.permissions.Show = permissionService.hasPermission(ScreenKeys.Specialities, "Show");
+                        $scope.permissions.Add = permissionService.hasPermission(ScreenKeys.Specialities, "Add");
+                        $scope.permissions.Edit = permissionService.hasPermission(ScreenKeys.Specialities, "Edit");
+                        $scope.permissions.Delete = permissionService.hasPermission(ScreenKeys.Specialities, "Delete");
+
+                        if ($scope.permissions.Show) {
+                            loadSpecialities();
+                        } else {
+                            $scope.isError = true;
+                            notificationService.error($filter("i18n")("common.Unauthorized") || "Unauthorized");
+                        }
+                    }).catch(function () {
+                        $scope.isError = true;
+                    });
                 };
 
                 $scope.init();

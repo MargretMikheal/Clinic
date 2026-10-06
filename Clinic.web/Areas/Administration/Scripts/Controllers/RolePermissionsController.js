@@ -7,7 +7,9 @@
             "$http",
             "notificationService",
             "$filter",
-            function ($scope, $http, notificationService, $filter) {
+            "permissionService",
+            "ScreenKeys",
+            function ($scope, $http, notificationService, $filter, permissionService, ScreenKeys) {
                 
                 $scope.roles = [];
                 $scope.selectedRoleId = null;
@@ -17,6 +19,8 @@
                 $scope.isLoading = false;
                 $scope.isSaving = false;
                 
+                $scope.permissionsObj = { Show: false, Add: false, Edit: false, Delete: false, Print: false };
+
                 $scope.selectedTabIndex = 0;
 
                 $scope.screenPagination = {
@@ -75,6 +79,7 @@
                 };
 
                 $scope.addRole = function () {
+                    if (!$scope.permissionsObj.Add) return;
                     if (!$scope.newRoleName) {
                         notificationService.warning($filter("i18n")("rolepermission.RoleNameRequired"));
                         return;
@@ -99,6 +104,7 @@
                 };
 
                 $scope.savePermissions = function () {
+                    if (!$scope.permissionsObj.Edit) return;
                     if (!$scope.selectedRoleId) {
                         notificationService.warning($filter("i18n")("rolepermission.RoleIsRequired"));
                         return;
@@ -125,7 +131,22 @@
                 };
 
                 $scope.init = function () {
-                    loadRoles();
+                    permissionService.loadPermissions().then(function () {
+                        $scope.permissionsObj.Show = permissionService.hasPermission(ScreenKeys.RolePermissions, "Show");
+                        $scope.permissionsObj.Add = permissionService.hasPermission(ScreenKeys.RolePermissions, "Add");
+                        $scope.permissionsObj.Edit = permissionService.hasPermission(ScreenKeys.RolePermissions, "Edit");
+                        $scope.permissionsObj.Delete = permissionService.hasPermission(ScreenKeys.RolePermissions, "Delete");
+                        $scope.permissionsObj.Print = permissionService.hasPermission(ScreenKeys.RolePermissions, "Print");
+
+                        if ($scope.permissionsObj.Show) {
+                            loadRoles();
+                        } else {
+                            $scope.isError = true;
+                            notificationService.error($filter("i18n")("common.Unauthorized") || "Unauthorized");
+                        }
+                    }).catch(function () {
+                        $scope.isError = true;
+                    });
                 };
 
                 $scope.init();

@@ -34,7 +34,7 @@ namespace Clinic.Core.Data.Seed
                     string.Join(", ", result.Errors));
             }
 
-            var roleResult = userManager.AddToRole(admin.Id, Clinic.Core.Enums.UserRole.Admin.ToString());
+            var roleResult = userManager.AddToRole(admin.Id, "Admin");
 
             if (!roleResult.Succeeded)
             {

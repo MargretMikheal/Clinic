@@ -2,10 +2,13 @@ using Clinic.Core.BLL;
 using Clinic.Core.BLL.Diagnoses.DTOs;
 using Microsoft.AspNet.Identity;
 using System.Web.Mvc;
+using Clinic.Core.Enums;
+using Clinic.Core.Constants;
+using Clinic.Web.Infrastructure.Security;
 
 namespace Clinic.Web.Areas.Administration.Controllers
 {
-    [Authorize(Roles = nameof(Clinic.Core.Enums.UserRole.Admin))]
+    [Authorize]
     public class DiagnosisController : Controller
     {
         private readonly DiagnosesBLL _diagnosesBLL;
@@ -16,12 +19,14 @@ namespace Clinic.Web.Areas.Administration.Controllers
         }
 
         [HttpGet]
+        [ScreenAuthorize(ScreenId = ScreenKeys.Diagnoses, RequiredPermission = ScreenPermission.Show)]
         public ActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        [ScreenAuthorize(ScreenId = ScreenKeys.Diagnoses, RequiredPermission = ScreenPermission.Show)]
         public JsonResult GetDiagnoses()
         {
             var response = _diagnosesBLL.GetDiagnoses();
@@ -29,6 +34,7 @@ namespace Clinic.Web.Areas.Administration.Controllers
         }
 
         [HttpPost]
+        [ScreenAuthorize(ScreenId = ScreenKeys.Diagnoses, RequiredPermission = ScreenPermission.Add)]
         public JsonResult AddDiagnosis(DiagnosisDto dto)
         {
             var response = _diagnosesBLL.CreateDiagnosis(dto, User.Identity.GetUserId());
@@ -36,6 +42,7 @@ namespace Clinic.Web.Areas.Administration.Controllers
         }
 
         [HttpPost]
+        [ScreenAuthorize(ScreenId = ScreenKeys.Diagnoses, RequiredPermission = ScreenPermission.Edit)]
         public JsonResult EditDiagnosis(DiagnosisDto dto)
         {
             var response = _diagnosesBLL.UpdateDiagnosis(dto, User.Identity.GetUserId());
@@ -43,6 +50,7 @@ namespace Clinic.Web.Areas.Administration.Controllers
         }
 
         [HttpPost]
+        [ScreenAuthorize(ScreenId = ScreenKeys.Diagnoses, RequiredPermission = ScreenPermission.Delete)]
         public JsonResult DeleteDiagnosis(int id)
         {
             var response = _diagnosesBLL.DeleteDiagnosis(id, User.Identity.GetUserId());

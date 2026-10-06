@@ -8,7 +8,8 @@
             "notificationService",
             "confirmationService",
             "$filter",
-            function ($scope, $http, notificationService, confirmationService, $filter) {
+            "permissionService", "ScreenKeys",
+            function ($scope, $http, notificationService, confirmationService, $filter, permissionService, ScreenKeys) {
 
                 $scope.diagnoses = [];
                 $scope.searchQuery = "";
@@ -16,6 +17,8 @@
                 $scope.isLoading = false;
                 $scope.isSaving = false;
                 $scope.isError = false;
+
+                $scope.permissions = { Show: false, Add: false, Edit: false, Delete: false, Print: false };
 
                 $scope.viewState = "list"; 
 
@@ -70,6 +73,7 @@
                 }
 
                 $scope.openAdd = function () {
+                    if (!$scope.permissions.Add) return;
                     $scope.viewState = "add";
 
                     $scope.currentDiagnosis = {
@@ -80,12 +84,15 @@
                 };
 
                 $scope.openEdit = function (diagnosis) {
+                    if (!$scope.permissions.Edit) return;
                     $scope.viewState = "edit";
                     $scope.currentDiagnosis = angular.copy(diagnosis);
                 };
 
                 $scope.cancel = function () {
-                    $scope.viewState = "list";
+
+
+                $scope.viewState = "list";
                     $scope.currentDiagnosis = {};
                     $scope.pagination.page = 1;
                     loadDiagnoses();
@@ -109,7 +116,9 @@
                                     $filter("i18n")("common.Success")
                                 );
 
-                                $scope.viewState = "list";
+
+
+                $scope.viewState = "list";
                                 $scope.currentDiagnosis = {};
                                 $scope.pagination.page = 1;
                                 return loadDiagnoses();
@@ -129,7 +138,7 @@
                 };
 
                 $scope.deleteDiagnosis = function (id) {
-                    if ($scope.isLoading) {
+                    if ($scope.isLoading || !$scope.permissions.Delete) {
                         return;
                     }
 
@@ -174,10 +183,26 @@
                 };
 
                 $scope.init = function () {
-                    loadDiagnoses();
+                    permissionService.loadPermissions().then(function () {
+                        $scope.permissions.Show = permissionService.hasPermission(ScreenKeys.Diagnoses, "Show");
+                        $scope.permissions.Add = permissionService.hasPermission(ScreenKeys.Diagnoses, "Add");
+                        $scope.permissions.Edit = permissionService.hasPermission(ScreenKeys.Diagnoses, "Edit");
+                        $scope.permissions.Delete = permissionService.hasPermission(ScreenKeys.Diagnoses, "Delete");
+                        $scope.permissions.Print = permissionService.hasPermission(ScreenKeys.Diagnoses, "Print");
+
+                        if ($scope.permissions.Show) {
+                            loadDiagnoses();
+                        } else {
+                            $scope.isError = true;
+                            notificationService.error($filter("i18n")("common.Unauthorized") || "Unauthorized");
+                        }
+                    }).catch(function () {
+                        $scope.isError = true;
+                    });
                 };
 
                 $scope.init();
             }
         ]);
 })();
+
