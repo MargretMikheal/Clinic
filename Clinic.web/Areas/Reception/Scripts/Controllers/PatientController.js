@@ -183,7 +183,12 @@
                 };
 
                 $scope.init = function () {
-                    loadPermissions();
+                    loadPermissions().then(function() {
+                        if ((window.location.hash === '#add' || window.location.hash === '#/add') && $scope.permissions.Add) {
+                            $scope.openAdd();
+                            window.history.replaceState(null, null, window.location.pathname + window.location.search);
+                        }
+                    });
                 };
 
                 $scope.init();

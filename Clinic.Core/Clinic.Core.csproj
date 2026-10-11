@@ -80,6 +80,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Appointments\AppointmentBLL.cs" />
+    <Compile Include="BLL\Appointments\DTOs\AppointmentDoctorDto.cs" />
+    <Compile Include="BLL\Appointments\DTOs\AppointmentDto.cs" />
+    <Compile Include="BLL\Appointments\DTOs\AppointmentListDto.cs" />
+    <Compile Include="BLL\Appointments\DTOs\AvailableSlotDto.cs" />
+    <Compile Include="BLL\Appointments\DTOs\ChangeAppointmentStatusDto.cs" />
+    <Compile Include="BLL\Appointments\DTOs\CreateAppointmentDto.cs" />
+    <Compile Include="BLL\Appointments\DTOs\UpdateAppointmentDto.cs" />
     <Compile Include="BLL\Interfaces\IAdminDashboardService.cs" />
     <Compile Include="BLL\Interfaces\IReceptionistDashboardService.cs" />
     <Compile Include="BLL\Interfaces\IDoctorDashboardService.cs" />

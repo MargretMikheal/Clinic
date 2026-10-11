@@ -12,6 +12,8 @@ namespace Clinic.Core.Data
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class Entities : DbContext
     {
@@ -43,5 +45,10 @@ namespace Clinic.Core.Data
         public virtual DbSet<VisitDiagnosi> VisitDiagnosis { get; set; }
         public virtual DbSet<VisitSymptom> VisitSymptoms { get; set; }
         public virtual DbSet<Doctor> Doctors { get; set; }
+    
+        public virtual int usp_Appointment_MarkExpiredAsNoShow()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_Appointment_MarkExpiredAsNoShow");
+        }
     }
 }

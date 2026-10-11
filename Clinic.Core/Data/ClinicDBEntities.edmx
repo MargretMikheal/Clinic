@@ -540,6 +540,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="usp_Appointment_MarkExpiredAsNoShow" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="ClinicDBEntitiesStoreContainer">
           <EntitySet Name="Appointment" EntityType="Self.Appointment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -1215,6 +1216,7 @@
             <End Role="Doctor" EntitySet="Doctors" />
             <End Role="Visit" EntitySet="Visits" />
           </AssociationSet>
+          <FunctionImport Name="usp_Appointment_MarkExpiredAsNoShow" />
         </EntityContainer>
         <EntityType Name="Doctor">
           <Key>
@@ -1587,6 +1589,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="usp_Appointment_MarkExpiredAsNoShow" FunctionName="ClinicDBEntities.Store.usp_Appointment_MarkExpiredAsNoShow" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

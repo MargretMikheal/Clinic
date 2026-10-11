@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="becd1660901549b585b452c0cb07c2ba" Name="Diagram1" ZoomLevel="54">
+      <Diagram DiagramId="becd1660901549b585b452c0cb07c2ba" Name="Diagram1" ZoomLevel="34">
         <EntityTypeShape EntityType="ClinicDBEntities.Appointment" Width="1.5" PointX="10.5" PointY="11.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ClinicDBEntities.AspNetRole" Width="1.5" PointX="0.75" PointY="12.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ClinicDBEntities.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="11.125" IsExpanded="true" />

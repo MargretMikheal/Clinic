@@ -1,0 +1,301 @@
+@{
+    ViewBag.Title = "Appointments";
+}
+
+<div ng-cloak ng-controller="AppointmentController">
+    <!-- Header -->
+    <div class="page-header" ng-show="viewState === 'list' && permissions.Show">
+        <div class="page-title-wrap">
+            <h1 class="page-title">
+                {{ 'appointment.Title' | i18n }}
+            </h1>
+        </div>
+
+        <div class="page-actions">
+            <button type="button"
+                    class="btn btn-primary"
+                    ng-if="permissions.Add"
+                    ng-click="openAdd()">
+                <i class="fa fa-plus"></i>
+                {{ 'appointment.AddAppointment' | i18n }}
+            </button>
+        </div>
+    </div>
+    2
+    <!-- Error State -->
+    <div class="c-alert c-alert-danger" ng-if="isError">
+        <i class="fa fa-exclamation-circle"></i>
+        <span>
+            {{ 'appointment.ErrorLoadingAppointments' | i18n }}
+        </span>
+    </div>
+
+    <!-- List View -->
+    <div class="c-card" ng-show="viewState === 'list' && !isError && permissions.Show">
+        <div class="c-card-header with-filters">
+            <h3 class="c-card-title">
+                <i class="fa fa-calendar"></i>
+                {{ 'appointment.Title' | i18n }}
+            </h3>
+
+            <div class="c-filter-toolbar">
+                <!-- Date Filters -->
+                <div class="c-filter-group">
+                    <label class="c-filter-label">{{ 'appointment.FromDate' | i18n }}:</label>
+                    <input type="date" class="form-control c-filter-input" ng-model="filterFromDate" />
+                </div>
+                <div class="c-filter-group">
+                    <label class="c-filter-label">{{ 'appointment.ToDate' | i18n }}:</label>
+                    <input type="date" class="form-control c-filter-input" ng-model="filterToDate" />
+                </div>
+                
+                <!-- Doctor Filter -->
+                <div class="c-filter-group">
+                    <select class="form-control c-filter-select" ng-model="filterDoctorId">
+                        <option value="">{{ 'appointment.AllDoctors' | i18n }}</option>
+                        <option ng-repeat="doc in doctors track by doc.Id" value="{{ doc.Id }}">{{ doc.Name }}</option>
+                    </select>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="c-filter-group">
+                    <select class="form-control c-filter-select" ng-model="filterStatus">
+                        <option value="">{{ 'appointment.AllStatuses' | i18n }}</option>
+                        <option value="Booked">{{ 'appointment.Booked' | i18n }}</option>
+                        <option value="Confirmed">{{ 'appointment.Confirmed' | i18n }}</option>
+                        <option value="Completed">{{ 'appointment.Completed' | i18n }}</option>
+                        <option value="Cancelled">{{ 'appointment.Cancelled' | i18n }}</option>
+                        <option value="NoShow">{{ 'appointment.NoShow' | i18n }}</option>
+                    </select>
+                </div>
+
+                <!-- Search -->
+                <div class="c-filter-group c-filter-search">
+                    <input type="text"
+                           class="form-control"
+                           ng-model="searchQuery"
+                           placeholder="{{ 'appointment.SearchPlaceholder' | i18n }}" />
+                </div>
+
+                <!-- Clear Button -->
+                <button type="button" class="btn btn-outline" ng-click="clearFilters()" title="{{ 'common.Clear' | i18n }}">
+                    <i class="fa fa-times"></i> {{ 'common.Clear' | i18n }}
+                </button>
+            </div>
+        </div>
+
+        <div class="c-card-body">
+            <!-- Loading -->
+            <div class="loading-state" ng-if="isLoading">
+                <div class="c-spinner"></div>
+                <span>{{ 'common.Loading' | i18n }}</span>
+            </div>
+
+            <!-- Empty -->
+            <div class="empty-state" ng-if="!isLoading && filteredAppointments.length === 0">
+                <i class="fa fa-folder-open-o empty-state-icon"></i>
+                <h4 class="empty-state-title">
+                    {{ 'appointment.NoAppointmentsFound' | i18n }}
+                </h4>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive" ng-if="!isLoading && filteredAppointments.length > 0">
+                <table class="c-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'appointment.AppointmentTime' | i18n }}</th>
+                            <th>{{ 'appointment.Patient' | i18n }}</th>
+                            <th>{{ 'appointment.PatientCode' | i18n }}</th>
+                            <th>{{ 'appointment.PatientPhone' | i18n }}</th>
+                            <th>{{ 'appointment.Doctor' | i18n }}</th>
+                            <th>{{ 'appointment.AppointmentDate' | i18n }}</th>
+                            <th>{{ 'common.Status' | i18n }}</th>
+                            <th>{{ 'appointment.Notes' | i18n }}</th>
+                            <th style="width: 150px; text-align: center;">{{ 'common.Actions' | i18n }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="appt in getPaginatedAppointments() track by appt.Id">
+                            <td><span class="c-badge c-badge-info">{{ formatTimeSpan(appt.AppointmentTime) }}</span></td>
+                            <td>{{ appt.PatientName }}</td>
+                            <td>{{ appt.PatientCode }}</td>
+                            <td>{{ appt.PatientPhone }}</td>
+                            <td>{{ appt.DoctorName }}</td>
+                            <td>{{ appt.AppointmentDate | date:'shortDate' }}</td>
+                            <td>
+                                <span ng-class="getStatusBadgeClass(appt.Status)">{{ getStatusLocalizationKey(appt.Status) | i18n }}</span>
+                            </td>
+                            <td>{{ appt.Notes }}</td>
+                            <td style="text-align: center;">
+                                <button type="button" class="btn btn-outline" style="padding: 4px 8px;" ng-click="openView(appt)" title="{{ 'appointment.View' | i18n }}">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline" style="padding: 4px 8px;" ng-if="permissions.Edit && appt.Status !== 'Completed' && !isAppointmentExpired(appt)" ng-click="openChangeStatus(appt)" title="{{ 'appointment.ChangeStatus' | i18n }}">
+                                    <i class="fa fa-refresh"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline" style="padding: 4px 8px;" ng-if="permissions.Edit && appt.Status !== 'Completed' && appt.Status !== 'Cancelled'" ng-click="openEdit(appt)" title="{{ 'common.Edit' | i18n }}">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline" style="padding: 4px 8px; color: var(--c-danger);" ng-if="permissions.Delete && appt.Status !== 'Completed'" ng-click="deleteAppointment(appt.Id)" title="{{ 'common.Delete' | i18n }}">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <clinic-pagination pagination="pagination" ng-if="!isLoading && filteredAppointments.length > 0"></clinic-pagination>
+        </div>
+    </div>
+
+    <!-- View State -->
+    <div class="c-card" ng-show="viewState === 'view'">
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa fa-calendar"></i>
+                {{ 'appointment.AppointmentDetails' | i18n }}
+            </h3>
+        </div>
+        <div class="c-card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>{{ 'appointment.PatientName' | i18n }}:</strong> {{ currentAppointment.PatientName }}</p>
+                    <p><strong>{{ 'appointment.PatientCode' | i18n }}:</strong> {{ currentAppointment.PatientCode }}</p>
+                    <p><strong>{{ 'appointment.PatientPhone' | i18n }}:</strong> {{ currentAppointment.PatientPhone }}</p>
+                    <p><strong>{{ 'appointment.DoctorName' | i18n }}:</strong> {{ currentAppointment.DoctorName }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>{{ 'appointment.AppointmentDate' | i18n }}:</strong> {{ currentAppointment.AppointmentDate | date:'shortDate' }}</p>
+                    <p><strong>{{ 'appointment.AppointmentTime' | i18n }}:</strong> {{ formatTimeSpan(currentAppointment.AppointmentTime) }}</p>
+                    <p><strong>{{ 'common.Status' | i18n }}:</strong> <span ng-class="getStatusBadgeClass(currentAppointment.Status)">{{ getStatusLocalizationKey(currentAppointment.Status) | i18n }}</span></p>
+                    <p><strong>{{ 'appointment.Notes' | i18n }}:</strong> {{ currentAppointment.Notes }}</p>
+                </div>
+            </div>
+            <div style="margin-top: 24px; display: flex; gap: 12px;">
+                <button type="button" class="btn btn-outline" ng-click="cancel()">
+                    {{ 'common.Cancel' | i18n }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit View -->
+    <div class="c-card" ng-show="viewState === 'add' || viewState === 'edit'">
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa" ng-class="viewState === 'add' ? 'fa-plus' : 'fa-pencil'"></i>
+                {{ viewState === 'add' ? ('appointment.AddAppointment' | i18n) : ('appointment.EditAppointment' | i18n) }}
+            </h3>
+        </div>
+
+        <div class="c-card-body">
+            <form ng-submit="saveAppointment()">
+                
+                <div class="form-group" ng-if="viewState === 'add'">
+                    <label class="form-label">{{ 'appointment.Patient' | i18n }} <span class="text-danger">*</span></label>
+                    <select class="form-control" ng-model="currentAppointment.PatientId" required>
+                        <option value="">{{ 'common.Select' | i18n }}</option>
+                        <option ng-repeat="p in patients track by p.Id" value="{{ p.Id }}">{{ p.Name }} ({{ p.PatientCode }})</option>
+                    </select>
+                </div>
+
+                <div class="form-group" ng-if="viewState === 'edit'">
+                    <label class="form-label">{{ 'appointment.Patient' | i18n }}</label>
+                    <select class="form-control" ng-model="currentAppointment.PatientId" disabled>
+                        <option ng-repeat="p in patients track by p.Id" value="{{ p.Id }}">{{ p.Name }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ 'appointment.Doctor' | i18n }} <span class="text-danger">*</span></label>
+                    <select class="form-control" ng-model="currentAppointment.DoctorId" ng-change="onDoctorOrDateChanged()" required>
+                        <option value="">{{ 'common.Select' | i18n }}</option>
+                        <option ng-repeat="doc in doctors track by doc.Id" value="{{ doc.Id }}">{{ doc.Name }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ 'appointment.AppointmentDate' | i18n }} <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" ng-model="currentAppointment.AppointmentDate" ng-change="onDoctorOrDateChanged()" required />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ 'appointment.AppointmentTime' | i18n }} <span class="text-danger">*</span></label>
+                    <div ng-if="isLoadingSlots">
+                        <i class="fa fa-spinner fa-spin"></i> {{ 'appointment.LoadingSlots' | i18n }}
+                    </div>
+                    <select class="form-control" ng-model="currentAppointment.AppointmentTime" ng-if="!isLoadingSlots" required>
+                        <option value="" ng-if="!currentAppointment.DoctorId">{{ 'appointment.SelectDoctorFirst' | i18n }}</option>
+                        <option value="" ng-if="currentAppointment.DoctorId && !currentAppointment.AppointmentDate">{{ 'appointment.SelectDateFirst' | i18n }}</option>
+                        <option value="" ng-if="currentAppointment.DoctorId && currentAppointment.AppointmentDate && availableSlots.length === 0">{{ 'appointment.NoAvailableSlots' | i18n }}</option>
+                        <option value="" ng-if="currentAppointment.DoctorId && currentAppointment.AppointmentDate && availableSlots.length > 0">{{ 'appointment.SelectTime' | i18n }}</option>
+                        
+                        <option ng-repeat="slot in availableSlots" value="{{ slot.Time }}">{{ slot.Time }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ 'appointment.Notes' | i18n }}</label>
+                    <textarea class="form-control" ng-model="currentAppointment.Notes" maxlength="500"></textarea>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; gap: 12px;">
+                    <button type="submit" class="btn btn-primary" ng-disabled="isSaving || isLoadingSlots || availableSlots.length === 0">
+                        <i class="fa fa-save"></i>
+                        {{ 'common.Save' | i18n }}
+                    </button>
+                    <button type="button" class="btn btn-outline" ng-click="cancel()" ng-disabled="isSaving">
+                        {{ 'common.Cancel' | i18n }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Status View -->
+    <div class="c-card" ng-show="viewState === 'changeStatus'">
+        <div class="c-card-header">
+            <h3 class="c-card-title">
+                <i class="fa fa-refresh"></i>
+                {{ 'appointment.ChangeStatus' | i18n }}
+            </h3>
+        </div>
+        <div class="c-card-body">
+            <form ng-submit="saveStatus()">
+                <div class="form-group">
+                    <label class="form-label">{{ 'appointment.CurrentStatus' | i18n }}</label>
+                    <input type="text" class="form-control" value="{{ getStatusLocalizationKey(statusForm.CurrentStatus) | i18n }}" disabled />
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">{{ 'appointment.NewStatus' | i18n }} <span class="text-danger">*</span></label>
+                    <select class="form-control" ng-model="statusForm.Status" required>
+                        <option value="">{{ 'common.Select' | i18n }}</option>
+                        <option value="Booked">{{ 'appointment.Booked' | i18n }}</option>
+                        <option value="Confirmed">{{ 'appointment.Confirmed' | i18n }}</option>
+                        <option value="Completed">{{ 'appointment.Completed' | i18n }}</option>
+                        <option value="Cancelled">{{ 'appointment.Cancelled' | i18n }}</option>
+                        <option value="NoShow">{{ 'appointment.NoShow' | i18n }}</option>
+                    </select>
+                </div>
+                
+                <div style="margin-top: 24px; display: flex; gap: 12px;">
+                    <button type="submit" class="btn btn-primary" ng-disabled="isSaving">
+                        <i class="fa fa-save"></i>
+                        {{ 'common.Save' | i18n }}
+                    </button>
+                    <button type="button" class="btn btn-outline" ng-click="cancel()" ng-disabled="isSaving">
+                        {{ 'common.Cancel' | i18n }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Reception/Scripts/Controllers/AppointmentController.js"></script>
+}

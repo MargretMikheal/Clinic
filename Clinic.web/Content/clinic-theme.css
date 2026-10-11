@@ -345,6 +345,11 @@ html[dir="rtl"] .clinic-menu-parent.is-open > .side-menu-link > .toggle-icon {
     background-color: var(--c-surface);
 }
 
+.c-card-header.with-filters {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
 .c-card-title {
     margin: 0;
     font-size: 16px;
@@ -361,6 +366,55 @@ html[dir="rtl"] .clinic-menu-parent.is-open > .side-menu-link > .toggle-icon {
 
 .c-card-body {
     padding: var(--space-5);
+}
+
+/* =========================================================
+   Filters & Toolbars
+   ========================================================= */
+
+.c-filter-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.c-filter-group {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}
+
+.c-filter-label {
+    margin-bottom: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--c-text-muted);
+    white-space: nowrap;
+}
+
+.c-filter-input {
+    min-width: 140px;
+    width: auto;
+}
+
+.c-filter-select {
+    min-width: 160px;
+    max-width: 320px;
+    width: auto;
+}
+
+.c-filter-search {
+    flex: 1 1 180px;
+    min-width: 180px;
+    max-width: 280px;
+}
+
+.c-filter-search .form-control {
+    width: 100%;
 }
 
 /* =========================================================
@@ -510,6 +564,14 @@ html[dir="rtl"] .c-table th {
 .c-badge-info { background-color: var(--c-info-light); color: var(--c-info); }
 .c-badge-neutral { background-color: var(--c-bg); color: var(--c-text-muted); border: 1px solid var(--c-border); }
 
+/* Status Badges */
+.c-badge-booked { background-color: var(--c-primary-light); color: var(--c-primary); }
+.c-badge-confirmed { background-color: var(--c-success-light); color: var(--c-success); }
+.c-badge-completed { background-color: #334155; color: #ffffff; }
+.c-badge-cancelled { background-color: var(--c-danger-light); color: var(--c-danger); }
+.c-badge-noshow { background-color: var(--c-warning-light); color: var(--c-warning); }
+.c-badge-dark { background-color: #334155; color: #ffffff; }
+
 /* =========================================================
    Buttons
    ========================================================= */
@@ -606,6 +668,33 @@ html[dir="rtl"] .c-table th {
     border-color: var(--c-primary);
     outline: 0;
     box-shadow: 0 0 0 3px var(--c-primary-light);
+}
+
+/* Select / Dropdown Global Fix */
+select.form-control {
+    padding-right: 32px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    height: auto;
+    min-height: 42px;
+}
+
+html[dir="rtl"] select.form-control {
+    padding-left: 32px;
+    padding-right: 12px;
+    text-align: right;
+    direction: rtl;
+}
+
+select.form-control option {
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--c-text);
+    background-color: var(--c-surface);
+    white-space: normal;
+    direction: inherit;
 }
 
 .form-error {
@@ -768,5 +857,20 @@ html[dir="rtl"] .nav-actions {
         flex-direction: column;
         align-items: flex-start;
         gap: var(--space-4);
+    }
+    
+    .c-card-header.with-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .c-filter-toolbar {
+        justify-content: flex-start;
+    }
+    
+    .c-filter-select,
+    .c-filter-search {
+        max-width: 100%;
+        flex: 1 1 100%;
     }
 }
