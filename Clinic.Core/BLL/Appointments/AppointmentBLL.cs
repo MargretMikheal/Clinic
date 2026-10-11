@@ -54,7 +54,7 @@ namespace Clinic.Core.BLL
 
         private static bool IsExpired(Appointment appointment, DateTime now)
         {
-            return appointment.AppointmentDate.Date + appointment.AppointmentTime <= now;
+            return appointment.AppointmentDate.Date < now.Date;
         }
 
         private async Task<bool> PatientExistsAsync(int patientId)

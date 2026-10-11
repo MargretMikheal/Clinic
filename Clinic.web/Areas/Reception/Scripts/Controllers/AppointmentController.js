@@ -106,25 +106,16 @@
                 }
 
                 $scope.isAppointmentExpired = function(appt) {
-                    if (!appt || !appt.AppointmentDate || !appt.AppointmentTime) return false;
+                    if (!appt || !appt.AppointmentDate) return false;
                     
                     var apptDate = parseDate(appt.AppointmentDate);
                     if (!apptDate) return false;
 
-                    var hours = 0, minutes = 0;
-                    if (typeof appt.AppointmentTime === 'string') {
-                        var p = appt.AppointmentTime.split(':');
-                        if (p.length >= 2) {
-                            hours = parseInt(p[0], 10) || 0;
-                            minutes = parseInt(p[1], 10) || 0;
-                        }
-                    } else if (typeof appt.AppointmentTime === 'object') {
-                        hours = appt.AppointmentTime.Hours || 0;
-                        minutes = appt.AppointmentTime.Minutes || 0;
-                    }
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0);
 
-                    var apptDateTime = new Date(apptDate.getFullYear(), apptDate.getMonth(), apptDate.getDate(), hours, minutes, 0);
-                    return apptDateTime <= new Date();
+                    var apptDay = new Date(apptDate.getFullYear(), apptDate.getMonth(), apptDate.getDate(), 0, 0, 0, 0);
+                    return apptDay < today;
                 };
 
                 var filterTimeout = null;
@@ -288,7 +279,7 @@
 
                 $scope.openEdit = function (appt) {
                     if (!$scope.permissions.Edit) return;
-                    if (appt.Status === 'Completed' || appt.Status === 'Cancelled') {
+                    if (appt.Status === 'Completed' || appt.Status === 'Cancelled' || $scope.isAppointmentExpired(appt)) {
                         notificationService.error($filter('i18n')('appointment.AppointmentCannotBeEdited'));
                         return;
                     }
@@ -332,7 +323,7 @@
                 };
 
                 $scope.openChangeStatus = function (appt) {
-                    if (!$scope.permissions.Edit || appt.Status === 'Completed') return;
+                    if (!$scope.permissions.Edit || appt.Status === 'Completed' || $scope.isAppointmentExpired(appt)) return;
                     $scope.viewState = "changeStatus";
                     $scope.statusForm = {
                         AppointmentId: appt.Id,

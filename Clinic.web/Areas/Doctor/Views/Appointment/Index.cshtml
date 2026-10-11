@@ -1,0 +1,122 @@
+@{
+    ViewBag.Title = "My Appointments";
+}
+
+<div ng-cloak ng-controller="AppointmentController">
+    <!-- Header -->
+    <div class="page-header" ng-show="permissions.Show">
+        <div class="page-title-wrap">
+            <h1 class="page-title">
+                {{ 'menu.MyAppointments' | i18n }}
+            </h1>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="c-alert c-alert-danger" ng-if="isError">
+        <i class="fa fa-exclamation-circle"></i>
+        <span>
+            {{ 'appointment.ErrorLoadingAppointments' | i18n }}
+        </span>
+    </div>
+
+    <!-- List View -->
+    <div class="c-card" ng-show="!isError && permissions.Show">
+        <div class="c-card-header with-filters">
+            <h3 class="c-card-title">
+                <i class="fa fa-calendar"></i>
+                {{ 'menu.MyAppointments' | i18n }}
+            </h3>
+
+            <div class="c-filter-toolbar">
+                <!-- Date Filters -->
+                <div class="c-filter-group">
+                    <label class="c-filter-label">{{ 'appointment.FromDate' | i18n }}:</label>
+                    <input type="date" class="form-control c-filter-input" ng-model="filterFromDate" />
+                </div>
+                <div class="c-filter-group">
+                    <label class="c-filter-label">{{ 'appointment.ToDate' | i18n }}:</label>
+                    <input type="date" class="form-control c-filter-input" ng-model="filterToDate" />
+                </div>
+
+                <!-- Status Filter -->
+                <div class="c-filter-group">
+                    <select class="form-control c-filter-select" ng-model="filterStatus">
+                        <option value="">{{ 'appointment.AllStatuses' | i18n }}</option>
+                        <option value="Booked">{{ 'appointment.Booked' | i18n }}</option>
+                        <option value="Confirmed">{{ 'appointment.Confirmed' | i18n }}</option>
+                        <option value="Completed">{{ 'appointment.Completed' | i18n }}</option>
+                        <option value="Cancelled">{{ 'appointment.Cancelled' | i18n }}</option>
+                        <option value="NoShow">{{ 'appointment.NoShow' | i18n }}</option>
+                    </select>
+                </div>
+
+                <!-- Search -->
+                <div class="c-filter-group c-filter-search">
+                    <input type="text"
+                           class="form-control"
+                           ng-model="searchQuery"
+                           placeholder="{{ 'appointment.SearchPlaceholder' | i18n }}" />
+                </div>
+
+                <!-- Clear Button -->
+                <button type="button" class="btn btn-outline" ng-click="clearFilters()" title="{{ 'common.Clear' | i18n }}">
+                    <i class="fa fa-times"></i> {{ 'common.Clear' | i18n }}
+                </button>
+            </div>
+        </div>
+
+        <div class="c-card-body">
+            <!-- Loading -->
+            <div class="loading-state" ng-if="isLoading">
+                <div class="c-spinner"></div>
+                <span>{{ 'common.Loading' | i18n }}</span>
+            </div>
+
+            <!-- Empty -->
+            <div class="empty-state" ng-if="!isLoading && filteredAppointments.length === 0">
+                <i class="fa fa-folder-open-o empty-state-icon"></i>
+                <h4 class="empty-state-title">
+                    {{ 'appointment.NoAppointmentsFound' | i18n }}
+                </h4>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive" ng-if="!isLoading && filteredAppointments.length > 0">
+                <table class="c-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'appointment.AppointmentDate' | i18n }}</th>
+                            <th>{{ 'appointment.AppointmentTime' | i18n }}</th>
+                            <th>{{ 'appointment.Patient' | i18n }}</th>
+                            <th>{{ 'appointment.PatientCode' | i18n }}</th>
+                            <th>{{ 'appointment.PatientPhone' | i18n }}</th>
+                            <th>{{ 'common.Status' | i18n }}</th>
+                            <th>{{ 'appointment.Notes' | i18n }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="appt in getPaginatedAppointments() track by appt.Id">
+                            <td>{{ appt.AppointmentDate | date:'shortDate' }}</td>
+                            <td><span class="c-badge c-badge-info">{{ formatTimeSpan(appt.AppointmentTime) }}</span></td>
+                            <td>{{ appt.PatientName }}</td>
+                            <td>{{ appt.PatientCode }}</td>
+                            <td>{{ appt.PatientPhone }}</td>
+                            <td>
+                                <span ng-class="getStatusBadgeClass(appt.Status)">{{ getStatusLocalizationKey(appt.Status) | i18n }}</span>
+                            </td>
+                            <td>{{ appt.Notes }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <clinic-pagination pagination="pagination" ng-if="!isLoading && filteredAppointments.length > 0"></clinic-pagination>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Doctor/Scripts/Controllers/AppointmentController.js"></script>
+}

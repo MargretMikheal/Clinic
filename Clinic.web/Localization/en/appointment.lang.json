@@ -59,5 +59,6 @@
     "FromDate": "From Date",
     "ToDate": "To Date",
     "InvalidDateRange": "Invalid date range (From Date must be before To Date)",
-    "AppointmentExpired": "This appointment has expired and can no longer be modified or have its status changed"
+    "AppointmentExpired": "This appointment has expired and can no longer be modified or have its status changed",
+    "MyAppointments": "My Appointments"
 }

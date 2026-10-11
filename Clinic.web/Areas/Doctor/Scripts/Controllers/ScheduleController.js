@@ -102,18 +102,18 @@
                                     $scope.loadSchedule();
                                 } else {
                                     $scope.isError = true;
-                                    $scope.errorMessage = translateMessage("schedule.Unauthorized");
+                                    $scope.errorMessage = $filter("i18n")("schedule.Unauthorized");
                                 }
                             } else {
                                 $scope.isError = true;
-                                $scope.errorMessage = translateMessage("schedule.ErrorLoadingSchedule");
+                                $scope.errorMessage = $filter("i18n")("schedule.ErrorLoadingSchedule");
                                 notificationService.error($scope.errorMessage);
                             }
                         })
                         .catch(function (err) {
                             console.error("Error checking role", err);
                             $scope.isError = true;
-                            $scope.errorMessage = translateMessage("schedule.ErrorLoadingSchedule");
+                            $scope.errorMessage = $filter("i18n")("schedule.ErrorLoadingSchedule");
                             notificationService.error($scope.errorMessage);
                         });
                 }
@@ -125,12 +125,12 @@
                             if (response.data && response.data.IsSuccess) {
                                 $scope.doctorList = response.data.Data || [];
                             } else {
-                                notificationService.error(translateMessage("schedule.ErrorLoadingSchedule"));
+                                notificationService.error($filter("i18n")("schedule.ErrorLoadingSchedule"));
                             }
                         })
                         .catch(function (err) {
                             console.error("Error loading doctors", err);
-                            notificationService.error(translateMessage("schedule.ErrorLoadingSchedule"));
+                            notificationService.error($filter("i18n")("schedule.ErrorLoadingSchedule"));
                         })
                         .finally(function () {
                             $scope.isLoadingDoctors = false;
@@ -203,14 +203,14 @@
                             } else {
                                 $scope.isError = true;
                                 var msg = response.data ? response.data.Message : null;
-                                $scope.errorMessage = translateMessage(msg || "schedule.ErrorLoadingSchedule");
+                                $scope.errorMessage = resolveServerMessage(msg, "schedule.ErrorLoadingSchedule");
                                 notificationService.error($scope.errorMessage);
                             }
                         })
                         .catch(function (error) {
                             console.error("Error loading schedule", error);
                             $scope.isError = true;
-                            $scope.errorMessage = translateMessage("schedule.ErrorLoadingSchedule");
+                            $scope.errorMessage = $filter("i18n")("schedule.ErrorLoadingSchedule");
                             notificationService.error($scope.errorMessage);
                         })
                         .finally(function () {
@@ -331,7 +331,7 @@
                 $scope.openAddPeriod = function (dayId) {
                     if (!$scope.permissions.Add) return;
                     if ($scope.isAdmin && (!$scope.selectedDoctorId || $scope.selectedDoctorId <= 0)) {
-                        notificationService.warning(translateMessage("schedule.PleaseSelectDoctor"));
+                        notificationService.warning($filter("i18n")("schedule.PleaseSelectDoctor"));
                         return;
                     }
 
@@ -377,7 +377,7 @@
 
                     var period = $scope.activePeriod;
                     if (!period.StartTimeObj || !period.EndTimeObj) {
-                        $scope.formError = translateMessage("common.Required");
+                        $scope.formError = $filter("i18n")("common.Required");
                         return;
                     }
 
@@ -385,19 +385,19 @@
                     var endTimeStr = formatTimeObjToTimeString(period.EndTimeObj);
 
                     if (startTimeStr >= endTimeStr) {
-                        $scope.formError = translateMessage("schedule.InvalidTimeRange");
+                        $scope.formError = $filter("i18n")("schedule.InvalidTimeRange");
                         return;
                     }
 
                     var dur = calculateDurationMinutes(startTimeStr, endTimeStr);
                     if (dur <= 0) {
-                        $scope.formError = translateMessage("schedule.ZeroDurationError");
+                        $scope.formError = $filter("i18n")("schedule.ZeroDurationError");
                         return;
                     }
 
                     var slotDuration = $scope.doctorInfo.SlotDuration || 0;
                     if (slotDuration > 0 && dur < slotDuration) {
-                        $scope.formError = translateMessage("schedule.PeriodShorterThanSlot", [slotDuration]);
+                        $scope.formError = $filter("i18n")("schedule.PeriodShorterThanSlot", [slotDuration]);
                         return;
                     }
 
@@ -413,7 +413,7 @@
                     });
 
                     if (isOverlapping) {
-                        $scope.formError = translateMessage("schedule.OverlappingPeriod");
+                        $scope.formError = $filter("i18n")("schedule.OverlappingPeriod");
                         return;
                     }
 
@@ -438,19 +438,19 @@
                     $http.post(url, payload)
                         .then(function (response) {
                             if (response.data && response.data.IsSuccess) {
-                                var msg = translateMessage(response.data.Message || "schedule.PeriodSavedSuccess");
+                                var msg = resolveServerMessage(response.data.Message, "schedule.PeriodSavedSuccess");
                                 notificationService.success(msg);
                                 $scope.showModal = false;
                                 $scope.loadSchedule($scope.isAdmin ? $scope.selectedDoctorId : null);
                             } else {
                                 var errMsg = response.data ? response.data.Message : null;
-                                $scope.formError = translateMessage(errMsg || "common.SomethingWentWrong");
+                                $scope.formError = resolveServerMessage(errMsg, "common.SomethingWentWrong");
                                 notificationService.error($scope.formError);
                             }
                         })
                         .catch(function (error) {
                             console.error("Error saving period", error);
-                            $scope.formError = translateMessage("common.SomethingWentWrong");
+                            $scope.formError = $filter("i18n")("common.SomethingWentWrong");
                             notificationService.error($scope.formError);
                         })
                         .finally(function () {
@@ -478,18 +478,18 @@
                         $http.post("/Doctor/Schedule/DeletePeriod", payload)
                             .then(function (response) {
                                 if (response.data && response.data.IsSuccess) {
-                                    var msg = translateMessage(response.data.Message || "schedule.PeriodDeletedSuccess");
+                                    var msg = resolveServerMessage(response.data.Message, "schedule.PeriodDeletedSuccess");
                                     notificationService.success(msg);
                                     $scope.loadSchedule($scope.isAdmin ? $scope.selectedDoctorId : null);
                                 } else {
                                     var errMsg = response.data ? response.data.Message : null;
-                                    var translated = translateMessage(errMsg || "common.SomethingWentWrong");
+                                    var translated = resolveServerMessage(errMsg, "common.SomethingWentWrong");
                                     notificationService.error(translated);
                                 }
                             })
                             .catch(function (error) {
                                 console.error("Error deleting period", error);
-                                notificationService.error(translateMessage("common.SomethingWentWrong"));
+                                notificationService.error($filter("i18n")("common.SomethingWentWrong"));
                             })
                             .finally(function () {
                                 $scope.isLoading = false;
@@ -502,40 +502,22 @@
                 // =========================================================
                 $scope.getSlotHintText = function () {
                     var dur = $scope.doctorInfo.SlotDuration || 0;
-                    return translateMessage("schedule.PeriodShorterThanSlot", [dur]);
+                    return $filter("i18n")("schedule.PeriodShorterThanSlot", [dur]);
                 };
 
-                function translateMessage(key, params) {
-                    if (!key) return "";
-
-                    if (key.indexOf("::") !== -1) {
-                        var parts = key.split("::");
-                        var baseKey = parts[0];
-                        var subParams = parts.slice(1);
-                        var rawTranslated = $filter("i18n")(baseKey);
-                        if (rawTranslated && rawTranslated !== baseKey) {
-                            for (var p = 0; p < subParams.length; p++) {
-                                rawTranslated = rawTranslated.replace("{" + p + "}", subParams[p]);
-                            }
-                            return rawTranslated;
-                        }
-                        return baseKey + " (" + subParams.join(", ") + ")";
+                function resolveServerMessage(message, fallbackKey) {
+                    if (!message) {
+                        return fallbackKey ? $filter("i18n")(fallbackKey) : "";
                     }
-
-                    var translated = $filter("i18n")(key);
-                    if (translated && translated !== key) {
-                        if (params && params.length) {
-                            for (var i = 0; i < params.length; i++) {
-                                translated = translated.replace("{" + i + "}", params[i]);
-                            }
+                    if (message.indexOf("schedule.") === 0) {
+                        if (message.indexOf("::") !== -1) {
+                            var parts = message.split("::");
+                            return $filter("i18n")(parts[0], parts.slice(1));
                         }
-                        return translated;
+                        return $filter("i18n")(message);
                     }
-
-                    return key;
+                    return message;
                 }
-
-                $scope.translateMessage = translateMessage;
 
                 // Start
                 $scope.init();

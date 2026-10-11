@@ -134,7 +134,7 @@
                                 <button type="button" class="btn btn-outline" style="padding: 4px 8px;" ng-if="permissions.Edit && appt.Status !== 'Completed' && !isAppointmentExpired(appt)" ng-click="openChangeStatus(appt)" title="{{ 'appointment.ChangeStatus' | i18n }}">
                                     <i class="fa fa-refresh"></i>
                                 </button>
-                                <button type="button" class="btn btn-outline" style="padding: 4px 8px;" ng-if="permissions.Edit && appt.Status !== 'Completed' && appt.Status !== 'Cancelled'" ng-click="openEdit(appt)" title="{{ 'common.Edit' | i18n }}">
+                                <button type="button" class="btn btn-outline" style="padding: 4px 8px;" ng-if="permissions.Edit && appt.Status !== 'Completed' && appt.Status !== 'Cancelled' && !isAppointmentExpired(appt)" ng-click="openEdit(appt)" title="{{ 'common.Edit' | i18n }}">
                                     <i class="fa fa-pencil"></i>
                                 </button>
                                 <button type="button" class="btn btn-outline" style="padding: 4px 8px; color: var(--c-danger);" ng-if="permissions.Delete && appt.Status !== 'Completed'" ng-click="deleteAppointment(appt.Id)" title="{{ 'common.Delete' | i18n }}">
