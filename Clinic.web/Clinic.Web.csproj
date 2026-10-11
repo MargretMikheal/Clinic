@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
@@ -193,12 +193,20 @@
     <Compile Include="Areas\Reception\ReceptionAreaRegistration.cs" />
     <Compile Include="Areas\Reception\Controllers\PatientController.cs" />
     <Compile Include="Infrastructure\Security\ScreenAuthorizeAttribute.cs" />
+    <Compile Include="Areas\Doctor\DoctorAreaRegistration.cs" />
+    <Compile Include="Areas\Doctor\Controllers\ScheduleController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Administration\Scripts\Controllers\DoctorsController.js" />
     <Content Include="Areas\Administration\Scripts\Controllers\UsersController.js" />
     <Content Include="Areas\Administration\Scripts\Controllers\RolePermissionsController.js" />
     <Content Include="Areas\Reception\Scripts\Controllers\AppointmentController.js" />
+    <Content Include="Areas\Doctor\Scripts\Controllers\ScheduleController.js" />
+    <Content Include="Areas\Doctor\Views\web.config" />
+    <Content Include="Areas\Doctor\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Doctor\Views\Schedule\Index.cshtml" />
+    <Content Include="Localization\en\schedule.lang.json" />
+    <Content Include="Localization\ar\schedule.lang.json" />
     <Content Include="Content\angular-material.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />

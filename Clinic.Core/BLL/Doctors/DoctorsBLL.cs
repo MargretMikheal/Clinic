@@ -1,6 +1,7 @@
 using Clinic.Core.BLL.Doctors.DTOs;
 using Clinic.Core.Common.Responses;
 using Clinic.Core.Data;
+using Clinic.Core.Enums;
 using Clinic.Core.Identity;
 using Clinic.Core.Identity.Stores;
 using Microsoft.AspNet.Identity;
@@ -28,24 +29,55 @@ namespace Clinic.Core.BLL
         {
             try
             {
-                var doctors = _context.Doctors
+                var doctors = await _context.Doctors
+                    .AsNoTracking()
                     .Where(d => !d.IsDeleted)
-                    .ToList()
-                    .Select(d => new DoctorListDto
+                    .Select(d => new
                     {
-                        Id = d.Id,
-                        DoctorCode = d.DoctorCode,
-                        Name = d.Name,
+                        d.Id,
+                        d.DoctorCode,
+                        d.Name,
                         SpecialityName = d.Speciality != null ? d.Speciality.NameEn : "",
-                        Phone = d.Phone,
-                        Email = d.Email,
-                        ExaminationPrice = d.ExaminationPrice,
-                        SlotDuration = d.SlotDuration,
-                        IsActive = d.IsActive,
-                        ReceptionistName = d.ReceptionistUserId != null ? _context.AspNetUsers.FirstOrDefault(u => u.Id == d.ReceptionistUserId.ToString())?.UserName : ""
-                    }).ToList();
+                        d.Phone,
+                        d.Email,
+                        d.ExaminationPrice,
+                        d.SlotDuration,
+                        d.IsActive,
+                        d.ReceptionistUserId
+                    })
+                    .ToListAsync();
 
-                return BaseResponse<List<DoctorListDto>>.Success(doctors);
+                var receptionistIds = doctors
+                    .Where(d => d.ReceptionistUserId.HasValue)
+                    .Select(d => d.ReceptionistUserId.Value.ToString())
+                    .Distinct()
+                    .ToList();
+
+                var receptionistMap = receptionistIds.Any()
+                    ? await _context.AspNetUsers
+                        .AsNoTracking()
+                        .Where(u => receptionistIds.Contains(u.Id))
+                        .Select(u => new { u.Id, u.UserName })
+                        .ToDictionaryAsync(u => u.Id, u => u.UserName)
+                    : new Dictionary<string, string>();
+
+                var result = doctors.Select(d => new DoctorListDto
+                {
+                    Id = d.Id,
+                    DoctorCode = d.DoctorCode,
+                    Name = d.Name,
+                    SpecialityName = d.SpecialityName,
+                    Phone = d.Phone,
+                    Email = d.Email,
+                    ExaminationPrice = d.ExaminationPrice,
+                    SlotDuration = d.SlotDuration,
+                    IsActive = d.IsActive,
+                    ReceptionistName = (d.ReceptionistUserId.HasValue && receptionistMap.TryGetValue(d.ReceptionistUserId.Value.ToString(), out var rName))
+                        ? rName
+                        : ""
+                }).ToList();
+
+                return BaseResponse<List<DoctorListDto>>.Success(result);
             }
             catch (Exception ex)
             {
@@ -312,44 +344,46 @@ namespace Clinic.Core.BLL
                     doctor.ModifiedDate = DateTime.Now;
                     doctor.ModifiedBy = currentUserId;
 
-                    var existingSchedules = doctor.DoctorSchedules.Where(s => !s.IsDeleted).ToList();
-                    var newSchedules = dto.Schedules ?? new List<DoctorScheduleDto>();
-
-                    foreach (var es in existingSchedules)
+                    if (dto.Schedules != null)
                     {
-                        if (!newSchedules.Any(ns => ns.Id == es.Id))
-                        {
-                            es.IsDeleted = true;
-                            es.ModifiedDate = DateTime.Now;
-                            es.ModifiedBy = currentUserId;
-                        }
-                    }
+                        var existingSchedules = doctor.DoctorSchedules.Where(s => !s.IsDeleted).ToList();
 
-                    foreach (var ns in newSchedules)
-                    {
-                        if (ns.Id == 0)
+                        foreach (var es in existingSchedules)
                         {
-                            _context.DoctorSchedules.Add(new DoctorSchedule
+                            if (!dto.Schedules.Any(ns => ns.Id == es.Id))
                             {
-                                DoctorId = doctor.Id,
-                                DayOfWeek = ns.DayOfWeek,
-                                StartTime = TimeSpan.Parse(ns.StartTime),
-                                EndTime = TimeSpan.Parse(ns.EndTime),
-                                CreatedDate = DateTime.Now,
-                                CreatedBy = currentUserId,
-                                IsDeleted = false
-                            });
-                        }
-                        else
-                        {
-                            var es = existingSchedules.FirstOrDefault(s => s.Id == ns.Id);
-                            if (es != null)
-                            {
-                                es.DayOfWeek = ns.DayOfWeek;
-                                es.StartTime = TimeSpan.Parse(ns.StartTime);
-                                es.EndTime = TimeSpan.Parse(ns.EndTime);
+                                es.IsDeleted = true;
                                 es.ModifiedDate = DateTime.Now;
                                 es.ModifiedBy = currentUserId;
+                            }
+                        }
+
+                        foreach (var ns in dto.Schedules)
+                        {
+                            if (ns.Id == 0)
+                            {
+                                _context.DoctorSchedules.Add(new DoctorSchedule
+                                {
+                                    DoctorId = doctor.Id,
+                                    DayOfWeek = ns.DayOfWeek,
+                                    StartTime = TimeSpan.Parse(ns.StartTime),
+                                    EndTime = TimeSpan.Parse(ns.EndTime),
+                                    CreatedDate = DateTime.Now,
+                                    CreatedBy = currentUserId,
+                                    IsDeleted = false
+                                });
+                            }
+                            else
+                            {
+                                var es = existingSchedules.FirstOrDefault(s => s.Id == ns.Id);
+                                if (es != null)
+                                {
+                                    es.DayOfWeek = ns.DayOfWeek;
+                                    es.StartTime = TimeSpan.Parse(ns.StartTime);
+                                    es.EndTime = TimeSpan.Parse(ns.EndTime);
+                                    es.ModifiedDate = DateTime.Now;
+                                    es.ModifiedBy = currentUserId;
+                                }
                             }
                         }
                     }
@@ -373,5 +407,438 @@ namespace Clinic.Core.BLL
                 }
             }
         }
+
+        #region Doctor My Schedule Methods
+
+        public async Task<BaseResponse<DoctorWeeklyScheduleDto>> GetWeeklyScheduleAsync(string currentUserId, bool isAdmin, int? targetDoctorId = null)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                    return BaseResponse<DoctorWeeklyScheduleDto>.Fail("schedule.Unauthorized");
+
+                Doctor doctor = null;
+
+                if (isAdmin)
+                {
+                    if (!targetDoctorId.HasValue || targetDoctorId.Value <= 0)
+                    {
+                        // Admin has not selected a doctor yet - return empty success
+                        return BaseResponse<DoctorWeeklyScheduleDto>.Success(null);
+                    }
+
+                    doctor = await _context.Doctors
+                        .Include(d => d.DoctorSchedules)
+                        .FirstOrDefaultAsync(d => d.Id == targetDoctorId.Value && !d.IsDeleted);
+
+                    if (doctor == null)
+                        return BaseResponse<DoctorWeeklyScheduleDto>.Fail("schedule.DoctorNotFound");
+
+                    if (!doctor.IsActive)
+                        return BaseResponse<DoctorWeeklyScheduleDto>.Fail("schedule.DoctorInactive");
+                }
+                else
+                {
+                    // Doctor mode: resolve strictly by CurrentUserId
+                    doctor = await _context.Doctors
+                        .Include(d => d.DoctorSchedules)
+                        .FirstOrDefaultAsync(d => d.UserId == currentUserId && !d.IsDeleted);
+
+                    if (doctor == null)
+                        return BaseResponse<DoctorWeeklyScheduleDto>.Fail("schedule.DoctorNotFound");
+
+                    if (!doctor.IsActive)
+                        return BaseResponse<DoctorWeeklyScheduleDto>.Fail("schedule.DoctorInactive");
+                }
+
+                var schedules = doctor.DoctorSchedules
+                    .Where(s => !s.IsDeleted)
+                    .OrderBy(s => s.DayOfWeek)
+                    .ThenBy(s => s.StartTime)
+                    .Select(s => new DoctorScheduleDto
+                    {
+                        Id = s.Id,
+                        DoctorId = s.DoctorId,
+                        DayOfWeek = s.DayOfWeek,
+                        StartTime = s.StartTime.ToString(@"hh\:mm"),
+                        EndTime = s.EndTime.ToString(@"hh\:mm")
+                    }).ToList();
+
+                var result = new DoctorWeeklyScheduleDto
+                {
+                    DoctorId = doctor.Id,
+                    DoctorCode = doctor.DoctorCode,
+                    DoctorName = doctor.Name,
+                    SlotDuration = doctor.SlotDuration,
+                    Schedules = schedules
+                };
+
+                return BaseResponse<DoctorWeeklyScheduleDto>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                return BaseResponse<DoctorWeeklyScheduleDto>.Fail(ex.Message);
+            }
+        }
+
+        public Task<BaseResponse<DoctorWeeklyScheduleDto>> GetMyWeeklyScheduleAsync(string currentUserId)
+        {
+            return GetWeeklyScheduleAsync(currentUserId, false, null);
+        }
+
+        public async Task<BaseResponse<List<DoctorListDto>>> GetActiveDoctorsForScheduleAsync()
+        {
+            try
+            {
+                var doctors = await _context.Doctors
+                    .Where(d => !d.IsDeleted && d.IsActive)
+                    .OrderBy(d => d.Name)
+                    .Select(d => new DoctorListDto
+                    {
+                        Id = d.Id,
+                        DoctorCode = d.DoctorCode,
+                        Name = d.Name,
+                        SlotDuration = d.SlotDuration,
+                        IsActive = d.IsActive
+                    })
+                    .ToListAsync();
+
+                return BaseResponse<List<DoctorListDto>>.Success(doctors);
+            }
+            catch (Exception ex)
+            {
+                return BaseResponse<List<DoctorListDto>>.Fail(ex.Message);
+            }
+        }
+
+        public async Task<BaseResponse<DoctorScheduleDto>> AddSchedulePeriodAsync(DoctorScheduleDto dto, string currentUserId, bool isAdmin = false, int? targetDoctorId = null)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                    return BaseResponse<DoctorScheduleDto>.Fail("schedule.Unauthorized");
+
+                Doctor doctor = null;
+                if (isAdmin)
+                {
+                    int docId = targetDoctorId ?? (dto != null ? dto.DoctorId : 0);
+                    if (docId <= 0)
+                        return BaseResponse<DoctorScheduleDto>.Fail("schedule.PleaseSelectDoctor");
+
+                    doctor = await _context.Doctors
+                        .FirstOrDefaultAsync(d => d.Id == docId && !d.IsDeleted);
+                }
+                else
+                {
+                    doctor = await _context.Doctors
+                        .FirstOrDefaultAsync(d => d.UserId == currentUserId && !d.IsDeleted);
+                }
+
+                if (doctor == null)
+                    return BaseResponse<DoctorScheduleDto>.Fail("schedule.DoctorNotFound");
+
+                if (!doctor.IsActive)
+                    return BaseResponse<DoctorScheduleDto>.Fail("schedule.DoctorInactive");
+
+                if (dto == null)
+                    return BaseResponse<DoctorScheduleDto>.Fail("schedule.InvalidData");
+
+                if (dto.DayOfWeek > 6)
+                    return BaseResponse<DoctorScheduleDto>.Fail("schedule.InvalidDayOfWeek");
+
+                if (!TimeSpan.TryParse(dto.StartTime, out var startTime) || !TimeSpan.TryParse(dto.EndTime, out var endTime))
+                    return BaseResponse<DoctorScheduleDto>.Fail("schedule.InvalidTimeFormat");
+
+                if (startTime >= endTime)
+                    return BaseResponse<DoctorScheduleDto>.Fail("schedule.InvalidTimeRange");
+
+                if (doctor.SlotDuration > 0 && (endTime - startTime).TotalMinutes < doctor.SlotDuration)
+                    return BaseResponse<DoctorScheduleDto>.Fail($"schedule.PeriodShorterThanSlot::{doctor.SlotDuration}");
+
+                var existingSchedules = await _context.DoctorSchedules
+                    .Where(s => s.DoctorId == doctor.Id && s.DayOfWeek == dto.DayOfWeek && !s.IsDeleted)
+                    .ToListAsync();
+
+                var hasOverlap = existingSchedules.Any(s => startTime < s.EndTime && s.StartTime < endTime);
+                if (hasOverlap)
+                    return BaseResponse<DoctorScheduleDto>.Fail("schedule.OverlappingPeriod");
+
+                var newSchedule = new DoctorSchedule
+                {
+                    DoctorId = doctor.Id,
+                    DayOfWeek = dto.DayOfWeek,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = currentUserId,
+                    IsDeleted = false
+                };
+
+                _context.DoctorSchedules.Add(newSchedule);
+                await _context.SaveChangesAsync();
+
+                var createdDto = new DoctorScheduleDto
+                {
+                    Id = newSchedule.Id,
+                    DoctorId = newSchedule.DoctorId,
+                    DayOfWeek = newSchedule.DayOfWeek,
+                    StartTime = newSchedule.StartTime.ToString(@"hh\:mm"),
+                    EndTime = newSchedule.EndTime.ToString(@"hh\:mm")
+                };
+
+                return BaseResponse<DoctorScheduleDto>.Success(createdDto, "schedule.PeriodSavedSuccess");
+            }
+            catch (Exception ex)
+            {
+                return BaseResponse<DoctorScheduleDto>.Fail(ex.Message);
+            }
+        }
+
+        public Task<BaseResponse<DoctorScheduleDto>> AddSchedulePeriodAsync(DoctorScheduleDto dto, string currentUserId)
+        {
+            return AddSchedulePeriodAsync(dto, currentUserId, false, null);
+        }
+
+        public async Task<BaseResponse<bool>> UpdateSchedulePeriodAsync(DoctorScheduleDto dto, string currentUserId, bool isAdmin = false, int? targetDoctorId = null)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                    return BaseResponse<bool>.Fail("schedule.Unauthorized");
+
+                if (dto == null || dto.Id <= 0)
+                    return BaseResponse<bool>.Fail("schedule.InvalidData");
+
+                Doctor doctor = null;
+                if (isAdmin)
+                {
+                    int docId = targetDoctorId ?? dto.DoctorId;
+                    if (docId <= 0)
+                        return BaseResponse<bool>.Fail("schedule.PleaseSelectDoctor");
+
+                    doctor = await _context.Doctors
+                        .FirstOrDefaultAsync(d => d.Id == docId && !d.IsDeleted);
+                }
+                else
+                {
+                    doctor = await _context.Doctors
+                        .FirstOrDefaultAsync(d => d.UserId == currentUserId && !d.IsDeleted);
+                }
+
+                if (doctor == null)
+                    return BaseResponse<bool>.Fail("schedule.DoctorNotFound");
+
+                if (!doctor.IsActive)
+                    return BaseResponse<bool>.Fail("schedule.DoctorInactive");
+
+                var schedule = await _context.DoctorSchedules
+                    .FirstOrDefaultAsync(s => s.Id == dto.Id && !s.IsDeleted);
+
+                if (schedule == null)
+                    return BaseResponse<bool>.Fail("schedule.PeriodNotFound");
+
+                if (schedule.DoctorId != doctor.Id)
+                    return BaseResponse<bool>.Fail("schedule.Unauthorized");
+
+                if (dto.DayOfWeek > 6)
+                    return BaseResponse<bool>.Fail("schedule.InvalidDayOfWeek");
+
+                if (!TimeSpan.TryParse(dto.StartTime, out var startTime) || !TimeSpan.TryParse(dto.EndTime, out var endTime))
+                    return BaseResponse<bool>.Fail("schedule.InvalidTimeFormat");
+
+                if (startTime >= endTime)
+                    return BaseResponse<bool>.Fail("schedule.InvalidTimeRange");
+
+                if (doctor.SlotDuration > 0 && (endTime - startTime).TotalMinutes < doctor.SlotDuration)
+                    return BaseResponse<bool>.Fail($"schedule.PeriodShorterThanSlot::{doctor.SlotDuration}");
+
+                var otherSchedulesOnNewDay = await _context.DoctorSchedules
+                    .Where(s => s.DoctorId == doctor.Id && s.DayOfWeek == dto.DayOfWeek && s.Id != dto.Id && !s.IsDeleted)
+                    .ToListAsync();
+
+                var hasOverlap = otherSchedulesOnNewDay.Any(s => startTime < s.EndTime && s.StartTime < endTime);
+                if (hasOverlap)
+                    return BaseResponse<bool>.Fail("schedule.OverlappingPeriod");
+
+                // Protect existing future appointments
+                var resultingNewDaySchedules = otherSchedulesOnNewDay
+                    .Select(s => new SchedulePeriodRange(s.StartTime, s.EndTime))
+                    .ToList();
+                resultingNewDaySchedules.Add(new SchedulePeriodRange(startTime, endTime));
+
+                var conflictMessage = await ValidateAppointmentsFitScheduleAsync(doctor.Id, doctor.SlotDuration, dto.DayOfWeek, resultingNewDaySchedules);
+                if (conflictMessage != null)
+                    return BaseResponse<bool>.Fail(conflictMessage);
+
+                // If day of week changed, check that previous day's appointments are still valid with this period removed
+                if (schedule.DayOfWeek != dto.DayOfWeek)
+                {
+                    var remainingOldDaySchedules = (await _context.DoctorSchedules
+                        .Where(s => s.DoctorId == doctor.Id && s.DayOfWeek == schedule.DayOfWeek && s.Id != dto.Id && !s.IsDeleted)
+                        .ToListAsync())
+                        .Select(s => new SchedulePeriodRange(s.StartTime, s.EndTime))
+                        .ToList();
+
+                    var oldDayConflict = await ValidateAppointmentsFitScheduleAsync(doctor.Id, doctor.SlotDuration, schedule.DayOfWeek, remainingOldDaySchedules);
+                    if (oldDayConflict != null)
+                        return BaseResponse<bool>.Fail(oldDayConflict);
+                }
+
+                schedule.DayOfWeek = dto.DayOfWeek;
+                schedule.StartTime = startTime;
+                schedule.EndTime = endTime;
+                schedule.ModifiedDate = DateTime.Now;
+                schedule.ModifiedBy = currentUserId;
+
+                await _context.SaveChangesAsync();
+                return BaseResponse<bool>.Success(true, "schedule.PeriodSavedSuccess");
+            }
+            catch (Exception ex)
+            {
+                return BaseResponse<bool>.Fail(ex.Message);
+            }
+        }
+
+        public Task<BaseResponse<bool>> UpdateSchedulePeriodAsync(DoctorScheduleDto dto, string currentUserId)
+        {
+            return UpdateSchedulePeriodAsync(dto, currentUserId, false, null);
+        }
+
+        public async Task<BaseResponse<bool>> DeleteSchedulePeriodAsync(int periodId, string currentUserId, bool isAdmin = false, int? targetDoctorId = null)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                    return BaseResponse<bool>.Fail("schedule.Unauthorized");
+
+                if (periodId <= 0)
+                    return BaseResponse<bool>.Fail("schedule.PeriodNotFound");
+
+                Doctor doctor = null;
+                if (isAdmin)
+                {
+                    int docId = targetDoctorId.GetValueOrDefault();
+                    if (docId <= 0)
+                        return BaseResponse<bool>.Fail("schedule.PleaseSelectDoctor");
+
+                    doctor = await _context.Doctors
+                        .FirstOrDefaultAsync(d => d.Id == docId && !d.IsDeleted);
+                }
+                else
+                {
+                    doctor = await _context.Doctors
+                        .FirstOrDefaultAsync(d => d.UserId == currentUserId && !d.IsDeleted);
+                }
+
+                if (doctor == null)
+                    return BaseResponse<bool>.Fail("schedule.DoctorNotFound");
+
+                if (!doctor.IsActive)
+                    return BaseResponse<bool>.Fail("schedule.DoctorInactive");
+
+                var schedule = await _context.DoctorSchedules
+                    .FirstOrDefaultAsync(s => s.Id == periodId && !s.IsDeleted);
+
+                if (schedule == null)
+                    return BaseResponse<bool>.Fail("schedule.PeriodNotFound");
+
+                if (schedule.DoctorId != doctor.Id)
+                    return BaseResponse<bool>.Fail("schedule.Unauthorized");
+
+                // Check appointment protection: would remaining periods on this day fit all future booked/confirmed appointments?
+                var remainingSchedules = (await _context.DoctorSchedules
+                    .Where(s => s.DoctorId == doctor.Id && s.DayOfWeek == schedule.DayOfWeek && s.Id != periodId && !s.IsDeleted)
+                    .ToListAsync())
+                    .Select(s => new SchedulePeriodRange(s.StartTime, s.EndTime))
+                    .ToList();
+
+                var conflictMessage = await ValidateAppointmentsFitScheduleAsync(doctor.Id, doctor.SlotDuration, schedule.DayOfWeek, remainingSchedules);
+                if (conflictMessage != null)
+                    return BaseResponse<bool>.Fail(conflictMessage);
+
+                schedule.IsDeleted = true;
+                schedule.ModifiedDate = DateTime.Now;
+                schedule.ModifiedBy = currentUserId;
+
+                await _context.SaveChangesAsync();
+                return BaseResponse<bool>.Success(true, "schedule.PeriodDeletedSuccess");
+            }
+            catch (Exception ex)
+            {
+                return BaseResponse<bool>.Fail(ex.Message);
+            }
+        }
+
+        public Task<BaseResponse<bool>> DeleteSchedulePeriodAsync(int periodId, string currentUserId)
+        {
+            return DeleteSchedulePeriodAsync(periodId, currentUserId, false, null);
+        }
+
+        private async Task<string> ValidateAppointmentsFitScheduleAsync(int doctorId, int slotDuration, byte dayOfWeek, List<SchedulePeriodRange> resultingPeriods)
+        {
+            var today = DateTime.Today;
+            var nowTime = DateTime.Now.TimeOfDay;
+            var bookedStatus = AppointmentStatus.Booked.ToString();
+            var confirmedStatus = AppointmentStatus.Confirmed.ToString();
+
+            var futureAppointments = await _context.Appointments
+                .AsNoTracking()
+                .Where(a => a.DoctorId == doctorId
+                            && !a.IsDeleted
+                            && (a.Status == bookedStatus || a.Status == confirmedStatus)
+                            && (a.AppointmentDate > today || (a.AppointmentDate == today && a.AppointmentTime >= nowTime)))
+                .Select(a => new { a.AppointmentDate, a.AppointmentTime })
+                .ToListAsync();
+
+            var appointmentsOnDay = futureAppointments
+                .Where(a => (byte)a.AppointmentDate.DayOfWeek == dayOfWeek)
+                .ToList();
+
+            if (!appointmentsOnDay.Any())
+                return null;
+
+            var validSlots = new HashSet<TimeSpan>();
+            if (resultingPeriods != null && resultingPeriods.Any() && slotDuration > 0)
+            {
+                var slotDurationSpan = TimeSpan.FromMinutes(slotDuration);
+                foreach (var period in resultingPeriods)
+                {
+                    var currentTime = period.StartTime;
+                    while (currentTime.Add(slotDurationSpan) <= period.EndTime)
+                    {
+                        validSlots.Add(currentTime);
+                        currentTime = currentTime.Add(slotDurationSpan);
+                    }
+                }
+            }
+
+            var conflicting = appointmentsOnDay
+                .Where(a => !validSlots.Contains(a.AppointmentTime))
+                .OrderBy(a => a.AppointmentDate)
+                .ThenBy(a => a.AppointmentTime)
+                .ToList();
+
+            if (conflicting.Any())
+            {
+                var first = conflicting.First();
+                return $"schedule.AppointmentsConflict::{conflicting.Count}::{first.AppointmentDate:yyyy-MM-dd}::{first.AppointmentTime:hh\\:mm}";
+            }
+
+            return null;
+        }
+
+        private class SchedulePeriodRange
+        {
+            public TimeSpan StartTime { get; set; }
+            public TimeSpan EndTime { get; set; }
+
+            public SchedulePeriodRange(TimeSpan startTime, TimeSpan endTime)
+            {
+                StartTime = startTime;
+                EndTime = endTime;
+            }
+        }
+
+        #endregion
     }
 }

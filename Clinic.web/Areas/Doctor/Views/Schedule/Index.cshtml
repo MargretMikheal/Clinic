@@ -1,0 +1,337 @@
+@{
+    ViewBag.Title = "My Schedule";
+}
+
+<div ng-cloak ng-controller="ScheduleController" class="schedule-page-wrap">
+
+    <!-- Page Header -->
+    <div class="page-header" ng-show="permissions.Show">
+        <div class="page-title-wrap">
+            <h1 class="page-title">
+                <i class="fa fa-clock-o text-primary"></i>
+                {{ 'schedule.Title' | i18n }}
+            </h1>
+            <p class="page-subtitle">
+                {{ 'schedule.Subtitle' | i18n }}
+            </p>
+        </div>
+
+        <div class="page-actions" ng-show="permissions.Add && (!isAdmin || (isAdmin && selectedDoctorId))">
+            <button type="button" class="btn btn-primary" ng-click="openAddPeriod(0)">
+                <i class="fa fa-plus"></i>
+                {{ 'schedule.AddPeriod' | i18n }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="c-alert c-alert-danger" ng-if="isError">
+        <i class="fa fa-exclamation-circle"></i>
+        <span>{{ errorMessage || ('schedule.ErrorLoadingSchedule' | i18n) }}</span>
+    </div>
+
+    <!-- Admin Mode Doctor Selection Dropdown -->
+    <div class="c-card" ng-show="isAdmin && permissions.Show" style="margin-bottom: 20px;">
+        <div class="c-card-body" style="padding: 16px 20px;">
+            <div class="row" style="align-items: center; display: flex; flex-wrap: wrap; gap: 12px;">
+                <div class="col-xs-12 col-sm-6 col-md-5">
+                    <label class="form-label" style="font-weight: 600; font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa fa-user-md text-primary"></i>
+                        {{ 'schedule.SelectDoctor' | i18n }}
+                    </label>
+                    <select class="form-control"
+                            ng-model="selectedDoctorId"
+                            ng-options="doc.Id as (doc.Name + ' (' + doc.DoctorCode + ')') for doc in doctorList"
+                            ng-change="onDoctorChanged()"
+                            ng-disabled="isLoadingDoctors || isLoading"
+                            style="height: 40px; font-size: 14px;">
+                        <option value="">-- {{ 'schedule.ChooseDoctorPlaceholder' | i18n }} --</option>
+                    </select>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-7" ng-show="!selectedDoctorId">
+                    <div style="font-size: 13px; color: var(--c-text-muted); display: flex; align-items: center; gap: 8px; padding-top: 24px;">
+                        <i class="fa fa-info-circle text-info"></i>
+                        <span>{{ 'schedule.SelectDoctorHint' | i18n }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Empty State Before Doctor Selection -->
+    <div class="empty-state c-card" ng-show="isAdmin && !selectedDoctorId && !isLoadingDoctors && !isLoading && !isError" style="text-align: center; padding: 48px 24px; margin-top: 10px;">
+        <div style="width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 28px; color: #94a3b8;">
+            <i class="fa fa-user-md"></i>
+        </div>
+        <h3 class="empty-state-title" style="font-size: 18px; font-weight: 700; color: var(--c-text); margin-bottom: 8px;">
+            {{ 'schedule.NoDoctorSelected' | i18n }}
+        </h3>
+        <p class="empty-state-desc" style="color: var(--c-text-muted); max-width: 480px; margin: 0 auto; font-size: 14px;">
+            {{ 'schedule.PleaseSelectDoctorToViewSchedule' | i18n }}
+        </p>
+    </div>
+
+    <!-- Doctor Info & Statistics Bar (Preserved Design) -->
+    <div class="c-card" ng-show="permissions.Show && !isError && doctorInfo.DoctorId > 0">
+        <div class="c-card-body" style="padding: 16px 20px;">
+            <div class="row" style="align-items: center; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;">
+                <!-- Doctor Profile Summary -->
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--c-primary-light); color: var(--c-primary); display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                        <i class="fa fa-user-md"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; font-size: 16px; color: var(--c-text);">
+                            {{ doctorInfo.DoctorName }}
+                            <span class="c-badge c-badge-neutral" style="margin-inline-start: 6px;">{{ doctorInfo.DoctorCode }}</span>
+                        </div>
+                        <div style="font-size: 13px; color: var(--c-text-muted); display: flex; gap: 12px; align-items: center; margin-top: 2px;">
+                            <span>
+                                <i class="fa fa-hourglass-half text-primary"></i>
+                                <strong>{{ 'schedule.SlotDuration' | i18n }}:</strong> {{ doctorInfo.SlotDuration }} {{ 'schedule.Minutes' | i18n }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Badges -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <div class="c-badge c-badge-primary" style="padding: 8px 14px; font-size: 13px;">
+                        <i class="fa fa-calendar-check-o" style="margin-inline-end: 6px;"></i>
+                        <strong>{{ totalWorkingDays }} / 7</strong>&nbsp;{{ 'schedule.TotalWorkingDays' | i18n }}
+                    </div>
+                    <div class="c-badge c-badge-info" style="padding: 8px 14px; font-size: 13px;">
+                        <i class="fa fa-list-ul" style="margin-inline-end: 6px;"></i>
+                        <strong>{{ totalPeriods }}</strong>&nbsp;{{ 'schedule.TotalPeriods' | i18n }}
+                    </div>
+                    <div class="c-badge c-badge-success" style="padding: 8px 14px; font-size: 13px;">
+                        <i class="fa fa-clock-o" style="margin-inline-end: 6px;"></i>
+                        <strong>{{ totalWeeklyHours }}h</strong>&nbsp;{{ 'schedule.TotalHours' | i18n }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" ng-if="isLoading">
+        <div class="c-spinner"></div>
+        <span>{{ 'common.Loading' | i18n }}</span>
+    </div>
+
+    <!-- Seven Weekdays Grid -->
+    <div class="weekly-schedule-grid" ng-show="permissions.Show && !isLoading && !isError && doctorInfo.DoctorId > 0">
+        <div class="row" style="margin-left: -10px; margin-right: -10px;">
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+                 ng-repeat="day in weeklyDays track by day.id"
+                 style="padding: 10px;">
+
+                <div class="c-card weekday-card"
+                     ng-class="{'is-day-off': day.isDayOff}"
+                     style="height: 100%; display: flex; flex-direction: column; margin-bottom: 0; transition: all 0.2s ease;">
+
+                    <!-- Day Header -->
+                    <div class="c-card-header" style="padding: 12px 14px; border-bottom: 1px solid var(--c-border); background: #fafafa;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                            <strong style="font-size: 15px; color: var(--c-text);">{{ day.nameKey | i18n }}</strong>
+
+                            <!-- Add Period Quick Action on Day Header -->
+                            <button type="button"
+                                    class="btn btn-outline"
+                                    style="padding: 4px 8px; font-size: 12px; border-radius: 4px;"
+                                    ng-if="permissions.Add"
+                                    ng-click="openAddPeriod(day.id)"
+                                    title="{{ 'schedule.AddPeriod' | i18n }}">
+                                <i class="fa fa-plus text-primary"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Day Body (Periods List or Day Off State) -->
+                    <div class="c-card-body" style="padding: 14px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+
+                        <!-- Day Off State -->
+                        <div ng-if="day.isDayOff" style="text-align: center; padding: 24px 8px; color: var(--c-text-muted);">
+                            <div style="width: 44px; height: 44px; margin: 0 auto 10px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #94a3b8;">
+                                <i class="fa fa-bed"></i>
+                            </div>
+                            <div style="font-weight: 600; font-size: 14px; color: #64748b; margin-bottom: 4px;">
+                                {{ 'schedule.DayOff' | i18n }}
+                            </div>
+                            <div style="font-size: 12px; color: #94a3b8;">
+                                {{ 'schedule.NoWorkingPeriods' | i18n }}
+                            </div>
+                            <button type="button"
+                                    class="btn btn-outline btn-sm"
+                                    style="margin-top: 14px; font-size: 12px; padding: 6px 12px;"
+                                    ng-if="permissions.Add"
+                                    ng-click="openAddPeriod(day.id)">
+                                <i class="fa fa-plus text-primary"></i> {{ 'schedule.AddPeriod' | i18n }}
+                            </button>
+                        </div>
+
+                        <!-- Periods List -->
+                        <div ng-if="!day.isDayOff" style="display: flex; flex-direction: column; gap: 8px;">
+                            <div class="period-item"
+                                 ng-repeat="period in day.periods track by period.Id"
+                                 style="background: #ffffff; border: 1px solid var(--c-border); border-left: 3px solid var(--c-primary); border-radius: var(--radius-md); padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; transition: all 0.15s ease;">
+
+                                <!-- Time Info -->
+                                <div>
+                                    <div style="font-weight: 600; font-size: 13px; color: var(--c-text); display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa fa-clock-o text-primary" style="font-size: 13px;"></i>
+                                        <span>{{ period.formattedTimeRange }}</span>
+                                    </div>
+                                    <div style="font-size: 11px; color: var(--c-text-muted); margin-top: 2px;">
+                                        <span class="c-badge c-badge-neutral" style="padding: 1px 6px; font-size: 10px;">
+                                            {{ period.durationLabel }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div style="display: flex; gap: 4px;">
+                                    <button type="button"
+                                            class="btn btn-outline"
+                                            style="padding: 4px 6px; font-size: 12px; color: var(--c-primary);"
+                                            ng-if="permissions.Edit"
+                                            ng-click="openEditPeriod(period)"
+                                            title="{{ 'schedule.EditPeriod' | i18n }}">
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline"
+                                            style="padding: 4px 6px; font-size: 12px; color: var(--c-danger);"
+                                            ng-if="permissions.Delete"
+                                            ng-click="deletePeriod(period)"
+                                            title="{{ 'schedule.DeletePeriod' | i18n }}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Day Add Period Action below periods list -->
+                            <button type="button"
+                                    class="btn btn-outline btn-sm"
+                                    style="margin-top: 6px; font-size: 12px; padding: 6px 12px; width: 100%; border-style: dashed;"
+                                    ng-if="permissions.Add"
+                                    ng-click="openAddPeriod(day.id)"
+                                    title="{{ 'schedule.AddPeriod' | i18n }}">
+                                <i class="fa fa-plus text-primary"></i> {{ 'schedule.AddPeriod' | i18n }}
+                            </button>
+                        </div>
+
+                        <!-- Day Footer Total (when active) -->
+                        <div ng-if="!day.isDayOff" style="margin-top: 12px; padding-top: 8px; border-top: 1px dashed var(--c-border); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--c-text-muted);">
+                            <span>{{ day.periods.length }} {{ 'schedule.Period' | i18n }}</span>
+                            <span style="font-weight: 600; color: var(--c-text);">{{ day.totalDayLabel }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add / Edit Period Modal Dialog -->
+    <div class="schedule-modal-backdrop" ng-if="showModal" ng-click="closeModal()" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.45); z-index: 1050; display: flex; align-items: center; justify-content: center; padding: 16px;">
+        <div class="c-card schedule-modal-content" ng-click="$event.stopPropagation()" style="width: 100%; max-width: 480px; margin-bottom: 0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border-radius: var(--radius-lg); overflow: hidden;">
+
+            <!-- Modal Header -->
+            <div class="c-card-header" style="background: #f8fafc; padding: 16px 20px;">
+                <h3 class="c-card-title" style="margin: 0; font-size: 17px; font-weight: 700; color: var(--c-text); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-clock-o text-primary"></i>
+                    <span ng-if="modalMode === 'add'">{{ 'schedule.AddPeriod' | i18n }}</span>
+                    <span ng-if="modalMode === 'edit'">{{ 'schedule.EditPeriod' | i18n }}</span>
+                </h3>
+                <button type="button" class="btn btn-outline" ng-click="closeModal()" style="padding: 4px 8px; font-size: 14px; border: none;" title="{{ 'common.Close' | i18n }}">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Modal Form -->
+            <form ng-submit="savePeriod()" novalidate style="margin: 0;">
+                <div class="c-card-body" style="padding: 20px;">
+
+                    <!-- Validation Error Callout in Modal -->
+                    <div class="c-alert c-alert-danger" ng-if="formError" style="margin-bottom: 16px;">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <span>{{ formError }}</span>
+                    </div>
+
+                    <!-- Day of Week Field -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            {{ 'schedule.Day' | i18n }}
+                            <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control" ng-model="activePeriod.DayOfWeek" ng-options="d.id as (d.key | i18n) for d in daysOfWeekOptions" required>
+                        </select>
+                    </div>
+
+                    <!-- Start Time & End Time Fields -->
+                    <div class="row">
+                        <div class="col-xs-6" style="padding-right: 8px;">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    {{ 'schedule.StartTime' | i18n }}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="time"
+                                       class="form-control"
+                                       ng-model="activePeriod.StartTimeObj"
+                                       required />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6" style="padding-left: 8px;">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    {{ 'schedule.EndTime' | i18n }}
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="time"
+                                       class="form-control"
+                                       ng-model="activePeriod.EndTimeObj"
+                                       required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slot Duration Info Hint -->
+                    <div style="font-size: 12px; color: var(--c-text-muted); background: #f8fafc; padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid var(--c-border); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-info-circle text-primary"></i>
+                        <span>
+                            {{ 'schedule.SlotDuration' | i18n }}: <strong>{{ doctorInfo.SlotDuration }} {{ 'schedule.Minutes' | i18n }}</strong>.
+                            {{ getSlotHintText() }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Modal Footer Actions -->
+                <div class="c-card-footer" style="padding: 14px 20px; background: #f8fafc; border-top: 1px solid var(--c-border); display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn btn-outline" ng-click="closeModal()" ng-disabled="isSaving">
+                        <i class="fa fa-times"></i>
+                        {{ 'common.Cancel' | i18n }}
+                    </button>
+                    <button type="submit" class="btn btn-primary" ng-disabled="isSaving">
+                        <i class="fa fa-spinner fa-spin" ng-if="isSaving"></i>
+                        <i class="fa fa-save" ng-if="!isSaving"></i>
+                        {{ 'common.Save' | i18n }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Unauthorized State if Show is false -->
+    <div class="empty-state" ng-if="!permissions.Show">
+        <i class="fa fa-lock empty-state-icon text-danger"></i>
+        <h4 class="empty-state-title">{{ 'common.AccessDenied' | i18n }}</h4>
+        <p class="empty-state-desc">{{ 'common.NoPermission' | i18n }}</p>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Doctor/Scripts/Controllers/ScheduleController.js"></script>
+}

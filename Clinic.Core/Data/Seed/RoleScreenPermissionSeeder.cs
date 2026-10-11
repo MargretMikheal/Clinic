@@ -120,7 +120,8 @@ namespace Clinic.Core.Data.Seed
                         screen.Name == "My Schedule" ||
                         screen.Name == "Visit",
 
-                    ScreenDelete = false,
+                    ScreenDelete =
+                        screen.Name == "My Schedule",
 
                     ScreenPrint =
                         screen.Name == "Patient History" ||

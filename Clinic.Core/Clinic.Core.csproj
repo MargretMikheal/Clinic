@@ -212,6 +212,7 @@
     <Compile Include="BLL\Doctors\DTOs\DoctorUpdateDto.cs" />
     <Compile Include="BLL\Doctors\DTOs\DoctorSpecialityOptionDto.cs" />
     <Compile Include="BLL\Doctors\DTOs\DoctorScheduleDto.cs" />
+    <Compile Include="BLL\Doctors\DTOs\DoctorWeeklyScheduleDto.cs" />
     <Compile Include="BLL\Doctors\DTOs\ReceptionistAssignmentOptionDto.cs" />
     <Compile Include="BLL\Specialities\DTOs\SpecialityDto.cs" />
     <Compile Include="BLL\Specialities\SpecialitiesBLL.cs" />
