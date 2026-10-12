@@ -1,0 +1,310 @@
+@{
+    ViewBag.Title = "Patient History";
+}
+
+
+
+<div ng-cloak ng-controller="PatientHistoryController" class="patient-history-page">
+
+    <!-- Unauthorized Access State -->
+    <div class="empty-state" ng-if="isUnauthorized">
+        <i class="fa fa-lock empty-state-icon text-danger"></i>
+        <h3 class="empty-state-title">{{ 'common.AccessDenied' | i18n }}</h3>
+        <p class="empty-state-desc">{{ 'common.NoPermission' | i18n }}</p>
+    </div>
+
+    <div ng-if="!isUnauthorized && permissions.Show">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title-wrap">
+                <h1 class="page-title">
+                    <i class="fa fa-history text-primary" style="margin-right: 6px; margin-left: 6px;"></i>
+                    {{ 'patient.PatientHistory' | i18n }}
+                </h1>
+                <p class="page-subtitle">
+                    {{ 'patient.PatientHistorySubtitle' | i18n }}
+                </p>
+            </div>
+
+            <!-- Page Actions -->
+            <div class="page-actions" style="display: flex; align-items: center; gap: 10px;">
+                <button type="button"
+                        class="btn btn-outline"
+                        ng-show="viewState === 'history'"
+                        ng-click="backToList()"
+                        id="btnBackToPatientsHeader"
+                        title="{{ 'patient.BackToPatients' | i18n }}">
+                    <i class="fa" ng-class="isArabic() ? 'fa-arrow-right' : 'fa-arrow-left'" style="margin-right: 4px; margin-left: 4px;"></i>
+                    {{ 'patient.BackToPatients' | i18n }}
+                </button>
+
+                <span class="c-badge c-badge-primary" style="font-size: 13px; padding: 6px 12px;" ng-if="isAdmin">
+                    <i class="fa fa-shield"></i> {{ 'common.Role' | i18n }}: {{ 'menu.Administration' | i18n }}
+                </span>
+                <span class="c-badge c-badge-info" style="font-size: 13px; padding: 6px 12px;" ng-if="isDoctor && !isAdmin">
+                    <i class="fa fa-user-md"></i> {{ 'common.Role' | i18n }}: {{ 'menu.Doctor' | i18n }}
+                </span>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SECTION A: Patient Selection & Search Card                -->
+        <!-- ========================================================= -->
+        <div class="c-card" ng-show="viewState === 'list'">
+            <div class="c-card-header with-filters">
+                <h3 class="c-card-title">
+                    <i class="fa fa-users text-primary"></i>
+                    {{ 'patient.PatientsListTitle' | i18n }}
+                    <span class="c-badge c-badge-neutral" ng-if="filteredPatients.length > 0" style="margin-left: 6px; margin-right: 6px;">
+                        {{ filteredPatients.length }}
+                    </span>
+                </h3>
+
+                <!-- Search Input Toolbar -->
+                <div class="c-filter-toolbar">
+                    <div class="c-filter-group c-filter-search" style="min-width: 280px; max-width: 400px; flex: 1;">
+                        <div class="input-group" style="width: 100%;">
+                            <input type="text"
+                                   id="txtPatientSearch"
+                                   class="form-control"
+                                   ng-model="searchQuery"
+                                   ng-change="onSearchChanged()"
+                                   placeholder="{{ 'patient.SearchPlaceholder' | i18n }}"
+                                   style="border-radius: var(--radius-md) 0 0 var(--radius-md);" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-outline"
+                                        id="btnClearSearch"
+                                        type="button"
+                                        ng-click="clearSearch()"
+                                        ng-disabled="!searchQuery"
+                                        title="{{ 'common.Clear' | i18n }}"
+                                        style="border-radius: 0 var(--radius-md) var(--radius-md) 0;">
+                                    <i class="fa fa-times" ng-show="searchQuery"></i>
+                                    <i class="fa fa-search text-muted" ng-show="!searchQuery"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="c-card-body" style="padding: 0;">
+                
+                <!-- Loading State -->
+                <div class="loading-state" ng-if="isLoadingPatients" style="padding: 40px 20px;">
+                    <div class="c-spinner"></div>
+                    <span>{{ 'common.Loading' | i18n }}</span>
+                </div>
+
+                <!-- Error State -->
+                <div class="c-alert c-alert-danger" ng-if="!isLoadingPatients && isPatientListError" style="margin: 16px;">
+                    <i class="fa fa-exclamation-circle"></i>
+                    <span>{{ patientListErrorMessage || ('patient.ErrorLoadingPatients' | i18n) }}</span>
+                </div>
+
+                <!-- Empty Patients State -->
+                <div class="empty-state" ng-if="!isLoadingPatients && !isPatientListError && (patients.length === 0 || filteredPatients.length === 0)" style="padding: 40px 20px;">
+                    <i class="fa fa-user-times empty-state-icon"></i>
+                    <h4 class="empty-state-title">{{ 'patient.NoPatientsFound' | i18n }}</h4>
+                    <p class="empty-state-desc">{{ 'common.NoData' | i18n }}</p>
+                </div>
+
+                <!-- Patients Table -->
+                <div class="table-responsive" ng-if="!isLoadingPatients && !isPatientListError && filteredPatients.length > 0" style="margin-bottom: 0;">
+                    <table class="c-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 140px;">{{ 'patient.PatientCode' | i18n }}</th>
+                                <th>{{ 'patient.Name' | i18n }}</th>
+                                <th style="width: 110px;">{{ 'patient.Gender' | i18n }}</th>
+                                <th style="width: 140px;">{{ 'patient.BirthDate' | i18n }}</th>
+                                <th style="width: 140px;">{{ 'patient.Phone' | i18n }}</th>
+                                <th style="width: 150px;">{{ 'patient.RegistrationDate' | i18n }}</th>
+                                <th style="width: 130px; text-align: center;">{{ 'common.Actions' | i18n }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="patient in getPaginatedPatients() track by patient.Id"
+                                ng-class="{'selected-patient-row': selectedPatient && selectedPatient.Id === patient.Id}">
+                                
+                                <td>
+                                    <span class="c-badge c-badge-neutral" style="font-family: monospace; font-size: 13px;">
+                                        {{ patient.PatientCode }}
+                                    </span>
+                                </td>
+                                
+                                <td style="font-weight: 600; color: var(--c-text);">
+                                    <i class="fa fa-user-circle-o text-primary" style="margin-right: 4px; margin-left: 4px;"></i>
+                                    {{ patient.Name }}
+                                </td>
+
+                                <td>
+                                    <span ng-if="isMale(patient.Gender)" class="c-badge c-badge-info" style="font-size: 11px;">
+                                        <i class="fa fa-mars"></i> {{ 'patient.Male' | i18n }}
+                                    </span>
+                                    <span ng-if="isFemale(patient.Gender)" class="c-badge c-badge-warning" style="font-size: 11px;">
+                                        <i class="fa fa-venus"></i> {{ 'patient.Female' | i18n }}
+                                    </span>
+                                    <span ng-if="!isMale(patient.Gender) && !isFemale(patient.Gender)" class="text-muted">
+                                        {{ patient.Gender || '-' }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span ng-if="patient.BirthDate">
+                                        {{ patient.BirthDate | date:'shortDate' }}
+                                        <span class="text-muted" style="font-size: 12px;" ng-if="calculateAge(patient.BirthDate) !== null">
+                                            ({{ calculateAge(patient.BirthDate) }} {{ 'patient.YearsOld' | i18n }})
+                                        </span>
+                                    </span>
+                                    <span class="text-muted" ng-if="!patient.BirthDate">-</span>
+                                </td>
+
+                                <td>
+                                    <span ng-if="patient.Phone">
+                                        <i class="fa fa-phone text-muted" style="font-size: 12px; margin-right: 3px; margin-left: 3px;"></i>
+                                        {{ patient.Phone }}
+                                    </span>
+                                    <span class="text-muted" ng-if="!patient.Phone">-</span>
+                                </td>
+
+                                <td>
+                                    <span ng-if="patient.RegistrationDate">{{ patient.RegistrationDate | date:'shortDate' }}</span>
+                                    <span class="text-muted" ng-if="!patient.RegistrationDate">-</span>
+                                </td>
+
+                                <td style="text-align: center;">
+                                    <button type="button"
+                                            class="btn btn-primary"
+                                            style="padding: 5px 12px; font-size: 13px;"
+                                            ng-click="selectPatient(patient)"
+                                            title="{{ 'patient.ViewHistory' | i18n }}">
+                                        <i class="fa fa-history"></i>
+                                        {{ 'patient.ViewHistory' | i18n }}
+                                    </button>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <clinic-pagination pagination="pagination" ng-if="!isLoadingPatients && !isPatientListError && filteredPatients.length > 0" style="display: block; padding: 0 20px 16px;"></clinic-pagination>
+
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SECTION B: Selected Patient Details Card                  -->
+        <!-- ========================================================= -->
+        <div class="patient-info-summary-card" ng-if="viewState === 'history' && selectedPatient">
+            <div class="c-card-header" style="background-color: #f8fafc; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <i class="fa fa-id-card-o text-primary" style="font-size: 20px;"></i>
+                    <h3 class="c-card-title" style="font-size: 18px; margin: 0;">
+                        {{ selectedPatient.Name }}
+                    </h3>
+                    <span class="c-badge c-badge-neutral" style="font-family: monospace; font-size: 13px;">
+                        {{ selectedPatient.PatientCode }}
+                    </span>
+                    <span ng-if="isMale(selectedPatient.Gender)" class="c-badge c-badge-info" style="font-size: 11px;">
+                        <i class="fa fa-mars"></i> {{ 'patient.Male' | i18n }}
+                    </span>
+                    <span ng-if="isFemale(selectedPatient.Gender)" class="c-badge c-badge-warning" style="font-size: 11px;">
+                        <i class="fa fa-venus"></i> {{ 'patient.Female' | i18n }}
+                    </span>
+                </div>
+
+                <div>
+                    <button type="button"
+                            class="btn btn-outline"
+                            id="btnBackToPatients"
+                            ng-click="backToList()"
+                            title="{{ 'patient.BackToPatients' | i18n }}">
+                        <i class="fa" ng-class="isArabic() ? 'fa-arrow-right' : 'fa-arrow-left'" style="margin-right: 4px; margin-left: 4px;"></i>
+                        {{ 'patient.BackToPatients' | i18n }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="patient-info-grid">
+                <!-- Birth Date & Age -->
+                <div>
+                    <div class="info-item-label">
+                        <i class="fa fa-birthday-cake text-primary"></i>
+                        {{ 'patient.BirthDate' | i18n }}
+                    </div>
+                    <div class="info-item-value">
+                        <span ng-if="selectedPatient.BirthDate">
+                            {{ selectedPatient.BirthDate | date:'mediumDate' }}
+                            <span class="text-muted" style="font-weight: normal; font-size: 13px;" ng-if="calculateAge(selectedPatient.BirthDate) !== null">
+                                ({{ calculateAge(selectedPatient.BirthDate) }} {{ 'patient.YearsOld' | i18n }})
+                            </span>
+                        </span>
+                        <span class="text-muted" ng-if="!selectedPatient.BirthDate">-</span>
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div>
+                    <div class="info-item-label">
+                        <i class="fa fa-phone text-primary"></i>
+                        {{ 'patient.Phone' | i18n }}
+                    </div>
+                    <div class="info-item-value">
+                        {{ selectedPatient.Phone || '-' }}
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <div class="info-item-label">
+                        <i class="fa fa-envelope-o text-primary"></i>
+                        {{ 'patient.Email' | i18n }}
+                    </div>
+                    <div class="info-item-value">
+                        {{ selectedPatient.Email || '-' }}
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div>
+                    <div class="info-item-label">
+                        <i class="fa fa-map-marker text-primary"></i>
+                        {{ 'patient.Address' | i18n }}
+                    </div>
+                    <div class="info-item-value">
+                        {{ selectedPatient.Address || '-' }}
+                    </div>
+                </div>
+
+                <!-- Registration Date -->
+                <div>
+                    <div class="info-item-label">
+                        <i class="fa fa-calendar-check-o text-primary"></i>
+                        {{ 'patient.RegistrationDate' | i18n }}
+                    </div>
+                    <div class="info-item-value">
+                        <span ng-if="selectedPatient.RegistrationDate">{{ selectedPatient.RegistrationDate | date:'mediumDate' }}</span>
+                        <span class="text-muted" ng-if="!selectedPatient.RegistrationDate">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SECTION C: Visit History Partial View                     -->
+        <!-- ========================================================= -->
+        <div ng-if="viewState === 'history' && selectedPatient">
+            @Html.Partial("_VisitHistory")
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Doctor/Scripts/Controllers/PatientHistoryController.js"></script>
+}

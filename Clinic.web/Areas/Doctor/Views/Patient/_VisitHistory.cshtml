@@ -1,0 +1,225 @@
+@* Visit History Partial View *@
+
+<div class="patient-visit-history-wrap" style="margin-top: 24px;">
+    
+    <!-- Section Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 class="c-card-title" style="font-size: 18px; margin: 0;">
+            <i class="fa fa-calendar-check-o text-primary"></i>
+            {{ 'patient.VisitHistory' | i18n }}
+            <span class="c-badge c-badge-primary" ng-if="historyDetails && historyDetails.Visits" style="margin-left: 8px; margin-right: 8px;">
+                {{ historyDetails.Visits.length }} {{ 'patient.TotalVisits' | i18n }}
+            </span>
+        </h3>
+    </div>
+
+    <!-- Loading State -->
+    <div class="c-card" ng-if="isLoadingHistory">
+        <div class="loading-state" style="padding: 40px 20px;">
+            <div class="c-spinner"></div>
+            <span>{{ 'common.Loading' | i18n }}</span>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="c-alert c-alert-danger" ng-if="!isLoadingHistory && isHistoryError" style="margin-bottom: 16px;">
+        <i class="fa fa-exclamation-circle"></i>
+        <span>{{ historyErrorMessage || ('patient.ErrorLoadingHistory' | i18n) }}</span>
+    </div>
+
+    <!-- Empty Visits State -->
+    <div class="c-card" ng-if="!isLoadingHistory && !isHistoryError && historyDetails && (!historyDetails.Visits || historyDetails.Visits.length === 0)">
+        <div class="empty-state" style="padding: 48px 20px;">
+            <i class="fa fa-calendar-o empty-state-icon text-muted"></i>
+            <h4 class="empty-state-title">{{ 'patient.NoVisitsFound' | i18n }}</h4>
+            <p class="empty-state-desc">{{ 'patient.NoVisitsFound' | i18n }}</p>
+        </div>
+    </div>
+
+    <!-- Visits List -->
+    <div class="visits-container" ng-if="!isLoadingHistory && !isHistoryError && historyDetails && historyDetails.Visits && historyDetails.Visits.length > 0">
+        <div class="c-card visit-card" ng-repeat="visit in historyDetails.Visits track by visit.Id" style="margin-bottom: 24px; border: 1px solid var(--c-border); box-shadow: var(--shadow-sm); border-radius: var(--radius-lg);">
+            
+            <!-- Visit Header -->
+            <div class="c-card-header" style="background-color: #fafbfc; border-bottom: 1px solid var(--c-border); padding: 14px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+                    <!-- Visit Date Badge -->
+                    <span class="c-badge c-badge-primary" style="font-size: 13px; padding: 6px 12px; font-weight: 600;">
+                        <i class="fa fa-calendar" style="margin-right: 4px; margin-left: 4px;"></i>
+                        {{ 'patient.VisitDate' | i18n }}: {{ visit.VisitDate | date:'mediumDate' }}
+                    </span>
+
+                    <!-- Appointment Status Badge -->
+                    <span ng-if="visit.AppointmentStatus" ng-class="getStatusBadgeClass(visit.AppointmentStatus)" style="font-size: 12px; padding: 4px 10px;">
+                        {{ getStatusLocalizationKey(visit.AppointmentStatus) | i18n }}
+                    </span>
+
+                    <!-- Appointment Date / Time if available -->
+                    <span class="text-muted" style="font-size: 13px;" ng-if="visit.AppointmentDate">
+                        <i class="fa fa-clock-o" style="margin-right: 2px; margin-left: 2px;"></i>
+                        {{ visit.AppointmentDate | date:'shortDate' }}
+                        <span ng-if="visit.AppointmentTime"> ({{ formatTimeSpan(visit.AppointmentTime) }})</span>
+                    </span>
+                </div>
+
+                <!-- Doctor Information -->
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--c-text);">
+                    <i class="fa fa-user-md text-primary" style="font-size: 16px;"></i>
+                    <span style="font-weight: 600;">{{ visit.DoctorName }}</span>
+                    <span class="text-muted">({{ visit.DoctorCode }})</span>
+                    <span class="c-badge c-badge-neutral" ng-if="visit.SpecialityNameAr || visit.SpecialityNameEn" style="font-size: 11px;">
+                        {{ getLocalizedText(visit.SpecialityNameAr, visit.SpecialityNameEn) }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Visit Content Body -->
+            <div class="c-card-body" style="padding: 20px;">
+                
+                <!-- Visit Notes (if present) -->
+                <div ng-if="visit.Notes" style="background-color: #f1f5f9; border-left: 4px solid var(--c-primary); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 20px; font-size: 14px;">
+                    <strong style="color: var(--c-text); display: block; margin-bottom: 4px;">
+                        <i class="fa fa-sticky-note-o text-primary" style="margin-right: 4px; margin-left: 4px;"></i>
+                        {{ 'patient.VisitNotes' | i18n }}
+                    </strong>
+                    <span style="color: #334155; white-space: pre-wrap;">{{ visit.Notes }}</span>
+                </div>
+
+                <!-- Symptoms & Diagnoses Grid -->
+                <div class="row" style="margin-bottom: 20px;">
+                    
+                    <!-- Symptoms Column -->
+                    <div class="col-xs-12 col-md-6" style="margin-bottom: 16px;">
+                        <div style="background-color: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 14px 16px; height: 100%;">
+                            <h4 style="font-size: 14px; font-weight: 600; margin: 0 0 10px 0; color: var(--c-text); display: flex; align-items: center; gap: 6px;">
+                                <i class="fa fa-heartbeat text-warning" style="font-size: 15px;"></i>
+                                {{ 'patient.Symptoms' | i18n }}
+                                <span class="c-badge c-badge-neutral" style="font-size: 11px;">{{ (visit.Symptoms && visit.Symptoms.length) || 0 }}</span>
+                            </h4>
+
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;" ng-if="visit.Symptoms && visit.Symptoms.length > 0">
+                                <span class="c-badge c-badge-warning" ng-repeat="sym in visit.Symptoms track by sym.Id" style="font-size: 12px; padding: 5px 10px; font-weight: 500;">
+                                    <i class="fa fa-check" style="font-size: 10px; margin-right: 3px; margin-left: 3px;"></i>
+                                    {{ getLocalizedText(sym.NameAr, sym.NameEn) }}
+                                </span>
+                            </div>
+
+                            <div class="text-muted" style="font-size: 13px; font-style: italic;" ng-if="!visit.Symptoms || visit.Symptoms.length === 0">
+                                {{ 'patient.NoSymptomsRecorded' | i18n }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Diagnoses Column -->
+                    <div class="col-xs-12 col-md-6" style="margin-bottom: 16px;">
+                        <div style="background-color: #fff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 14px 16px; height: 100%;">
+                            <h4 style="font-size: 14px; font-weight: 600; margin: 0 0 10px 0; color: var(--c-text); display: flex; align-items: center; gap: 6px;">
+                                <i class="fa fa-medkit text-danger" style="font-size: 15px;"></i>
+                                {{ 'patient.Diagnoses' | i18n }}
+                                <span class="c-badge c-badge-neutral" style="font-size: 11px;">{{ (visit.Diagnoses && visit.Diagnoses.length) || 0 }}</span>
+                            </h4>
+
+                            <div style="display: flex; flex-wrap: wrap; gap: 6px;" ng-if="visit.Diagnoses && visit.Diagnoses.length > 0">
+                                <span class="c-badge c-badge-danger" ng-repeat="diag in visit.Diagnoses track by diag.Id" style="font-size: 12px; padding: 5px 10px; font-weight: 500;">
+                                    <i class="fa fa-stethoscope" style="font-size: 10px; margin-right: 3px; margin-left: 3px;"></i>
+                                    {{ getLocalizedText(diag.NameAr, diag.NameEn) }}
+                                </span>
+                            </div>
+
+                            <div class="text-muted" style="font-size: 13px; font-style: italic;" ng-if="!visit.Diagnoses || visit.Diagnoses.length === 0">
+                                {{ 'patient.NoDiagnosesRecorded' | i18n }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Prescriptions Section -->
+                <div style="background-color: #f8fafc; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 16px;">
+                    <h4 style="font-size: 14px; font-weight: 600; margin: 0 0 14px 0; color: var(--c-text); display: flex; align-items: center; gap: 6px;">
+                        <i class="fa fa-file-text-o text-success" style="font-size: 15px;"></i>
+                        {{ 'patient.Prescriptions' | i18n }}
+                        <span class="c-badge c-badge-neutral" style="font-size: 11px;">{{ (visit.Prescriptions && visit.Prescriptions.length) || 0 }}</span>
+                    </h4>
+
+                    <!-- Empty Prescriptions State -->
+                    <div class="text-muted" style="font-size: 13px; font-style: italic; padding: 8px 0;" ng-if="!visit.Prescriptions || visit.Prescriptions.length === 0">
+                        {{ 'patient.NoPrescriptionsRecorded' | i18n }}
+                    </div>
+
+                    <!-- Prescriptions Loop (Supports Multiple Prescriptions per Visit) -->
+                    <div class="prescription-list" ng-if="visit.Prescriptions && visit.Prescriptions.length > 0">
+                        <div class="prescription-card" ng-repeat="presc in visit.Prescriptions track by presc.Id" style="background-color: #ffffff; border: 1px solid var(--c-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px;">
+                            
+                            <!-- Prescription Header -->
+                            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed var(--c-border);">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="c-badge c-badge-success" style="font-size: 12px;">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        {{ 'patient.PrescriptionNumber' | i18n }}{{ $index + 1 }}
+                                    </span>
+                                    <span class="text-muted" style="font-size: 12px;" ng-if="presc.CreatedDate">
+                                        <i class="fa fa-clock-o"></i> {{ presc.CreatedDate | date:'medium' }}
+                                    </span>
+                                </div>
+
+                                <div ng-if="presc.Notes" style="font-size: 12px; color: var(--c-text-muted);">
+                                    <i class="fa fa-comment-o"></i> {{ presc.Notes }}
+                                </div>
+                            </div>
+
+                            <!-- Medication Items Table -->
+                            <div class="table-responsive" ng-if="presc.Items && presc.Items.length > 0" style="margin-bottom: 0;">
+                                <table class="c-table" style="font-size: 13px;">
+                                    <thead>
+                                        <tr style="background-color: #f8fafc;">
+                                            <th style="font-weight: 600;">{{ 'patient.Medicine' | i18n }}</th>
+                                            <th style="font-weight: 600;">{{ 'patient.Dosage' | i18n }}</th>
+                                            <th style="font-weight: 600;">{{ 'patient.Frequency' | i18n }}</th>
+                                            <th style="font-weight: 600;">{{ 'patient.Duration' | i18n }}</th>
+                                            <th style="font-weight: 600;">{{ 'patient.PrescriptionNotes' | i18n }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in presc.Items track by item.Id">
+                                            <td style="font-weight: 600; color: var(--c-primary);">
+                                                <i class="fa fa-medkit" style="margin-right: 4px; margin-left: 4px; font-size: 11px;"></i>
+                                                {{ item.MedicineName }}
+                                            </td>
+                                            <td>
+                                                <span class="c-badge c-badge-neutral" ng-if="item.Dosage">{{ item.Dosage }}</span>
+                                                <span class="text-muted" ng-if="!item.Dosage">-</span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="item.Frequency">{{ item.Frequency }}</span>
+                                                <span class="text-muted" ng-if="!item.Frequency">-</span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="item.Duration">{{ item.Duration }}</span>
+                                                <span class="text-muted" ng-if="!item.Duration">-</span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="item.Notes" class="text-muted" style="font-size: 12px;">{{ item.Notes }}</span>
+                                                <span class="text-muted" ng-if="!item.Notes">-</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Empty Prescription Items State -->
+                            <div class="text-muted" style="font-size: 12px; font-style: italic; padding: 6px 0;" ng-if="!presc.Items || presc.Items.length === 0">
+                                {{ 'patient.NoMedicationItems' | i18n }}
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

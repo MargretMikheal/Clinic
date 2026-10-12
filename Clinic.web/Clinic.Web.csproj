@@ -196,6 +196,7 @@
     <Compile Include="Areas\Doctor\DoctorAreaRegistration.cs" />
     <Compile Include="Areas\Doctor\Controllers\ScheduleController.cs" />
     <Compile Include="Areas\Doctor\Controllers\AppointmentController.cs" />
+    <Compile Include="Areas\Doctor\Controllers\PatientController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Administration\Scripts\Controllers\DoctorsController.js" />
@@ -208,6 +209,9 @@
     <Content Include="Areas\Doctor\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Doctor\Views\Schedule\Index.cshtml" />
     <Content Include="Areas\Doctor\Views\Appointment\Index.cshtml" />
+    <Content Include="Areas\Doctor\Scripts\Controllers\PatientHistoryController.js" />
+    <Content Include="Areas\Doctor\Views\Patient\History.cshtml" />
+    <Content Include="Areas\Doctor\Views\Patient\_VisitHistory.cshtml" />
     <Content Include="Localization\en\schedule.lang.json" />
     <Content Include="Localization\ar\schedule.lang.json" />
     <Content Include="Localization\en\appointment.lang.json" />

@@ -223,6 +223,7 @@
     <Compile Include="BLL\Patients\DTOs\PatientDto.cs" />
     <Compile Include="BLL\Patients\DTOs\PatientCreateDto.cs" />
     <Compile Include="BLL\Patients\DTOs\PatientUpdateDto.cs" />
+    <Compile Include="BLL\Patients\DTOs\PatientHistoryDTOs.cs" />
     <Compile Include="BLL\Patients\PatientsBLL.cs" />
   </ItemGroup>
   <ItemGroup>
