@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    function DoctorAppointmentController($scope, $http, notificationService, $filter, permissionService, ScreenKeys) {
+    function DoctorAppointmentController($scope, $http, notificationService, $filter, permissionService, ScreenKeys, appointmentStatusService) {
         $scope.appointments = [];
         $scope.filteredAppointments = [];
 
@@ -52,25 +52,11 @@
         };
 
         $scope.getStatusLocalizationKey = function (status) {
-            switch (status) {
-                case "Booked": return "appointment.Booked";
-                case "Confirmed": return "appointment.Confirmed";
-                case "Completed": return "appointment.Completed";
-                case "Cancelled": return "appointment.Cancelled";
-                case "NoShow": return "appointment.NoShow";
-                default: return "";
-            }
+            return appointmentStatusService.getStatusLocalizationKey(status);
         };
 
         $scope.getStatusBadgeClass = function (status) {
-            switch (status) {
-                case "Booked": return "c-badge c-badge-booked";
-                case "Confirmed": return "c-badge c-badge-confirmed";
-                case "Completed": return "c-badge c-badge-completed";
-                case "Cancelled": return "c-badge c-badge-cancelled";
-                case "NoShow": return "c-badge c-badge-noshow";
-                default: return "c-badge c-badge-neutral";
-            }
+            return appointmentStatusService.getStatusBadgeClass(status);
         };
 
         $scope.getPaginatedAppointments = function () {
@@ -186,7 +172,8 @@
         "notificationService",
         "$filter",
         "permissionService",
-        "ScreenKeys"
+        "ScreenKeys",
+        "appointmentStatusService"
     ];
 
     angular.module("clinicApp")

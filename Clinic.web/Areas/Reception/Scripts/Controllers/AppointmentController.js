@@ -10,7 +10,8 @@
             "$filter",
             "permissionService",
             "ScreenKeys",
-            function ($scope, $http, notificationService, confirmationService, $filter, permissionService, ScreenKeys) {
+            "appointmentStatusService",
+            function ($scope, $http, notificationService, confirmationService, $filter, permissionService, ScreenKeys, appointmentStatusService) {
 
                 $scope.appointments = [];
                 $scope.doctors = [];
@@ -76,25 +77,11 @@
                 };
 
                 $scope.getStatusLocalizationKey = function (status) {
-                    switch (status) {
-                        case 'Booked': return 'appointment.Booked';
-                        case 'Confirmed': return 'appointment.Confirmed';
-                        case 'Completed': return 'appointment.Completed';
-                        case 'Cancelled': return 'appointment.Cancelled';
-                        case 'NoShow': return 'appointment.NoShow';
-                        default: return '';
-                    }
+                    return appointmentStatusService.getStatusLocalizationKey(status);
                 };
 
                 $scope.getStatusBadgeClass = function (status) {
-                    switch (status) {
-                        case 'Booked': return 'c-badge c-badge-booked';
-                        case 'Confirmed': return 'c-badge c-badge-confirmed';
-                        case 'Completed': return 'c-badge c-badge-completed';
-                        case 'Cancelled': return 'c-badge c-badge-cancelled';
-                        case 'NoShow': return 'c-badge c-badge-noshow';
-                        default: return 'c-badge c-badge-neutral';
-                    }
+                    return appointmentStatusService.getStatusBadgeClass(status);
                 };
 
                 function parseDate(dateStr) {

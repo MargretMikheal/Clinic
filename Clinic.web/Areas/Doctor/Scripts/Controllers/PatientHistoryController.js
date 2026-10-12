@@ -11,7 +11,8 @@
             "locale",
             "permissionService",
             "ScreenKeys",
-            function ($scope, $http, $timeout, notificationService, $filter, locale, permissionService, ScreenKeys) {
+            "appointmentStatusService",
+            function ($scope, $http, $timeout, notificationService, $filter, locale, permissionService, ScreenKeys, appointmentStatusService) {
 
                 $scope.permissions = {
                     Show: false
@@ -27,18 +28,6 @@
                 $scope.patients = [];
                 $scope.filteredPatients = [];
                 $scope.searchQuery = "";
-
-                // Maintain backwards compatibility for searchText binding
-                Object.defineProperty($scope, "searchText", {
-                    get: function () {
-                        return $scope.searchQuery;
-                    },
-                    set: function (val) {
-                        $scope.searchQuery = val;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
 
                 $scope.pagination = {
                     page: 1,
@@ -61,50 +50,21 @@
                 // =========================================================
                 // Client-Side Search & Pagination
                 // =========================================================
-                function applyFilter() {
-                    var term = ($scope.searchQuery || "").trim().toLowerCase();
-
-                    if (!term) {
-                        $scope.filteredPatients = ($scope.patients || []).slice();
-                    } else {
-                        $scope.filteredPatients = ($scope.patients || []).filter(function (patient) {
-                            if (!patient) return false;
-
-                            var name = (patient.Name || "").toLowerCase();
-                            var code = (patient.PatientCode || "").toLowerCase();
-                            var phone = (patient.Phone || "").toLowerCase();
-                            var email = (patient.Email || "").toLowerCase();
-
-                            return name.indexOf(term) !== -1 ||
-                                   code.indexOf(term) !== -1 ||
-                                   phone.indexOf(term) !== -1 ||
-                                   email.indexOf(term) !== -1;
-                        });
+                $scope.$watchGroup(["patients", "searchQuery"], function (newValues, oldValues) {
+                    if (newValues && oldValues && newValues[1] !== oldValues[1]) {
+                        $scope.pagination.page = 1;
                     }
-
+                    var term = ($scope.searchQuery || "").trim();
+                    $scope.filteredPatients = $filter("filter")($scope.patients, term) || [];
                     $scope.pagination.totalItems = $scope.filteredPatients.length;
                     var totalPages = Math.ceil($scope.filteredPatients.length / $scope.pagination.pageSize) || 1;
                     if ($scope.pagination.page > totalPages) {
                         $scope.pagination.page = totalPages;
                     }
-                }
-
-                $scope.$watchGroup(["patients", "searchQuery"], function (newValues, oldValues) {
-                    if (newValues && oldValues && newValues[1] !== oldValues[1]) {
-                        $scope.pagination.page = 1;
-                    }
-                    applyFilter();
                 });
-
-                $scope.onSearchChanged = function () {
-                    $scope.pagination.page = 1;
-                    applyFilter();
-                };
 
                 $scope.clearSearch = function () {
                     $scope.searchQuery = "";
-                    $scope.pagination.page = 1;
-                    applyFilter();
                 };
 
                 $scope.getPaginatedPatients = function () {
@@ -161,25 +121,11 @@
                 };
 
                 $scope.getStatusBadgeClass = function (status) {
-                    switch (status) {
-                        case "Booked": return "c-badge c-badge-booked";
-                        case "Confirmed": return "c-badge c-badge-confirmed";
-                        case "Completed": return "c-badge c-badge-completed";
-                        case "Cancelled": return "c-badge c-badge-cancelled";
-                        case "NoShow": return "c-badge c-badge-noshow";
-                        default: return "c-badge c-badge-neutral";
-                    }
+                    return appointmentStatusService.getStatusBadgeClass(status);
                 };
 
                 $scope.getStatusLocalizationKey = function (status) {
-                    switch (status) {
-                        case "Booked": return "appointment.Booked";
-                        case "Confirmed": return "appointment.Confirmed";
-                        case "Completed": return "appointment.Completed";
-                        case "Cancelled": return "appointment.Cancelled";
-                        case "NoShow": return "appointment.NoShow";
-                        default: return "";
-                    }
+                    return appointmentStatusService.getStatusLocalizationKey(status);
                 };
 
                 $scope.calculateAge = function (birthDate) {

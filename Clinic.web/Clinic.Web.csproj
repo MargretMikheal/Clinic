@@ -253,6 +253,8 @@
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\clinic-menu.js" />
     <Content Include="Scripts\app\services\dashboardService.js" />
+    <Content Include="Scripts\app\services\permissionService.js" />
+    <Content Include="Scripts\app\services\appointmentStatusService.js" />
     <Content Include="Scripts\app\controllers\LanguageController.js" />
     <Content Include="Areas\Auth\Scripts\Services\authService.js" />
     <Content Include="Areas\Auth\Scripts\Controllers\AccountController.js" />

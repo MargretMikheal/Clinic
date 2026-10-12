@@ -61,30 +61,13 @@
                     </span>
                 </h3>
 
-                <!-- Search Input Toolbar -->
+                <!-- Search -->
                 <div class="c-filter-toolbar">
-                    <div class="c-filter-group c-filter-search" style="min-width: 280px; max-width: 400px; flex: 1;">
-                        <div class="input-group" style="width: 100%;">
-                            <input type="text"
-                                   id="txtPatientSearch"
-                                   class="form-control"
-                                   ng-model="searchQuery"
-                                   ng-change="onSearchChanged()"
-                                   placeholder="{{ 'patient.SearchPlaceholder' | i18n }}"
-                                   style="border-radius: var(--radius-md) 0 0 var(--radius-md);" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-outline"
-                                        id="btnClearSearch"
-                                        type="button"
-                                        ng-click="clearSearch()"
-                                        ng-disabled="!searchQuery"
-                                        title="{{ 'common.Clear' | i18n }}"
-                                        style="border-radius: 0 var(--radius-md) var(--radius-md) 0;">
-                                    <i class="fa fa-times" ng-show="searchQuery"></i>
-                                    <i class="fa fa-search text-muted" ng-show="!searchQuery"></i>
-                                </button>
-                            </span>
-                        </div>
+                    <div class="c-filter-group c-filter-search">
+                        <input type="text"
+                               class="form-control"
+                               ng-model="searchQuery"
+                               placeholder="{{ 'patient.SearchPlaceholder' | i18n }}" />
                     </div>
                 </div>
             </div>
