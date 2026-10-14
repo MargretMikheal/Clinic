@@ -50,5 +50,32 @@ namespace Clinic.Core.Data
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_Appointment_MarkExpiredAsNoShow");
         }
+    
+        public virtual ObjectResult<usp_PrescriptionReport_GetById_Result> usp_PrescriptionReport_GetById(Nullable<int> prescriptionId)
+        {
+            var prescriptionIdParameter = prescriptionId.HasValue ?
+                new ObjectParameter("PrescriptionId", prescriptionId) :
+                new ObjectParameter("PrescriptionId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_PrescriptionReport_GetById_Result>("usp_PrescriptionReport_GetById", prescriptionIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_PrescriptionReport_GetHeaderById_Result> usp_PrescriptionReport_GetHeaderById(Nullable<int> prescriptionId)
+        {
+            var prescriptionIdParameter = prescriptionId.HasValue ?
+                new ObjectParameter("PrescriptionId", prescriptionId) :
+                new ObjectParameter("PrescriptionId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_PrescriptionReport_GetHeaderById_Result>("usp_PrescriptionReport_GetHeaderById", prescriptionIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_PrescriptionReport_GetItemsById_Result> usp_PrescriptionReport_GetItemsById(Nullable<int> prescriptionId)
+        {
+            var prescriptionIdParameter = prescriptionId.HasValue ?
+                new ObjectParameter("PrescriptionId", prescriptionId) :
+                new ObjectParameter("PrescriptionId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_PrescriptionReport_GetItemsById_Result>("usp_PrescriptionReport_GetItemsById", prescriptionIdParameter);
+        }
     }
 }

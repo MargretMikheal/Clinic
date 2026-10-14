@@ -541,6 +541,15 @@
           </ReferentialConstraint>
         </Association>
         <Function Name="usp_Appointment_MarkExpiredAsNoShow" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_PrescriptionReport_GetById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PrescriptionId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_PrescriptionReport_GetHeaderById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PrescriptionId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_PrescriptionReport_GetItemsById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PrescriptionId" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="ClinicDBEntitiesStoreContainer">
           <EntitySet Name="Appointment" EntityType="Self.Appointment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -1217,6 +1226,15 @@
             <End Role="Visit" EntitySet="Visits" />
           </AssociationSet>
           <FunctionImport Name="usp_Appointment_MarkExpiredAsNoShow" />
+          <FunctionImport Name="usp_PrescriptionReport_GetById" ReturnType="Collection(ClinicDBEntities.usp_PrescriptionReport_GetById_Result)">
+          <Parameter Name="PrescriptionId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_PrescriptionReport_GetHeaderById" ReturnType="Collection(ClinicDBEntities.usp_PrescriptionReport_GetHeaderById_Result)">
+          <Parameter Name="PrescriptionId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_PrescriptionReport_GetItemsById" ReturnType="Collection(ClinicDBEntities.usp_PrescriptionReport_GetItemsById_Result)">
+          <Parameter Name="PrescriptionId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="Doctor">
           <Key>
@@ -1304,6 +1322,41 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <ComplexType Name="usp_PrescriptionReport_GetById_Result">
+          <Property Type="Int32" Name="PrescriptionId" Nullable="false" />
+          <Property Type="DateTime" Name="VisitDate" Nullable="false" />
+          <Property Type="String" Name="PatientCode" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PatientName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="DoctorCode" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="DoctorName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="SpecialityNameAr" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="SpecialityNameEn" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="PrescriptionNotes" Nullable="true" MaxLength="2000" />
+          <Property Type="Int32" Name="PrescriptionItemId" Nullable="false" />
+          <Property Type="String" Name="MedicineName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="Dosage" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="Frequency" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="Duration" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="ItemNotes" Nullable="true" MaxLength="500" />
+        </ComplexType>
+        <ComplexType Name="usp_PrescriptionReport_GetHeaderById_Result">
+          <Property Type="Int32" Name="PrescriptionId" Nullable="false" />
+          <Property Type="DateTime" Name="VisitDate" Nullable="false" />
+          <Property Type="String" Name="PatientCode" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PatientName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="DoctorCode" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="DoctorName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="SpecialityNameEn" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="PrescriptionNotes" Nullable="true" MaxLength="2000" />
+        </ComplexType>
+        <ComplexType Name="usp_PrescriptionReport_GetItemsById_Result">
+          <Property Type="Int32" Name="PrescriptionItemId" Nullable="false" />
+          <Property Type="String" Name="MedicineName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="Dosage" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="Frequency" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="Duration" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="ItemNotes" Nullable="true" MaxLength="500" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1590,6 +1643,53 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="usp_Appointment_MarkExpiredAsNoShow" FunctionName="ClinicDBEntities.Store.usp_Appointment_MarkExpiredAsNoShow" />
+          <FunctionImportMapping FunctionImportName="usp_PrescriptionReport_GetById" FunctionName="ClinicDBEntities.Store.usp_PrescriptionReport_GetById">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ClinicDBEntities.usp_PrescriptionReport_GetById_Result">
+                <ScalarProperty Name="PrescriptionId" ColumnName="PrescriptionId" />
+                <ScalarProperty Name="VisitDate" ColumnName="VisitDate" />
+                <ScalarProperty Name="PatientCode" ColumnName="PatientCode" />
+                <ScalarProperty Name="PatientName" ColumnName="PatientName" />
+                <ScalarProperty Name="DoctorCode" ColumnName="DoctorCode" />
+                <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+                <ScalarProperty Name="SpecialityNameAr" ColumnName="SpecialityNameAr" />
+                <ScalarProperty Name="SpecialityNameEn" ColumnName="SpecialityNameEn" />
+                <ScalarProperty Name="PrescriptionNotes" ColumnName="PrescriptionNotes" />
+                <ScalarProperty Name="PrescriptionItemId" ColumnName="PrescriptionItemId" />
+                <ScalarProperty Name="MedicineName" ColumnName="MedicineName" />
+                <ScalarProperty Name="Dosage" ColumnName="Dosage" />
+                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="ItemNotes" ColumnName="ItemNotes" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_PrescriptionReport_GetHeaderById" FunctionName="ClinicDBEntities.Store.usp_PrescriptionReport_GetHeaderById">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ClinicDBEntities.usp_PrescriptionReport_GetHeaderById_Result">
+                <ScalarProperty Name="PrescriptionId" ColumnName="PrescriptionId" />
+                <ScalarProperty Name="VisitDate" ColumnName="VisitDate" />
+                <ScalarProperty Name="PatientCode" ColumnName="PatientCode" />
+                <ScalarProperty Name="PatientName" ColumnName="PatientName" />
+                <ScalarProperty Name="DoctorCode" ColumnName="DoctorCode" />
+                <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+                <ScalarProperty Name="SpecialityNameEn" ColumnName="SpecialityNameEn" />
+                <ScalarProperty Name="PrescriptionNotes" ColumnName="PrescriptionNotes" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_PrescriptionReport_GetItemsById" FunctionName="ClinicDBEntities.Store.usp_PrescriptionReport_GetItemsById">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ClinicDBEntities.usp_PrescriptionReport_GetItemsById_Result">
+                <ScalarProperty Name="PrescriptionItemId" ColumnName="PrescriptionItemId" />
+                <ScalarProperty Name="MedicineName" ColumnName="MedicineName" />
+                <ScalarProperty Name="Dosage" ColumnName="Dosage" />
+                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="ItemNotes" ColumnName="ItemNotes" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

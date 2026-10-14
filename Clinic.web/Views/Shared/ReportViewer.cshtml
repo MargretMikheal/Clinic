@@ -1,0 +1,75 @@
+@using Clinic.Web.Models
+@using Telerik.ReportViewer.Mvc
+@using Telerik.Reporting
+@model ReportsParameters
+@{
+    Layout = null;
+    var reportName = Model != null ? Model.ReportName : string.Empty;
+    var reportParams = (Model != null && Model.Parms != null) ? Model.Parms : new System.Collections.Generic.Dictionary<string, object>();
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Report Viewer</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <script src="@Url.Content("~/ReportViewer/js/jquery-1.10.2.min.js")"></script>
+    <link href="@Url.Content("~/ReportViewer/styles/kendo.common.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/ReportViewer/styles/kendo.blueopal.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/ReportViewer/styles/telerikReportViewer.css")" rel="stylesheet" />
+
+    <script src="@Url.Content("~/ReportViewer/js/kendo.subset.2015.3.930.min.js")"></script>
+    <script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.0.16.204.min.js")"></script>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #reportViewer1 {
+            position: absolute;
+            left: 5px;
+            right: 5px;
+            top: 5px;
+            bottom: 5px;
+            overflow: hidden;
+            font-family: Verdana, Arial;
+        }
+    </style>
+</head>
+<body>
+    @(Html.TelerikReporting().ReportViewer()
+        .Id("reportViewer1")
+        .ServiceUrl(Url.Content("/api/reports/"))
+        .TemplateUrl(Url.Content("~/ReportViewer/templates/telerikReportViewerTemplate.html"))
+        .ReportSource(reportName, reportParams)
+        .ViewMode(ViewMode.Interactive)
+        .ScaleMode(ScaleMode.Specific)
+        .Scale(1.0)
+        .PersistSession(false)
+        .PrintMode(PrintMode.AutoSelect)
+    )
+
+    <script type="text/javascript">
+        $(function () {
+            var frame;
+            if (window.telerikReportViewer && window.telerikReportViewer.printManager) {
+                window.telerikReportViewer.printManager.print = function printPdf(src) {
+                    if (!frame) {
+                        frame = document.createElement("IFRAME");
+                        frame.style.display = "none";
+                    }
+                    frame.src = src;
+                    document.body.appendChild(frame);
+                    frame.contentWindow.focus();
+                    frame.contentWindow.print();
+                };
+            }
+        });
+    </script>
+</body>
+</html>

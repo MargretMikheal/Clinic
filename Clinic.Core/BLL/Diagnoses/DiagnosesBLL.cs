@@ -40,6 +40,30 @@ namespace Clinic.Core.BLL
             }
         }
 
+        public BaseResponse<List<DiagnosisDto>> GetActiveDiagnoses()
+        {
+            try
+            {
+                var diagnoses = _context.Diagnosis
+                    .Where(d => !d.IsDeleted && d.IsActive)
+                    .OrderBy(d => d.NameEn)
+                    .Select(d => new DiagnosisDto
+                    {
+                        Id = d.Id,
+                        NameAr = d.NameAr,
+                        NameEn = d.NameEn,
+                        IsActive = d.IsActive
+                    })
+                    .ToList();
+
+                return BaseResponse<List<DiagnosisDto>>.Success(diagnoses);
+            }
+            catch (Exception ex)
+            {
+                return BaseResponse<List<DiagnosisDto>>.Fail(ex.Message);
+            }
+        }
+
         public BaseResponse<DiagnosisDto> CreateDiagnosis(DiagnosisDto dto, string currentUserId)
         {
             try

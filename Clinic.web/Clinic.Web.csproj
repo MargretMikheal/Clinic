@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
@@ -162,6 +162,21 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.4\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Telerik.Reporting, Version=10.0.16.204, Culture=neutral, PublicKeyToken=a9d7983dfcc261be, processorArchitecture=MSIL">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>..\lib\Telerik\Telerik.Reporting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Reporting.Services.WebApi, Version=10.0.16.204, Culture=neutral, PublicKeyToken=a9d7983dfcc261be, processorArchitecture=MSIL">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>..\lib\Telerik\Telerik.Reporting.Services.WebApi.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.ReportViewer.Mvc, Version=10.0.16.204, Culture=neutral, PublicKeyToken=a9d7983dfcc261be, processorArchitecture=MSIL">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>..\lib\Telerik\Telerik.ReportViewer.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -197,6 +212,10 @@
     <Compile Include="Areas\Doctor\Controllers\ScheduleController.cs" />
     <Compile Include="Areas\Doctor\Controllers\AppointmentController.cs" />
     <Compile Include="Areas\Doctor\Controllers\PatientController.cs" />
+    <Compile Include="Areas\Doctor\Controllers\VisitController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Models\ReportsParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Administration\Scripts\Controllers\DoctorsController.js" />
@@ -212,6 +231,20 @@
     <Content Include="Areas\Doctor\Scripts\Controllers\PatientHistoryController.js" />
     <Content Include="Areas\Doctor\Views\Patient\History.cshtml" />
     <Content Include="Areas\Doctor\Views\Patient\_VisitHistory.cshtml" />
+    <Content Include="Areas\Doctor\Views\Visit\Index.cshtml" />
+    <Content Include="Views\Shared\ReportViewer.cshtml" />
+    <Content Include="ReportViewer\js\jquery-1.10.2.min.js" />
+    <Content Include="ReportViewer\js\kendo.subset.2015.3.930.min.js" />
+    <Content Include="ReportViewer\js\telerikReportViewer-10.0.16.204.js" />
+    <Content Include="ReportViewer\js\telerikReportViewer-10.0.16.204.min.js" />
+    <Content Include="ReportViewer\styles\kendo.blueopal.min.css" />
+    <Content Include="ReportViewer\styles\kendo.common.min.css" />
+    <Content Include="ReportViewer\styles\telerikReportViewer.css" />
+    <Content Include="ReportViewer\templates\telerikReportViewerTemplate.html" />
+    <Content Include="ReportViewer\templates\telerikReportViewerTemplate-FA.html" />
+    <Content Include="Areas\Doctor\Scripts\Controllers\VisitController.js" />
+    <Content Include="Localization\en\visit.lang.json" />
+    <Content Include="Localization\ar\visit.lang.json" />
     <Content Include="Localization\en\schedule.lang.json" />
     <Content Include="Localization\ar\schedule.lang.json" />
     <Content Include="Localization\en\appointment.lang.json" />
@@ -282,6 +315,33 @@
     <Content Include="Localization\en\users.lang.json" />
     <Content Include="Areas\Administration\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Reception\Views\Appointment\Index.cshtml" />
+    <Content Include="Reports\PrescriptionReport.trdx" />
+    <Content Include="reportstemp\.gitkeep" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Cs\095905-386c\EO\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Cs\A\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\KH\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\K\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\PBR\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\CIDs\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\DEO\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\KH\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\K\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\PC\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\RDS\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\RID\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\RRt\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\RRy\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\R\33a78dd91f70431391a378fa3937c19e\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\R\actions-page1\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\R\ccca2dcca450445090fb938bd4b2e5e0\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\R\page1\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\R\styles-page1\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\095905-4365\R\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\095905-56b6\Ds\A\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\A\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\095905-ad98\Rs\MRRID\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\Is\A\value.dat" />
+    <Content Include="reportstemp\Html5App\10.0.16.204\LCT\value.dat" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -363,7 +423,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

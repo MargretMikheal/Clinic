@@ -41,6 +41,30 @@ namespace Clinic.Core.BLL
             }
         }
 
+        public BaseResponse<List<SymptomDto>> GetActiveSymptoms()
+        {
+            try
+            {
+                var symptoms = _context.Symptoms
+                    .Where(s => !s.IsDeleted && s.IsActive)
+                    .OrderBy(s => s.NameEn)
+                    .Select(s => new SymptomDto
+                    {
+                        Id = s.Id,
+                        NameAr = s.NameAr,
+                        NameEn = s.NameEn,
+                        IsActive = s.IsActive
+                    })
+                    .ToList();
+
+                return BaseResponse<List<SymptomDto>>.Success(symptoms);
+            }
+            catch (Exception ex)
+            {
+                return BaseResponse<List<SymptomDto>>.Fail(ex.Message);
+            }
+        }
+
         public BaseResponse<SymptomDto> CreateSymptom(SymptomDto dto, string currentUserId)
         {
             try

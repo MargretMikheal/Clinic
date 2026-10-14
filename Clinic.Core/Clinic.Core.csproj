@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -88,6 +88,11 @@
     <Compile Include="BLL\Appointments\DTOs\ChangeAppointmentStatusDto.cs" />
     <Compile Include="BLL\Appointments\DTOs\CreateAppointmentDto.cs" />
     <Compile Include="BLL\Appointments\DTOs\UpdateAppointmentDto.cs" />
+    <Compile Include="BLL\Visits\VisitsBLL.cs" />
+    <Compile Include="BLL\Visits\DTOs\EligibleAppointmentDto.cs" />
+    <Compile Include="BLL\Visits\DTOs\PrescriptionItemDto.cs" />
+    <Compile Include="BLL\Visits\DTOs\VisitFormDto.cs" />
+    <Compile Include="BLL\Visits\DTOs\SaveVisitResultDto.cs" />
     <Compile Include="BLL\Interfaces\IAdminDashboardService.cs" />
     <Compile Include="BLL\Interfaces\IReceptionistDashboardService.cs" />
     <Compile Include="BLL\Interfaces\IDoctorDashboardService.cs" />
@@ -154,6 +159,9 @@
     <Compile Include="Data\PrescriptionItem.cs">
       <DependentUpon>ClinicDBEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data\usp_PrescriptionReport_GetById_Result.cs">
+      <DependentUpon>ClinicDBEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Data\RoleScreenPermission.cs">
       <DependentUpon>ClinicDBEntities.tt</DependentUpon>
     </Compile>
@@ -172,6 +180,12 @@
       <DependentUpon>ClinicDBEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Data\Symptom.cs">
+      <DependentUpon>ClinicDBEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\usp_PrescriptionReport_GetHeaderById_Result.cs">
+      <DependentUpon>ClinicDBEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\usp_PrescriptionReport_GetItemsById_Result.cs">
       <DependentUpon>ClinicDBEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Data\Visit.cs">

@@ -1,0 +1,688 @@
+@{
+    ViewBag.Title = "Doctor Visit";
+}
+
+<div ng-cloak ng-controller="DoctorVisitController" class="doctor-visit-page">
+
+    <!-- Unauthorized Access State -->
+    <div class="empty-state" ng-if="isUnauthorized">
+        <i class="fa fa-lock empty-state-icon text-danger"></i>
+        <h3 class="empty-state-title">{{ 'common.AccessDenied' | i18n }}</h3>
+        <p class="empty-state-desc">{{ 'common.NoPermission' | i18n }}</p>
+    </div>
+
+    <div ng-if="!isUnauthorized && permissions.Show">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title-wrap">
+                <h1 class="page-title">
+                    <i class="fa fa-stethoscope text-primary"></i>
+                    {{ 'visit.DoctorVisit' | i18n }}
+                </h1>
+                <p class="page-subtitle">
+                    {{ 'visit.DoctorVisitSubtitle' | i18n }}
+                </p>
+            </div>
+
+            <!-- Page Actions -->
+            <div class="page-actions">
+                <button type="button"
+                        class="btn btn-outline"
+                        ng-click="refresh()"
+                        id="btnRefreshAppointments"
+                        title="{{ 'visit.Refresh' | i18n }}">
+                    <i class="fa fa-refresh" ng-class="{ 'fa-spin': isLoading }"></i>
+                    {{ 'visit.Refresh' | i18n }}
+                </button>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SECTION 1: Selected Appointment Context Card              -->
+        <!-- ========================================================= -->
+        <div class="patient-info-summary-card" ng-if="selectedAppointment">
+            <div class="c-card-header with-filters">
+                <div class="c-card-title">
+                    <i class="fa fa-check-circle text-primary"></i>
+                    <span>{{ 'visit.SelectedAppointment' | i18n }}: {{ selectedAppointment.PatientName }}</span>
+                    <span class="c-badge c-badge-neutral">{{ selectedAppointment.PatientCode }}</span>
+                    <span ng-if="isMale(selectedAppointment.Gender)" class="c-badge c-badge-info">
+                        <i class="fa fa-mars"></i> {{ 'visit.Male' | i18n }}
+                    </span>
+                    <span ng-if="isFemale(selectedAppointment.Gender)" class="c-badge c-badge-warning">
+                        <i class="fa fa-venus"></i> {{ 'visit.Female' | i18n }}
+                    </span>
+                    <span class="c-badge c-badge-info">
+                        <i class="fa fa-clock-o"></i> {{ formatTimeSpan(selectedAppointment.AppointmentTime) }}
+                    </span>
+                    <span ng-class="getStatusBadgeClass(selectedAppointment.Status)">
+                        {{ getStatusLocalizationKey(selectedAppointment.Status) | i18n }}
+                    </span>
+                    <span class="c-badge c-badge-success" ng-if="isVisitSaved">
+                        <i class="fa fa-check"></i> {{ 'visit.VisitSavedBadge' | i18n }}
+                    </span>
+                </div>
+
+                <div class="c-filter-toolbar">
+                    <button type="button"
+                            class="btn btn-outline"
+                            id="btnViewPatientHistory"
+                            ng-click="togglePatientHistory()"
+                            title="{{ (showHistory ? 'visit.HidePatientHistory' : 'visit.ViewPatientHistory') | i18n }}">
+                        <i class="fa" ng-class="showHistory ? 'fa-chevron-up' : 'fa-history'"></i>
+                        <span>{{ (showHistory ? 'visit.HidePatientHistory' : 'visit.ViewPatientHistory') | i18n }}</span>
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-outline"
+                            id="btnChangeAppointment"
+                            ng-click="clearSelectedAppointment()"
+                            title="{{ 'visit.ChangeAppointment' | i18n }}">
+                        <i class="fa fa-times"></i>
+                        <span>{{ 'visit.ChangeAppointment' | i18n }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="patient-info-grid">
+                <div>
+                    <div class="info-item-label">
+                        <i class="fa fa-user text-primary"></i>
+                        {{ 'visit.PatientName' | i18n }}
+                    </div>
+                    <div class="info-item-value">
+                        {{ selectedAppointment.PatientName }}
+                    </div>
+                </div>
+
+                <div>
+                    <div class="info-item-label">
+                        <i class="fa fa-phone text-primary"></i>
+                        {{ 'visit.PatientPhone' | i18n }}
+                    </div>
+                    <div class="info-item-value">
+                        {{ selectedAppointment.PatientPhone || '-' }}
+                    </div>
+                </div>
+
+                <div>
+                    <div class="info-item-label">
+                        <i class="fa fa-birthday-cake text-primary"></i>
+                        {{ 'visit.Age' | i18n }}
+                    </div>
+                    <div class="info-item-value">
+                        <span ng-if="selectedAppointment.BirthDate">
+                            {{ calculateAge(selectedAppointment.BirthDate) }} {{ 'visit.YearsOld' | i18n }}
+                            <span class="text-muted">({{ selectedAppointment.BirthDate | date:'shortDate' }})</span>
+                        </span>
+                        <span class="text-muted" ng-if="!selectedAppointment.BirthDate">-</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="info-item-label">
+                        <i class="fa fa-clock-o text-primary"></i>
+                        {{ 'visit.AppointmentTime' | i18n }}
+                    </div>
+                    <div class="info-item-value">
+                        {{ formatTimeSpan(selectedAppointment.AppointmentTime) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="c-card-body" ng-if="selectedAppointment.Notes">
+                <div class="c-alert c-alert-info">
+                    <i class="fa fa-sticky-note-o"></i>
+                    <strong>{{ 'visit.Notes' | i18n }}:</strong> {{ selectedAppointment.Notes }}
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SECTION 2: Collapsible Patient History Partial            -->
+        <!-- ========================================================= -->
+        <div class="c-card" ng-if="selectedAppointment && showHistory">
+            <div class="c-card-header with-filters">
+                <h3 class="c-card-title">
+                    <i class="fa fa-history text-primary"></i>
+                    <span>{{ 'visit.PatientHistoryTitle' | i18n }} - {{ selectedAppointment.PatientName }}</span>
+                </h3>
+                <div class="c-filter-toolbar">
+                    <button type="button"
+                            class="btn btn-outline btn-sm"
+                            id="btnClosePatientHistory"
+                            ng-click="closePatientHistory()"
+                            title="{{ 'visit.CloseHistory' | i18n }}">
+                        <i class="fa fa-times"></i>
+                        <span>{{ 'visit.CloseHistory' | i18n }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="c-card-body">
+                @Html.Partial("~/Areas/Doctor/Views/Patient/_VisitHistory.cshtml")
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SECTION 3: Clinical Visit Form                            -->
+        <!-- ========================================================= -->
+        <div class="clinical-form-card" ng-if="selectedAppointment && visitForm">
+            <div class="c-card-header with-filters">
+                <div class="c-card-title">
+                    <i class="fa fa-stethoscope text-primary"></i>
+                    <span>{{ 'visit.ClinicalForm' | i18n }}</span>
+                    <span class="c-badge c-badge-primary">{{ selectedAppointment.PatientName }}</span>
+                    <span class="c-badge c-badge-success" ng-if="isVisitSaved">
+                        <i class="fa fa-check-circle"></i>
+                        {{ 'visit.VisitSavedBadge' | i18n }}
+                    </span>
+                </div>
+                <div class="c-filter-toolbar">
+                    <button type="button"
+                            class="btn btn-outline btn-sm"
+                            id="btnResetVisitForm"
+                            ng-click="resetForm()"
+                            ng-disabled="isVisitSaved || isSaving"
+                            title="{{ 'visit.ResetForm' | i18n }}">
+                        <i class="fa fa-undo"></i>
+                        <span>{{ 'visit.ResetForm' | i18n }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Validation Messages -->
+            <div class="c-card-body" ng-if="isSubmitted && validationErrors.length > 0">
+                <div class="c-alert c-alert-danger">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <div>
+                        <div ng-repeat="err in validationErrors track by $index">
+                            <i class="fa fa-dot-circle-o"></i> {{ err }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visit Saved Notice -->
+            <div class="c-card-body" ng-if="isVisitSaved">
+                <div class="c-alert c-alert-info">
+                    <i class="fa fa-check-circle"></i>
+                    <span>{{ 'visit.SaveVisitSuccess' | i18n }}</span>
+                </div>
+            </div>
+
+            <!-- Section 3A & 3B: Symptoms & Diagnoses Grid -->
+            <div class="clinical-section">
+                <div class="row">
+                    <!-- Symptoms Column -->
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="selectSymptomInput">
+                                <i class="fa fa-heartbeat text-warning"></i>
+                                <span>{{ 'visit.Symptoms' | i18n }}</span>
+                                <span class="field-required">*</span>
+                                <span class="c-badge c-badge-neutral" ng-if="visitForm.symptoms.length > 0">
+                                    {{ visitForm.symptoms.length }}
+                                </span>
+                            </label>
+
+                            <select class="form-control"
+                                    id="selectSymptomInput"
+                                    ng-model="visitForm.selectedSymptomId"
+                                    ng-change="onSymptomSelect(visitForm.selectedSymptomId)"
+                                    ng-disabled="isVisitSaved || isSaving || isLoadingMasterData"
+                                    ng-options="sym.Id as (getLocalizedText(sym.NameAr, sym.NameEn)) for sym in masterSymptoms">
+                                <option value="">{{ 'visit.SelectSymptom' | i18n }}</option>
+                            </select>
+
+                            <!-- Selected Symptoms Chips -->
+                            <div class="clinical-chips-wrap">
+                                <span class="clinical-chip clinical-chip-warning"
+                                      ng-repeat="sym in visitForm.symptoms track by sym.Id">
+                                    <i class="fa fa-check"></i>
+                                    <span>{{ getLocalizedText(sym.NameAr, sym.NameEn) }}</span>
+                                    <button type="button"
+                                            class="clinical-chip-remove"
+                                            ng-click="removeSymptom($index)"
+                                            ng-disabled="isVisitSaved || isSaving"
+                                            title="{{ 'common.Delete' | i18n }}">
+                                        &times;
+                                    </button>
+                                </span>
+                                <span class="text-muted" ng-if="visitForm.symptoms.length === 0">
+                                    {{ 'visit.NoSymptomsSelected' | i18n }}
+                                </span>
+                            </div>
+
+                            <span class="form-error" ng-if="isSubmitted && visitForm.symptoms.length === 0">
+                                <i class="fa fa-exclamation-circle"></i>
+                                {{ 'visit.ValidationSymptomsRequired' | i18n }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Diagnoses Column -->
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="selectDiagnosisInput">
+                                <i class="fa fa-medkit text-danger"></i>
+                                <span>{{ 'visit.Diagnoses' | i18n }}</span>
+                                <span class="field-required">*</span>
+                                <span class="c-badge c-badge-neutral" ng-if="visitForm.diagnoses.length > 0">
+                                    {{ visitForm.diagnoses.length }}
+                                </span>
+                            </label>
+
+                            <select class="form-control"
+                                    id="selectDiagnosisInput"
+                                    ng-model="visitForm.selectedDiagnosisId"
+                                    ng-change="onDiagnosisSelect(visitForm.selectedDiagnosisId)"
+                                    ng-disabled="isVisitSaved || isSaving || isLoadingMasterData"
+                                    ng-options="diag.Id as (getLocalizedText(diag.NameAr, diag.NameEn)) for diag in masterDiagnoses">
+                                <option value="">{{ 'visit.SelectDiagnosis' | i18n }}</option>
+                            </select>
+
+                            <!-- Selected Diagnoses Chips -->
+                            <div class="clinical-chips-wrap">
+                                <span class="clinical-chip clinical-chip-danger"
+                                      ng-repeat="diag in visitForm.diagnoses track by diag.Id">
+                                    <i class="fa fa-stethoscope"></i>
+                                    <span>{{ getLocalizedText(diag.NameAr, diag.NameEn) }}</span>
+                                    <button type="button"
+                                            class="clinical-chip-remove"
+                                            ng-click="removeDiagnosis($index)"
+                                            ng-disabled="isVisitSaved || isSaving"
+                                            title="{{ 'common.Delete' | i18n }}">
+                                        &times;
+                                    </button>
+                                </span>
+                                <span class="text-muted" ng-if="visitForm.diagnoses.length === 0">
+                                    {{ 'visit.NoDiagnosesSelected' | i18n }}
+                                </span>
+                            </div>
+
+                            <span class="form-error" ng-if="isSubmitted && visitForm.diagnoses.length === 0">
+                                <i class="fa fa-exclamation-circle"></i>
+                                {{ 'visit.ValidationDiagnosesRequired' | i18n }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3C: Visit Notes -->
+            <div class="clinical-section">
+                <div class="form-group">
+                    <label class="form-label" for="txtVisitNotes">
+                        <i class="fa fa-file-text-o text-primary"></i>
+                        <span>{{ 'visit.VisitNotes' | i18n }}</span>
+                        <span class="text-muted">({{ 'common.Optional' | i18n }})</span>
+                    </label>
+                    <textarea class="form-control"
+                              id="txtVisitNotes"
+                              rows="3"
+                              ng-model="visitForm.notes"
+                              ng-disabled="isVisitSaved || isSaving"
+                              placeholder="{{ 'visit.VisitNotesPlaceholder' | i18n }}"></textarea>
+                </div>
+            </div>
+
+            <!-- Section 3D: Prescription & Dynamic Items -->
+            <div class="clinical-section">
+                <h4 class="clinical-section-title">
+                    <i class="fa fa-pencil-square-o text-success"></i>
+                    <span>{{ 'visit.Prescription' | i18n }}</span>
+                </h4>
+
+                <!-- Prescription-level Notes -->
+                <div class="form-group">
+                    <label class="form-label" for="txtPrescriptionNotes">
+                        <i class="fa fa-comment-o text-muted"></i>
+                        <span>{{ 'visit.PrescriptionNotes' | i18n }}</span>
+                        <span class="text-muted">({{ 'common.Optional' | i18n }})</span>
+                    </label>
+                    <textarea class="form-control"
+                              id="txtPrescriptionNotes"
+                              rows="2"
+                              ng-model="visitForm.prescriptionNotes"
+                              ng-disabled="isVisitSaved || isSaving"
+                              placeholder="{{ 'visit.PrescriptionNotesPlaceholder' | i18n }}"></textarea>
+                </div>
+
+                <!-- Prescription Items Header & Add Button -->
+                <div class="c-card-header with-filters">
+                    <div class="c-card-title">
+                        <i class="fa fa-list text-primary"></i>
+                        <span>{{ 'visit.PrescriptionItems' | i18n }}</span>
+                        <span class="field-required">*</span>
+                        <span class="c-badge c-badge-neutral" ng-if="visitForm.prescriptionItems.length > 0">
+                            {{ visitForm.prescriptionItems.length }}
+                        </span>
+                    </div>
+                    <div class="c-filter-toolbar">
+                        <button type="button"
+                                class="btn btn-outline btn-sm"
+                                id="btnAddPrescriptionItem"
+                                ng-click="addPrescriptionItem()"
+                                ng-disabled="isVisitSaved || isSaving"
+                                title="{{ 'visit.AddMedication' | i18n }}">
+                            <i class="fa fa-plus"></i>
+                            <span>{{ 'visit.AddMedication' | i18n }}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Prescription Items Table -->
+                <div class="table-responsive" ng-if="visitForm.prescriptionItems && visitForm.prescriptionItems.length > 0">
+                    <table class="prescription-items-table c-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>
+                                    <span>{{ 'visit.MedicineName' | i18n }}</span>
+                                    <span class="field-required">*</span>
+                                </th>
+                                <th>
+                                    <span>{{ 'visit.Dosage' | i18n }}</span>
+                                    <span class="field-required">*</span>
+                                </th>
+                                <th>
+                                    <span>{{ 'visit.Frequency' | i18n }}</span>
+                                    <span class="field-required">*</span>
+                                </th>
+                                <th>
+                                    <span>{{ 'visit.Duration' | i18n }}</span>
+                                    <span class="field-required">*</span>
+                                </th>
+                                <th>{{ 'visit.ItemNotes' | i18n }}</th>
+                                <th class="text-center">{{ 'common.Actions' | i18n }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in visitForm.prescriptionItems track by $index">
+                                <td>
+                                    <span class="c-badge c-badge-neutral">{{ $index + 1 }}</span>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           class="form-control"
+                                           ng-model="item.MedicineName"
+                                           ng-disabled="isVisitSaved || isSaving"
+                                           placeholder="{{ 'visit.MedicineNamePlaceholder' | i18n }}" />
+                                    <span class="form-error" ng-if="isSubmitted && (!item.MedicineName || !item.MedicineName.trim())">
+                                        <i class="fa fa-exclamation-circle"></i>
+                                        {{ 'common.Required' | i18n }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           class="form-control"
+                                           ng-model="item.Dosage"
+                                           ng-disabled="isVisitSaved || isSaving"
+                                           placeholder="{{ 'visit.DosagePlaceholder' | i18n }}" />
+                                    <span class="form-error" ng-if="isSubmitted && (!item.Dosage || !item.Dosage.trim())">
+                                        <i class="fa fa-exclamation-circle"></i>
+                                        {{ 'common.Required' | i18n }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           class="form-control"
+                                           ng-model="item.Frequency"
+                                           ng-disabled="isVisitSaved || isSaving"
+                                           placeholder="{{ 'visit.FrequencyPlaceholder' | i18n }}" />
+                                    <span class="form-error" ng-if="isSubmitted && (!item.Frequency || !item.Frequency.trim())">
+                                        <i class="fa fa-exclamation-circle"></i>
+                                        {{ 'common.Required' | i18n }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           class="form-control"
+                                           ng-model="item.Duration"
+                                           ng-disabled="isVisitSaved || isSaving"
+                                           placeholder="{{ 'visit.DurationPlaceholder' | i18n }}" />
+                                    <span class="form-error" ng-if="isSubmitted && (!item.Duration || !item.Duration.trim())">
+                                        <i class="fa fa-exclamation-circle"></i>
+                                        {{ 'common.Required' | i18n }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           class="form-control"
+                                           ng-model="item.Notes"
+                                           ng-disabled="isVisitSaved || isSaving"
+                                           placeholder="{{ 'visit.ItemNotesPlaceholder' | i18n }}" />
+                                </td>
+                                <td class="text-center">
+                                    <button type="button"
+                                            class="btn btn-outline btn-sm"
+                                            ng-click="removePrescriptionItem($index)"
+                                            ng-disabled="isVisitSaved || isSaving"
+                                            title="{{ 'visit.RemoveItem' | i18n }}">
+                                        <i class="fa fa-trash text-danger"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty Prescription Items State -->
+                <div class="empty-state" ng-if="!visitForm.prescriptionItems || visitForm.prescriptionItems.length === 0">
+                    <i class="fa fa-medkit empty-state-icon text-muted"></i>
+                    <p class="empty-state-desc">{{ 'visit.NoMedicationItemsAdded' | i18n }}</p>
+                    <button type="button"
+                            class="btn btn-outline btn-sm"
+                            ng-click="addPrescriptionItem()"
+                            ng-disabled="isVisitSaved || isSaving">
+                        <i class="fa fa-plus"></i>
+                        <span>{{ 'visit.AddMedication' | i18n }}</span>
+                    </button>
+                </div>
+
+                <span class="form-error" ng-if="isSubmitted && (!visitForm.prescriptionItems || visitForm.prescriptionItems.length === 0)">
+                    <i class="fa fa-exclamation-circle"></i>
+                    {{ 'visit.ValidationPrescriptionItemsRequired' | i18n }}
+                </span>
+            </div>
+
+            <!-- Actions Bar -->
+            <div class="clinical-actions-bar">
+                <div>
+                    <button type="button"
+                            class="btn btn-outline"
+                            id="btnResetFormBottom"
+                            ng-click="resetForm()"
+                            ng-disabled="isVisitSaved || isSaving">
+                        <i class="fa fa-undo"></i>
+                        <span>{{ 'visit.ResetForm' | i18n }}</span>
+                    </button>
+                </div>
+
+                <div class="page-actions">
+                    <!-- Prescription Report Button (shown ONLY after successful save) -->
+                    <button type="button"
+                            class="btn btn-outline"
+                            id="btnPrintPrescription"
+                            ng-if="isVisitSaved"
+                            ng-click="printPrescriptionReport()"
+                            ng-disabled="isPrintingReport || !isVisitSaved"
+                            title="{{ 'visit.PrintPrescriptionTooltip' | i18n }}">
+                        <i class="fa" ng-class="{ 'fa-spinner fa-spin': isPrintingReport, 'fa-print': !isPrintingReport }"></i>
+                        <span>{{ (isPrintingReport ? 'visit.PrintingReport' : 'visit.PrintPrescription') | i18n }}</span>
+                    </button>
+
+                    <!-- Save Visit Button -->
+                    <button type="button"
+                            class="btn btn-primary"
+                            id="btnSaveVisit"
+                            ng-click="saveVisit()"
+                            ng-disabled="isVisitSaved || isSaving || !permissions.Add || selectedAppointment.Status === 'Completed'">
+                        <i class="fa" ng-class="{ 'fa-spinner fa-spin': isSaving, 'fa-check': !isSaving && !isVisitSaved, 'fa-lock': isVisitSaved }"></i>
+                        <span>{{ (isSaving ? 'visit.SavingVisit' : (isVisitSaved ? 'visit.VisitSavedBadge' : 'visit.SaveVisit')) | i18n }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- SECTION 4: Today's Eligible Appointments Card             -->
+        <!-- ========================================================= -->
+        <div class="c-card">
+            <div class="c-card-header with-filters">
+                <h3 class="c-card-title">
+                    <i class="fa fa-calendar-check-o text-primary"></i>
+                    <span>{{ 'visit.TodayAppointments' | i18n }}</span>
+                    <span class="c-badge c-badge-primary" ng-if="appointments.length > 0">
+                        {{ appointments.length }}
+                    </span>
+                </h3>
+
+                <!-- Search -->
+                <div class="c-filter-toolbar" ng-if="appointments.length > 0">
+                    <div class="c-filter-group c-filter-search">
+                        <input type="text"
+                               class="form-control"
+                               ng-model="searchQuery"
+                               placeholder="{{ 'visit.SearchPlaceholder' | i18n }}" />
+                    </div>
+                    <button type="button" class="btn btn-outline" ng-if="searchQuery" ng-click="clearSearch()" title="{{ 'common.Clear' | i18n }}">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="c-card-body">
+
+                <!-- Loading State -->
+                <div class="loading-state" ng-if="isLoading">
+                    <div class="c-spinner"></div>
+                    <span>{{ 'common.Loading' | i18n }}</span>
+                </div>
+
+                <!-- Error State -->
+                <div class="c-alert c-alert-danger" ng-if="!isLoading && isError">
+                    <i class="fa fa-exclamation-circle"></i>
+                    <span>{{ errorMessage || ('visit.ErrorLoadingAppointments' | i18n) }}</span>
+                </div>
+
+                <!-- Empty Appointments State -->
+                <div class="empty-state" ng-if="!isLoading && !isError && appointments.length === 0">
+                    <i class="fa fa-calendar-times-o empty-state-icon text-muted"></i>
+                    <h4 class="empty-state-title">{{ 'visit.NoEligibleAppointments' | i18n }}</h4>
+                    <p class="empty-state-desc">{{ 'visit.NoEligibleAppointmentsDesc' | i18n }}</p>
+                </div>
+
+                <!-- No Search Results State -->
+                <div class="empty-state" ng-if="!isLoading && !isError && appointments.length > 0 && filteredAppointments.length === 0">
+                    <i class="fa fa-search empty-state-icon text-muted"></i>
+                    <h4 class="empty-state-title">{{ 'common.NoResults' | i18n }}</h4>
+                    <p class="empty-state-desc">{{ 'common.NoData' | i18n }}</p>
+                </div>
+
+                <!-- Appointments Table -->
+                <div class="table-responsive" ng-if="!isLoading && !isError && filteredAppointments.length > 0">
+                    <table class="c-table">
+                        <thead>
+                            <tr>
+                                <th>{{ 'visit.AppointmentTime' | i18n }}</th>
+                                <th>{{ 'visit.Patient' | i18n }}</th>
+                                <th>{{ 'visit.PatientCode' | i18n }}</th>
+                                <th>{{ 'visit.PatientPhone' | i18n }}</th>
+                                <th>{{ 'visit.Gender' | i18n }} / {{ 'visit.Age' | i18n }}</th>
+                                <th>{{ 'common.Status' | i18n }}</th>
+                                <th>{{ 'visit.Notes' | i18n }}</th>
+                                <th class="text-center">{{ 'visit.Actions' | i18n }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="appt in filteredAppointments track by appt.Id"
+                                ng-class="{ 'info': selectedAppointment && selectedAppointment.Id === appt.Id }">
+
+                                <td>
+                                    <span class="c-badge c-badge-info">
+                                        <i class="fa fa-clock-o"></i>
+                                        {{ formatTimeSpan(appt.AppointmentTime) }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <strong class="text-primary">{{ appt.PatientName }}</strong>
+                                </td>
+
+                                <td>
+                                    <span class="c-badge c-badge-neutral">
+                                        {{ appt.PatientCode }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span>{{ appt.PatientPhone || '-' }}</span>
+                                </td>
+
+                                <td>
+                                    <span ng-if="isMale(appt.Gender)" class="c-badge c-badge-info">
+                                        <i class="fa fa-mars"></i> {{ 'visit.Male' | i18n }}
+                                    </span>
+                                    <span ng-if="isFemale(appt.Gender)" class="c-badge c-badge-warning">
+                                        <i class="fa fa-venus"></i> {{ 'visit.Female' | i18n }}
+                                    </span>
+                                    <span ng-if="appt.BirthDate" class="text-muted">
+                                        ({{ calculateAge(appt.BirthDate) }} {{ 'visit.YearsOld' | i18n }})
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span ng-class="getStatusBadgeClass(appt.Status)">
+                                        {{ getStatusLocalizationKey(appt.Status) | i18n }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="text-muted" ng-if="appt.Notes">{{ appt.Notes }}</span>
+                                    <span class="text-muted" ng-if="!appt.Notes">-</span>
+                                </td>
+
+                                <td class="text-center" ng-click="$event.stopPropagation();">
+                                    <!-- Completed Appointment -->
+                                    <span class="c-badge c-badge-completed"
+                                          ng-if="appt.Status === 'Completed'">
+                                        <i class="fa fa-check-circle"></i>
+                                        <span>{{ 'visit.AppointmentCompleted' | i18n }}</span>
+                                    </span>
+
+                                    <!-- Unselected Eligible Appointment -->
+                                    <button type="button"
+                                            class="btn btn-primary btn-sm"
+                                            ng-if="appt.Status !== 'Completed' && (!selectedAppointment || selectedAppointment.Id !== appt.Id)"
+                                            ng-click="selectAppointment(appt)"
+                                            title="{{ 'visit.SelectAppointment' | i18n }}">
+                                        <i class="fa fa-check"></i>
+                                        <span>{{ 'visit.SelectAppointment' | i18n }}</span>
+                                    </button>
+
+                                    <!-- Selected Appointment -->
+                                    <span class="c-badge c-badge-success"
+                                          ng-if="appt.Status !== 'Completed' && selectedAppointment && selectedAppointment.Id === appt.Id">
+                                        <i class="fa fa-check-circle"></i>
+                                        <span>{{ 'visit.SelectedAppointment' | i18n }}</span>
+                                    </span>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Doctor/Scripts/Controllers/VisitController.js"></script>
+}
