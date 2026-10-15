@@ -69,22 +69,52 @@
                                     ? childNode.Attributes["icon"].ToString()
                                     : "fa-circle-o";
 
-                            string url = childNode.Url ?? "#";
+                            if (childNode.HasChildNodes)
+                            {
+                                <li class="side-menu-item clinic-menu-parent">
+                                    <a href="#" class="side-menu-link clinic-menu-toggle">
+                                        <i class="fa @childIcon"></i>
+                                        <span style="flex: 1;">
+                                            {{ '@childNode.Title' | i18n }}
+                                        </span>
+                                        <i class="fa fa-angle-left toggle-icon"></i>
+                                    </a>
+                                    <ul class="clinic-menu-child">
+                                        @foreach (var subNode in childNode.ChildNodes)
+                                        {
+                                            if (!subNode.IsVisible(new Dictionary<string, object>()))
+                                            {
+                                                continue;
+                                            }
 
-                            <li class="side-menu-item">
+                                            var subIcon =
+                                                subNode.Attributes.ContainsKey("icon")
+                                                    ? subNode.Attributes["icon"].ToString()
+                                                    : "fa-circle-o";
 
-                                <a href="@url"
-                                   class="side-menu-link">
+                                            string subUrl = subNode.Url ?? "#";
 
-                                    <i class="fa @childIcon"></i>
+                                            <li class="side-menu-item">
+                                                <a href="@subUrl" class="side-menu-link clinic-menu-subitem">
+                                                    <i class="fa @subIcon"></i>
+                                                    <span>{{ '@subNode.Title' | i18n }}</span>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                string url = childNode.Url ?? "#";
 
-                                    <span>
-                                        {{ '@childNode.Title' | i18n }}
-                                    </span>
-
-                                </a>
-
-                            </li>
+                                <li class="side-menu-item">
+                                    <a href="@url" class="side-menu-link">
+                                        <i class="fa @childIcon"></i>
+                                        <span>{{ '@childNode.Title' | i18n }}</span>
+                                    </a>
+                                </li>
+                            }
                         }
                     </ul>
 

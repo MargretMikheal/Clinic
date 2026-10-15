@@ -5,7 +5,7 @@
       <Parameters>
         <SqlDataSourceParameter DbType="Int32" Name="@PrescriptionId">
           <Value>
-            <String>= Parameters.PrescriptionId.Value</String>
+            <String>= CInt(Parameters.PrescriptionId.Value)</String>
           </Value>
         </SqlDataSourceParameter>
       </Parameters>
@@ -14,7 +14,7 @@
       <Parameters>
         <SqlDataSourceParameter DbType="Int32" Name="@PrescriptionId">
           <Value>
-            <String>= Parameters.PrescriptionId.Value</String>
+            <String>= CInt(Parameters.PrescriptionId.Value)</String>
           </Value>
         </SqlDataSourceParameter>
       </Parameters>

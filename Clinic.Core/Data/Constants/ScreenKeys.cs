@@ -19,5 +19,11 @@ namespace Clinic.Core.Constants
         public const int MyAppointments = 12;
         public const int PatientHistory = 13;
         public const int Visit = 14;
+
+        public const int DoctorAppointmentsReport = 15;
+        public const int PatientMedicalHistoryReport = 16;
+        public const int PrescriptionReport = 17;
+        public const int Reports = 18;
+        public const int DoctorPerformanceReport = 19;
     }
 }

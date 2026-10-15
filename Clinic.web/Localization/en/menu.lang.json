@@ -13,5 +13,10 @@
   "MyAppointments": "My Appointments",
   "PatientHistory": "Patient History",
   "Visit": "Visit",
-  "Dashboard": "Dashboard"
+  "Dashboard": "Dashboard",
+  "Reports": "Reports",
+  "DoctorAppointmentsReport": "Doctor Appointments",
+  "PatientMedicalHistoryReport": "Patient Medical History",
+  "DoctorPerformanceReport": "Doctor Performance",
+  "PrescriptionReport": "Prescription Report"
 }

@@ -598,6 +598,78 @@ namespace Clinic.Core.BLL
                 return BaseResponse<bool>.Fail(ex.Message);
             }
         }
+
+        public async Task<BaseResponse<List<DoctorPerformanceDto>>> GetDoctorPerformanceReportAsync(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                var query = _context.Appointments
+                    .AsNoTracking()
+                    .Where(a => !a.IsDeleted && !a.Doctor.IsDeleted && a.Doctor.IsActive);
+
+                if (fromDate.HasValue)
+                {
+                    var f = fromDate.Value.Date;
+                    query = query.Where(a => a.AppointmentDate >= f);
+                }
+
+                if (toDate.HasValue)
+                {
+                    var t = toDate.Value.Date;
+                    query = query.Where(a => a.AppointmentDate <= t);
+                }
+
+                var completedStatus = AppointmentStatus.Completed.ToString();
+                var cancelledStatus = AppointmentStatus.Cancelled.ToString();
+                var noShowStatus = AppointmentStatus.NoShow.ToString();
+
+                var doctors = await _context.Doctors
+                    .AsNoTracking()
+                    .Where(d => !d.IsDeleted && d.IsActive)
+                    .OrderBy(d => d.Name)
+                    .Select(d => new
+                    {
+                        d.Id,
+                        d.Name,
+                        d.DoctorCode,
+                        SpecialityName = d.Speciality != null ? d.Speciality.NameEn : ""
+                    })
+                    .ToListAsync();
+
+                var appointments = await query
+                    .Select(a => new
+                    {
+                        a.DoctorId,
+                        a.Status
+                    })
+                    .ToListAsync();
+
+                var result = doctors.Select(d =>
+                {
+                    var docAppts = appointments.Where(a => a.DoctorId == d.Id).ToList();
+                    return new DoctorPerformanceDto
+                    {
+                        DoctorId = d.Id,
+                        DoctorName = d.Name,
+                        DoctorCode = d.DoctorCode,
+                        SpecialityName = d.SpecialityName,
+                        TotalAppointments = docAppts.Count,
+                        CompletedCount = docAppts.Count(a => a.Status == completedStatus),
+                        CancelledCount = docAppts.Count(a => a.Status == cancelledStatus),
+                        NoShowCount = docAppts.Count(a => a.Status == noShowStatus)
+                    };
+                })
+                .OrderByDescending(r => r.TotalAppointments)
+                .ThenBy(r => r.DoctorName)
+                .ToList();
+
+                return BaseResponse<List<DoctorPerformanceDto>>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                return BaseResponse<List<DoctorPerformanceDto>>.Fail(ex.Message);
+            }
+        }
         #endregion
     }
 }

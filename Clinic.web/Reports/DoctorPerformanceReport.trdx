@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report Width="19cm" Name="DoctorPerformanceReport" xmlns="http://schemas.telerik.com/reporting/2012/3.9">
+  <DataSources>
+    <SqlDataSource ConnectionString="ClinicConnection" SelectCommand="SELECT d.Id AS DoctorId, d.DoctorCode, d.Name AS DoctorName, ISNULL(s.NameEn, '') AS SpecialityName, COUNT(a.Id) AS TotalAppointments, SUM(CASE WHEN a.Status = 'Completed' THEN 1 ELSE 0 END) AS CompletedCount, SUM(CASE WHEN a.Status = 'Cancelled' THEN 1 ELSE 0 END) AS CancelledCount, SUM(CASE WHEN a.Status = 'NoShow' THEN 1 ELSE 0 END) AS NoShowCount FROM dbo.Doctor d LEFT JOIN dbo.Speciality s ON d.SpecialityId = s.Id AND s.IsDeleted = 0 LEFT JOIN dbo.Appointment a ON d.Id = a.DoctorId AND a.IsDeleted = 0 AND (@FromDate IS NULL OR @FromDate = '' OR a.AppointmentDate &gt;= TRY_CAST(@FromDate AS DATE)) AND (@ToDate IS NULL OR @ToDate = '' OR a.AppointmentDate &lt;= TRY_CAST(@ToDate AS DATE)) WHERE d.IsDeleted = 0 AND d.IsActive = 1 GROUP BY d.Id, d.DoctorCode, d.Name, s.NameEn ORDER BY COUNT(a.Id) DESC, d.Name ASC" Name="DoctorPerformanceDataSource">
+      <Parameters>
+        <SqlDataSourceParameter DbType="String" Name="@FromDate">
+          <Value>
+            <String>= IIf(IsNull(Parameters.FromDate.Value, '') = '', Null, Parameters.FromDate.Value)</String>
+          </Value>
+        </SqlDataSourceParameter>
+        <SqlDataSourceParameter DbType="String" Name="@ToDate">
+          <Value>
+            <String>= IIf(IsNull(Parameters.ToDate.Value, '') = '', Null, Parameters.ToDate.Value)</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <ReportHeaderSection Height="3.2cm" Name="reportHeaderSection1">
+      <Items>
+        <TextBox Width="13cm" Height="0.8cm" Left="0cm" Top="0.2cm" Value="DOCTOR PERFORMANCE REPORT" Name="txtTitle">
+          <Style Color="30, 41, 59" VerticalAlign="Middle">
+            <Font Name="Segoe UI" Size="15pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="6cm" Height="0.8cm" Left="13cm" Top="0.2cm" Value="CLINIC MANAGEMENT" Name="txtClinicBadge">
+          <Style Color="15, 118, 110" TextAlign="Right" VerticalAlign="Middle">
+            <Font Name="Segoe UI" Size="10pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <Shape Width="19cm" Height="0.05cm" Left="0cm" Top="1.1cm" Name="shapeDivider">
+          <Style Color="15, 118, 110" LineWidth="1.5pt" />
+          <ShapeType>
+            <LineShape Direction="EW" />
+          </ShapeType>
+        </Shape>
+        <Panel Width="19cm" Height="1.6cm" Left="0cm" Top="1.3cm" Name="panelFilters">
+          <Style BackgroundColor="248, 250, 252">
+            <BorderStyle Default="Solid" />
+            <BorderColor Default="226, 232, 240" />
+            <BorderWidth Default="1px" />
+          </Style>
+          <Items>
+            <TextBox Width="9cm" Height="0.55cm" Left="0.4cm" Top="0.2cm" Value="= 'From Date: ' + (IsNull(Parameters.FromDate.Value, '') = '' ? 'All' : Parameters.FromDate.Value)" Name="lblFromDateFilter">
+              <Style Color="51, 65, 85" VerticalAlign="Middle">
+                <Font Name="Segoe UI" Size="9pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="9cm" Height="0.55cm" Left="9.8cm" Top="0.2cm" Value="= 'To Date: ' + (IsNull(Parameters.ToDate.Value, '') = '' ? 'All' : Parameters.ToDate.Value)" Name="lblToDateFilter">
+              <Style Color="51, 65, 85" VerticalAlign="Middle">
+                <Font Name="Segoe UI" Size="9pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="18.4cm" Height="0.55cm" Left="0.4cm" Top="0.85cm" Value="Doctor Appointment Metrics &amp; Performance Summary" Name="lblSubFilter">
+              <Style Color="100, 116, 139" VerticalAlign="Middle">
+                <Font Name="Segoe UI" Size="8.5pt" />
+              </Style>
+            </TextBox>
+          </Items>
+        </Panel>
+      </Items>
+    </ReportHeaderSection>
+    <DetailSection Height="1.6cm" Name="detailSection1">
+      <Items>
+        <Table DataSourceName="DoctorPerformanceDataSource" Width="19cm" Height="1.4cm" Left="0cm" Top="0.1cm" ColumnHeadersPrintOnEveryPage="True" Name="tblPerformance">
+          <Body>
+            <Cells>
+              <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= RowNumber()" Name="tdNum">
+                    <Style Color="100, 116, 139" TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Bottom="Solid" />
+                      <BorderColor Bottom="226, 232, 240" />
+                      <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="8.5pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="6cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= 'Dr. ' + Fields.DoctorName + ' (' + Fields.DoctorCode + ')'" Name="tdDoctor">
+                    <Style Color="15, 23, 42" TextAlign="Left" VerticalAlign="Middle">
+                      <BorderStyle Bottom="Solid" />
+                      <BorderColor Bottom="226, 232, 240" />
+                      <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="9pt" Bold="True" />
+                      <Padding Left="4pt" Right="4pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.5cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= Fields.SpecialityName" Name="tdSpeciality">
+                    <Style Color="51, 65, 85" TextAlign="Left" VerticalAlign="Middle">
+                      <BorderStyle Bottom="Solid" />
+                      <BorderColor Bottom="226, 232, 240" />
+                      <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="9pt" />
+                      <Padding Left="4pt" Right="4pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.5cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= Fields.TotalAppointments" Name="tdTotal">
+                    <Style Color="15, 23, 42" TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Bottom="Solid" />
+                      <BorderColor Bottom="226, 232, 240" />
+                      <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="9pt" Bold="True" />
+                      <Padding Left="4pt" Right="4pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= Fields.CompletedCount" Name="tdCompleted">
+                    <Style Color="16, 149, 106" TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Bottom="Solid" />
+                      <BorderColor Bottom="226, 232, 240" />
+                      <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="9pt" Bold="True" />
+                      <Padding Left="4pt" Right="4pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="5" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= Fields.CancelledCount" Name="tdCancelled">
+                    <Style Color="220, 38, 38" TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Bottom="Solid" />
+                      <BorderColor Bottom="226, 232, 240" />
+                      <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="9pt" Bold="True" />
+                      <Padding Left="4pt" Right="4pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="6" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= Fields.NoShowCount" Name="tdNoShow">
+                    <Style Color="217, 119, 6" TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Bottom="Solid" />
+                      <BorderColor Bottom="226, 232, 240" />
+                      <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="9pt" Bold="True" />
+                      <Padding Left="4pt" Right="4pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+            </Cells>
+            <Columns>
+              <Column Width="1.00000000745058cm" />
+              <Column Width="5.99999976158142cm" />
+              <Column Width="3.50000023841858cm" />
+              <Column Width="2.50000008940697cm" />
+              <Column Width="2.00000001490116cm" />
+              <Column Width="2.00000001490116cm" />
+              <Column Width="2.00000001490116cm" />
+            </Columns>
+            <Rows>
+              <Row Height="0.7cm" />
+            </Rows>
+          </Body>
+          <Corner />
+          <RowGroups>
+            <TableGroup Name="detailTableGroup">
+              <Groupings>
+                <Grouping />
+              </Groupings>
+            </TableGroup>
+          </RowGroups>
+          <ColumnGroups>
+            <TableGroup Name="colNum">
+              <ReportItem>
+                <TextBox Width="1cm" Height="0.7cm" Left="0cm" Top="0cm" Value="#" Name="thNum">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="colDoctor">
+              <ReportItem>
+                <TextBox Width="6cm" Height="0.7cm" Left="0cm" Top="0cm" Value="Doctor" Name="thDoctor">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Left" VerticalAlign="Middle">
+                    <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
+                    <Padding Left="4pt" Right="4pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="colSpeciality">
+              <ReportItem>
+                <TextBox Width="3.5cm" Height="0.7cm" Left="0cm" Top="0cm" Value="Speciality" Name="thSpeciality">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Left" VerticalAlign="Middle">
+                    <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
+                    <Padding Left="4pt" Right="4pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="colTotal">
+              <ReportItem>
+                <TextBox Width="2.5cm" Height="0.7cm" Left="0cm" Top="0cm" Value="Total Appts" Name="thTotal">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
+                    <Padding Left="4pt" Right="4pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="colCompleted">
+              <ReportItem>
+                <TextBox Width="2cm" Height="0.7cm" Left="0cm" Top="0cm" Value="Completed" Name="thCompleted">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
+                    <Padding Left="4pt" Right="4pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="colCancelled">
+              <ReportItem>
+                <TextBox Width="2cm" Height="0.7cm" Left="0cm" Top="0cm" Value="Cancelled" Name="thCancelled">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
+                    <Padding Left="4pt" Right="4pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="colNoShow">
+              <ReportItem>
+                <TextBox Width="2cm" Height="0.7cm" Left="0cm" Top="0cm" Value="No Show" Name="thNoShow">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
+                    <Padding Left="4pt" Right="4pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+          </ColumnGroups>
+        </Table>
+      </Items>
+    </DetailSection>
+    <PageFooterSection Height="0.7cm" Name="pageFooterSection1">
+      <Items>
+        <TextBox Width="10cm" Height="0.6cm" Left="0cm" Top="0.05cm" Value="= 'Printed on: ' + Format('{0:yyyy-MM-dd HH:mm}', Now())" Name="txtPrintTime">
+          <Style Color="148, 163, 184" VerticalAlign="Middle">
+            <Font Name="Segoe UI" Size="8pt" />
+          </Style>
+        </TextBox>
+        <TextBox Width="6cm" Height="0.6cm" Left="13cm" Top="0.05cm" Value="= 'Page ' + PageNumber + ' of ' + PageCount" Name="txtPageNumbers">
+          <Style Color="148, 163, 184" TextAlign="Right" VerticalAlign="Middle">
+            <Font Name="Segoe UI" Size="8pt" />
+          </Style>
+        </TextBox>
+      </Items>
+    </PageFooterSection>
+  </Items>
+  <PageSettings>
+    <PageSettings PaperKind="A4" Landscape="False">
+      <Margins>
+        <MarginsU Left="1cm" Right="1cm" Top="1cm" Bottom="1cm" />
+      </Margins>
+    </PageSettings>
+  </PageSettings>
+  <ReportParameters>
+    <ReportParameter Name="FromDate" AllowNull="True" />
+    <ReportParameter Name="ToDate" AllowNull="True" />
+  </ReportParameters>
+</Report>

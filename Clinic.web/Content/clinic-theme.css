@@ -251,6 +251,15 @@ html[dir="rtl"] .clinic-menu-child .side-menu-link {
     padding-right: var(--space-8);
 }
 
+.clinic-menu-child .clinic-menu-subitem {
+    padding-left: var(--space-12);
+}
+
+html[dir="rtl"] .clinic-menu-child .clinic-menu-subitem {
+    padding-left: var(--space-3);
+    padding-right: var(--space-12);
+}
+
 .toggle-icon {
     margin-left: auto;
     transition: transform 0.2s;

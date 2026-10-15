@@ -1,0 +1,124 @@
+@{
+    ViewBag.Title = "Doctor Appointments Report";
+}
+
+<div ng-cloak ng-controller="DoctorAppointmentsController" class="admin-report-page">
+
+    <!-- Unauthorized Access State -->
+    <div class="empty-state" ng-if="isUnauthorized">
+        <i class="fa fa-lock empty-state-icon text-danger"></i>
+        <h3 class="empty-state-title">{{ 'common.AccessDenied' | i18n }}</h3>
+        <p class="empty-state-desc">{{ 'common.NoPermission' | i18n }}</p>
+    </div>
+
+    <div ng-if="!isUnauthorized && permissions.Show">
+
+        <!-- Page Header -->
+        <div class="page-header" style="margin-bottom: var(--space-4);">
+            <div class="page-title-wrap">
+                <h1 class="page-title">
+                    <i class="fa fa-calendar-check-o text-primary"></i>
+                    {{ 'report.DoctorAppointmentsTitle' | i18n }}
+                </h1>
+                <p class="page-subtitle">
+                    {{ 'report.DoctorAppointmentsSubtitle' | i18n }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="c-card">
+            <div class="c-card-header">
+                <h3 class="c-card-title">
+                    <i class="fa fa-filter text-primary"></i>
+                    <span>{{ 'report.Filter' | i18n }}</span>
+                </h3>
+            </div>
+            <div class="c-card-body" style="padding: var(--space-4);">
+                <div class="row">
+                    <!-- Doctor Filter -->
+                    <div class="col-md-3 col-sm-6" style="margin-bottom: var(--space-3);">
+                        <label class="form-label" for="ddlDoctor">
+                            <i class="fa fa-user-md text-primary"></i>
+                            {{ 'report.Doctor' | i18n }}
+                        </label>
+                        <select class="form-control"
+                                id="ddlDoctor"
+                                ng-model="filters.doctorId"
+                                ng-disabled="isLoadingMasterData">
+                            <option value="">-- {{ 'report.AllDoctors' | i18n }} --</option>
+                            <option ng-repeat="doc in doctors" ng-value="doc.Id">
+                                Dr. {{ doc.Name }} ({{ doc.DoctorCode }})
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- From Date Filter -->
+                    <div class="col-md-3 col-sm-6" style="margin-bottom: var(--space-3);">
+                        <label class="form-label" for="txtFromDate">
+                            <i class="fa fa-calendar text-primary"></i>
+                            {{ 'report.FromDate' | i18n }}
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               id="txtFromDate"
+                               ng-model="filters.fromDate" />
+                    </div>
+
+                    <!-- To Date Filter -->
+                    <div class="col-md-3 col-sm-6" style="margin-bottom: var(--space-3);">
+                        <label class="form-label" for="txtToDate">
+                            <i class="fa fa-calendar text-primary"></i>
+                            {{ 'report.ToDate' | i18n }}
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               id="txtToDate"
+                               ng-model="filters.toDate" />
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="col-md-3 col-sm-6" style="margin-bottom: var(--space-3);">
+                        <label class="form-label" for="ddlStatus">
+                            <i class="fa fa-tag text-primary"></i>
+                            {{ 'report.Status' | i18n }}
+                        </label>
+                        <select class="form-control"
+                                id="ddlStatus"
+                                ng-model="filters.status">
+                            <option value="">-- {{ 'report.AllStatuses' | i18n }} --</option>
+                            <option ng-repeat="st in statuses" ng-value="st">
+                                {{ getStatusLocalizationKey(st) | i18n }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Essential Actions: Generate & Reset -->
+                <div style="display: flex; gap: var(--space-3); justify-content: flex-end; padding-top: var(--space-2); border-top: 1px solid var(--c-border-light);">
+                    <button type="button"
+                            class="btn btn-outline"
+                            id="btnResetFilters"
+                            ng-click="resetFilters()"
+                            title="{{ 'report.ResetFilters' | i18n }}">
+                        <i class="fa fa-undo"></i>
+                        {{ 'report.ResetFilters' | i18n }}
+                    </button>
+                    <button type="button"
+                            class="btn btn-primary"
+                            id="btnGenerateReport"
+                            ng-click="generateReport()">
+                        <i class="fa fa-external-link"></i>
+                        {{ 'report.GenerateReport' | i18n }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Administration/Scripts/Controllers/DoctorAppointmentsController.js"></script>
+}

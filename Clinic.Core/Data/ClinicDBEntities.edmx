@@ -541,6 +541,15 @@
           </ReferentialConstraint>
         </Association>
         <Function Name="usp_Appointment_MarkExpiredAsNoShow" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_DoctorAppointmentsReport_GetData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DoctorId" Type="int" Mode="In" />
+          <Parameter Name="FromDate" Type="date" Mode="In" />
+          <Parameter Name="ToDate" Type="date" Mode="In" />
+          <Parameter Name="Status" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="usp_PatientMedicalHistoryReport_GetData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PatientId" Type="int" Mode="In" />
+        </Function>
         <Function Name="usp_PrescriptionReport_GetById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="PrescriptionId" Type="int" Mode="In" />
         </Function>
@@ -1235,6 +1244,15 @@
           <FunctionImport Name="usp_PrescriptionReport_GetItemsById" ReturnType="Collection(ClinicDBEntities.usp_PrescriptionReport_GetItemsById_Result)">
           <Parameter Name="PrescriptionId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="usp_DoctorAppointmentsReport_GetData" ReturnType="Collection(ClinicDBEntities.usp_DoctorAppointmentsReport_GetData_Result)">
+            <Parameter Name="DoctorId" Mode="In" Type="Int32" />
+            <Parameter Name="FromDate" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDate" Mode="In" Type="DateTime" />
+            <Parameter Name="Status" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_PatientMedicalHistoryReport_GetData" ReturnType="Collection(ClinicDBEntities.usp_PatientMedicalHistoryReport_GetData_Result)">
+            <Parameter Name="PatientId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="Doctor">
           <Key>
@@ -1356,6 +1374,32 @@
           <Property Type="String" Name="Frequency" Nullable="false" MaxLength="100" />
           <Property Type="String" Name="Duration" Nullable="false" MaxLength="100" />
           <Property Type="String" Name="ItemNotes" Nullable="true" MaxLength="500" />
+        </ComplexType>
+        <ComplexType Name="usp_DoctorAppointmentsReport_GetData_Result">
+          <Property Type="Int32" Name="AppointmentId" Nullable="false" />
+          <Property Type="DateTime" Name="AppointmentDate" Nullable="false" />
+          <Property Type="Time" Name="AppointmentTime" Nullable="false" />
+          <Property Type="String" Name="PatientCode" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PatientName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="DoctorCode" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="DoctorName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="Notes" Nullable="true" MaxLength="1000" />
+        </ComplexType>
+        <ComplexType Name="usp_PatientMedicalHistoryReport_GetData_Result">
+          <Property Type="Int32" Name="PatientId" Nullable="false" />
+          <Property Type="String" Name="PatientCode" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="PatientName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="Gender" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="Phone" Nullable="false" MaxLength="30" />
+          <Property Type="Int32" Name="VisitId" Nullable="false" />
+          <Property Type="DateTime" Name="VisitDate" Nullable="true" />
+          <Property Type="String" Name="DoctorCode" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="DoctorName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="SpecialityName" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="Diagnosis" Nullable="false" />
+          <Property Type="String" Name="Prescription" Nullable="false" />
+          <Property Type="String" Name="VisitNotes" Nullable="true" MaxLength="2000" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1687,6 +1731,40 @@
                 <ScalarProperty Name="Frequency" ColumnName="Frequency" />
                 <ScalarProperty Name="Duration" ColumnName="Duration" />
                 <ScalarProperty Name="ItemNotes" ColumnName="ItemNotes" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_DoctorAppointmentsReport_GetData" FunctionName="ClinicDBEntities.Store.usp_DoctorAppointmentsReport_GetData">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ClinicDBEntities.usp_DoctorAppointmentsReport_GetData_Result">
+                <ScalarProperty Name="AppointmentId" ColumnName="AppointmentId" />
+                <ScalarProperty Name="AppointmentDate" ColumnName="AppointmentDate" />
+                <ScalarProperty Name="AppointmentTime" ColumnName="AppointmentTime" />
+                <ScalarProperty Name="PatientCode" ColumnName="PatientCode" />
+                <ScalarProperty Name="PatientName" ColumnName="PatientName" />
+                <ScalarProperty Name="DoctorCode" ColumnName="DoctorCode" />
+                <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_PatientMedicalHistoryReport_GetData" FunctionName="ClinicDBEntities.Store.usp_PatientMedicalHistoryReport_GetData">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ClinicDBEntities.usp_PatientMedicalHistoryReport_GetData_Result">
+                <ScalarProperty Name="PatientId" ColumnName="PatientId" />
+                <ScalarProperty Name="PatientCode" ColumnName="PatientCode" />
+                <ScalarProperty Name="PatientName" ColumnName="PatientName" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="VisitId" ColumnName="VisitId" />
+                <ScalarProperty Name="VisitDate" ColumnName="VisitDate" />
+                <ScalarProperty Name="DoctorCode" ColumnName="DoctorCode" />
+                <ScalarProperty Name="DoctorName" ColumnName="DoctorName" />
+                <ScalarProperty Name="SpecialityName" ColumnName="SpecialityName" />
+                <ScalarProperty Name="Diagnosis" ColumnName="Diagnosis" />
+                <ScalarProperty Name="Prescription" ColumnName="Prescription" />
+                <ScalarProperty Name="VisitNotes" ColumnName="VisitNotes" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

@@ -281,5 +281,116 @@ namespace Clinic.Core.BLL
                 return BaseResponse<SaveVisitResultDto>.Fail("An unexpected error occurred.");
             }
         }
+
+        public async Task<BaseResponse<List<PrescriptionReportItemDto>>> GetPrescriptionsForReportAsync(
+            string currentUserId, bool isAdmin, string term = null, int? prescriptionId = null)
+        {
+            try
+            {
+                var query = _context.Prescriptions
+                    .AsNoTracking()
+                    .Where(p => !p.IsDeleted && !p.Visit.IsDeleted);
+
+                if (!isAdmin)
+                {
+                    if (string.IsNullOrWhiteSpace(currentUserId))
+                    {
+                        return BaseResponse<List<PrescriptionReportItemDto>>.Fail("Unauthorized access.");
+                    }
+                    var doctor = await _context.Doctors
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(d => d.UserId == currentUserId && !d.IsDeleted);
+
+                    if (doctor == null)
+                    {
+                        return BaseResponse<List<PrescriptionReportItemDto>>.Success(new List<PrescriptionReportItemDto>());
+                    }
+
+                    query = query.Where(p => p.Visit.DoctorId == doctor.Id);
+                }
+
+                if (prescriptionId.HasValue && prescriptionId.Value > 0)
+                {
+                    query = query.Where(p => p.Id == prescriptionId.Value);
+                }
+                else if (!string.IsNullOrWhiteSpace(term))
+                {
+                    term = term.Trim();
+                    int parsedId;
+                    if (int.TryParse(term, out parsedId))
+                    {
+                        query = query.Where(p => p.Id == parsedId ||
+                                                 p.Visit.Patient.Name.Contains(term) ||
+                                                 p.Visit.Patient.PatientCode.Contains(term) ||
+                                                 p.Visit.Patient.Phone.Contains(term) ||
+                                                 p.Visit.Doctor.Name.Contains(term));
+                    }
+                    else
+                    {
+                        query = query.Where(p => p.Visit.Patient.Name.Contains(term) ||
+                                                 p.Visit.Patient.PatientCode.Contains(term) ||
+                                                 p.Visit.Patient.Phone.Contains(term) ||
+                                                 p.Visit.Doctor.Name.Contains(term));
+                    }
+                }
+
+                var list = await query
+                    .OrderByDescending(p => p.Id)
+                    .Take(50)
+                    .Select(p => new
+                    {
+                        p.Id,
+                        VisitDate = p.Visit.VisitDate,
+                        PatientName = p.Visit.Patient.Name,
+                        PatientCode = p.Visit.Patient.PatientCode,
+                        PatientPhone = p.Visit.Patient.Phone,
+                        DoctorName = p.Visit.Doctor.Name,
+                        DoctorCode = p.Visit.Doctor.DoctorCode,
+                        DoctorId = p.Visit.DoctorId,
+                        ItemCount = p.PrescriptionItems.Count(i => !i.IsDeleted)
+                    })
+                    .ToListAsync();
+
+                var result = list.Select(p => new PrescriptionReportItemDto
+                {
+                    Id = p.Id,
+                    PrescriptionCode = "Rx #" + p.Id,
+                    VisitDate = p.VisitDate.ToString("yyyy-MM-dd"),
+                    PatientName = p.PatientName,
+                    PatientCode = p.PatientCode,
+                    PatientPhone = p.PatientPhone,
+                    DoctorName = p.DoctorName,
+                    DoctorCode = p.DoctorCode,
+                    DoctorId = p.DoctorId,
+                    ItemCount = p.ItemCount
+                }).ToList();
+
+                return BaseResponse<List<PrescriptionReportItemDto>>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                return BaseResponse<List<PrescriptionReportItemDto>>.Fail(ex.Message);
+            }
+        }
+
+        public bool ValidatePrescriptionAccess(string currentUserId, bool isAdmin, int prescriptionId)
+        {
+            if (isAdmin)
+            {
+                return _context.Prescriptions.Any(p => p.Id == prescriptionId && !p.IsDeleted && !p.Visit.IsDeleted);
+            }
+
+            if (string.IsNullOrWhiteSpace(currentUserId))
+            {
+                return false;
+            }
+
+            return _context.Prescriptions
+                .Any(p => p.Id == prescriptionId &&
+                          !p.IsDeleted &&
+                          !p.Visit.IsDeleted &&
+                          p.Visit.Doctor.UserId == currentUserId &&
+                          !p.Visit.Doctor.IsDeleted);
+        }
     }
 }

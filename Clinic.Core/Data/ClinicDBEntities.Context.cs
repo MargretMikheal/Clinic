@@ -77,5 +77,35 @@ namespace Clinic.Core.Data
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_PrescriptionReport_GetItemsById_Result>("usp_PrescriptionReport_GetItemsById", prescriptionIdParameter);
         }
+    
+        public virtual ObjectResult<usp_DoctorAppointmentsReport_GetData_Result> usp_DoctorAppointmentsReport_GetData(Nullable<int> doctorId, Nullable<System.DateTime> fromDate, Nullable<System.DateTime> toDate, string status)
+        {
+            var doctorIdParameter = doctorId.HasValue ?
+                new ObjectParameter("DoctorId", doctorId) :
+                new ObjectParameter("DoctorId", typeof(int));
+    
+            var fromDateParameter = fromDate.HasValue ?
+                new ObjectParameter("FromDate", fromDate) :
+                new ObjectParameter("FromDate", typeof(System.DateTime));
+    
+            var toDateParameter = toDate.HasValue ?
+                new ObjectParameter("ToDate", toDate) :
+                new ObjectParameter("ToDate", typeof(System.DateTime));
+    
+            var statusParameter = status != null ?
+                new ObjectParameter("Status", status) :
+                new ObjectParameter("Status", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_DoctorAppointmentsReport_GetData_Result>("usp_DoctorAppointmentsReport_GetData", doctorIdParameter, fromDateParameter, toDateParameter, statusParameter);
+        }
+    
+        public virtual ObjectResult<usp_PatientMedicalHistoryReport_GetData_Result> usp_PatientMedicalHistoryReport_GetData(Nullable<int> patientId)
+        {
+            var patientIdParameter = patientId.HasValue ?
+                new ObjectParameter("PatientId", patientId) :
+                new ObjectParameter("PatientId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_PatientMedicalHistoryReport_GetData_Result>("usp_PatientMedicalHistoryReport_GetData", patientIdParameter);
+        }
     }
 }

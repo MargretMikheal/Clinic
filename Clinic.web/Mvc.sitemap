@@ -11,6 +11,11 @@
       <mvcSiteMapNode title="menu.Specialities" key="6" icon="fa-stethoscope" area="Administration" controller="Speciality" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
       <mvcSiteMapNode title="menu.Symptoms" key="7" icon="fa-list" area="Administration" controller="Symptom" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
       <mvcSiteMapNode title="menu.Diagnoses" key="8" icon="fa-medkit" area="Administration" controller="Diagnosis" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      <mvcSiteMapNode title="menu.Reports" key="18" icon="fa-bar-chart" area="Administration" clickable="false" url="~/Menu/Reports" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web">
+        <mvcSiteMapNode title="menu.DoctorAppointmentsReport" key="15" icon="fa-calendar-check-o" area="Administration" controller="DoctorAppointmentsReport" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+        <mvcSiteMapNode title="menu.PatientMedicalHistoryReport" key="16" icon="fa-file-text-o" area="Administration" controller="PatientMedicalHistoryReport" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+        <mvcSiteMapNode title="menu.DoctorPerformanceReport" key="19" icon="fa-bar-chart" area="Administration" controller="DoctorPerformanceReport" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      </mvcSiteMapNode>
     </mvcSiteMapNode>
 
     <mvcSiteMapNode title="menu.Reception" key="2" icon="fa-desktop" area="Reception" url="~/Menu/Reception" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web">
@@ -23,6 +28,7 @@
       <mvcSiteMapNode title="menu.MyAppointments" key="12" icon="fa-calendar" area="Doctor" controller="Appointment" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
       <mvcSiteMapNode title="menu.PatientHistory" key="13" icon="fa-history" area="Doctor" controller="Patient" action="History" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
       <mvcSiteMapNode title="menu.Visit" key="14" icon="fa-stethoscope" area="Doctor" controller="Visit" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
+      <mvcSiteMapNode title="menu.PrescriptionReport" key="17" icon="fa-file-text" area="Doctor" controller="PrescriptionReport" action="Index" visibilityProvider="Clinic.Web.Infrastructure.SiteMap.ClinicVisibilityProvider, Clinic.Web" />
     </mvcSiteMapNode>
 
   </mvcSiteMapNode>

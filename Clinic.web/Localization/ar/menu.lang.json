@@ -13,5 +13,10 @@
   "MyAppointments": "مواعيدي",
   "PatientHistory": "سجل المريض",
   "Visit": "الزيارة",
-  "Dashboard": "لوحة القيادة"
+  "Dashboard": "لوحة القيادة",
+  "Reports": "التقارير",
+  "DoctorAppointmentsReport": "مواعيد الأطباء",
+  "PatientMedicalHistoryReport": "السجل الطبي للمريض",
+  "DoctorPerformanceReport": "أداء الأطباء",
+  "PrescriptionReport": "تقرير الروشتة الطبية"
 }

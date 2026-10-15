@@ -213,6 +213,13 @@
     <Compile Include="Areas\Doctor\Controllers\AppointmentController.cs" />
     <Compile Include="Areas\Doctor\Controllers\PatientController.cs" />
     <Compile Include="Areas\Doctor\Controllers\VisitController.cs" />
+    <Compile Include="Areas\Administration\Controllers\DoctorAppointmentsController.cs" />
+    <Compile Include="Areas\Administration\Controllers\DoctorAppointmentsReportController.cs" />
+    <Compile Include="Areas\Administration\Controllers\PatientMedicalHistoryController.cs" />
+    <Compile Include="Areas\Administration\Controllers\PatientMedicalHistoryReportController.cs" />
+    <Compile Include="Areas\Administration\Controllers\DoctorPerformanceController.cs" />
+    <Compile Include="Areas\Administration\Controllers\DoctorPerformanceReportController.cs" />
+    <Compile Include="Areas\Doctor\Controllers\PrescriptionReportController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Models\ReportsParameters.cs" />
@@ -221,6 +228,10 @@
     <Content Include="Areas\Administration\Scripts\Controllers\DoctorsController.js" />
     <Content Include="Areas\Administration\Scripts\Controllers\UsersController.js" />
     <Content Include="Areas\Administration\Scripts\Controllers\RolePermissionsController.js" />
+    <Content Include="Areas\Administration\Scripts\Controllers\DoctorAppointmentsController.js" />
+    <Content Include="Areas\Administration\Scripts\Controllers\PatientMedicalHistoryController.js" />
+    <Content Include="Areas\Doctor\Scripts\Controllers\PrescriptionReportController.js" />
+    <Content Include="Areas\Doctor\Views\PrescriptionReport\Index.cshtml" />
     <Content Include="Areas\Reception\Scripts\Controllers\AppointmentController.js" />
     <Content Include="Areas\Doctor\Scripts\Controllers\ScheduleController.js" />
     <Content Include="Areas\Doctor\Scripts\Controllers\AppointmentController.js" />
@@ -316,6 +327,12 @@
     <Content Include="Areas\Administration\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Reception\Views\Appointment\Index.cshtml" />
     <Content Include="Reports\PrescriptionReport.trdx" />
+    <Content Include="Reports\DoctorAppointmentsReport.trdx" />
+    <Content Include="Reports\PatientMedicalHistoryReport.trdx" />
+    <Content Include="Areas\Administration\Views\DoctorAppointments\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\PatientMedicalHistory\Index.cshtml" />
+    <Content Include="Localization\en\report.lang.json" />
+    <Content Include="Localization\ar\report.lang.json" />
     <Content Include="reportstemp\.gitkeep" />
     <Content Include="reportstemp\Html5App\10.0.16.204\Cs\095905-386c\EO\value.dat" />
     <Content Include="reportstemp\Html5App\10.0.16.204\Cs\A\value.dat" />
@@ -411,6 +428,9 @@
     <Content Include="Areas\Administration\Views\Speciality\Index.cshtml" />
     <Content Include="Areas\Administration\Views\Symptom\Index.cshtml" />
     <Content Include="Areas\Administration\Views\Diagnosis\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\DoctorPerformance\Index.cshtml" />
+    <Content Include="Areas\Administration\Scripts\Controllers\DoctorPerformanceController.js" />
+    <Content Include="Reports\DoctorPerformanceReport.trdx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

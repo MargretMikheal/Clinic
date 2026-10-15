@@ -1,0 +1,98 @@
+@{
+    ViewBag.Title = "Patient Medical History Report";
+}
+
+<div ng-cloak ng-controller="PatientMedicalHistoryReportController" class="admin-report-page">
+
+    <!-- Unauthorized Access State -->
+    <div class="empty-state" ng-if="isUnauthorized">
+        <i class="fa fa-lock empty-state-icon text-danger"></i>
+        <h3 class="empty-state-title">{{ 'common.AccessDenied' | i18n }}</h3>
+        <p class="empty-state-desc">{{ 'common.NoPermission' | i18n }}</p>
+    </div>
+
+    <div ng-if="!isUnauthorized && permissions.Show">
+
+        <!-- Page Header -->
+        <div class="page-header" style="margin-bottom: var(--space-4);">
+            <div class="page-title-wrap">
+                <h1 class="page-title">
+                    <i class="fa fa-file-text-o text-primary"></i>
+                    {{ 'report.PatientMedicalHistoryTitle' | i18n }}
+                </h1>
+                <p class="page-subtitle">
+                    {{ 'report.PatientMedicalHistorySubtitle' | i18n }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="c-card">
+            <div class="c-card-header">
+                <h3 class="c-card-title">
+                    <i class="fa fa-filter text-primary"></i>
+                    <span>{{ 'report.Filter' | i18n }}</span>
+                </h3>
+            </div>
+            <div class="c-card-body" style="padding: var(--space-4);">
+                <div class="row">
+                    <!-- Search Input -->
+                    <div class="col-md-5 col-sm-6" style="margin-bottom: var(--space-3);">
+                        <label class="form-label" for="txtPatientSearch">
+                            <i class="fa fa-search text-primary"></i>
+                            {{ 'report.SearchPatient' | i18n }}
+                        </label>
+                        <input type="text"
+                               class="form-control"
+                               id="txtPatientSearch"
+                               ng-model="searchQuery"
+                               ng-change="searchPatients(searchQuery)"
+                               placeholder="{{ 'report.SearchPatientPlaceholder' | i18n }}" />
+                    </div>
+
+                    <!-- Patient Select -->
+                    <div class="col-md-7 col-sm-6" style="margin-bottom: var(--space-3);">
+                        <label class="form-label" for="ddlPatientSelect">
+                            <i class="fa fa-user text-primary"></i>
+                            {{ 'report.SelectPatient' | i18n }}
+                        </label>
+                        <select class="form-control"
+                                id="ddlPatientSelect"
+                                ng-model="selectedPatientId"
+                                ng-disabled="isLoadingPatients"
+                                ng-options="p.Id as (p.Name + ' (' + p.PatientCode + ' - ' + (p.Phone || 'N/A') + ')') for p in patients">
+                            <option value="">-- {{ 'report.SelectPatient' | i18n }} --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Essential Actions: Generate & Reset -->
+                <div style="display: flex; gap: var(--space-3); justify-content: flex-end; padding-top: var(--space-2); border-top: 1px solid var(--c-border-light);">
+                    <button type="button"
+                            class="btn btn-outline"
+                            id="btnClearPatient"
+                            ng-click="clearPatient()"
+                            ng-disabled="!selectedPatientId && !searchQuery"
+                            title="{{ 'report.ResetFilters' | i18n }}">
+                        <i class="fa fa-undo"></i>
+                        {{ 'report.ResetFilters' | i18n }}
+                    </button>
+                    <button type="button"
+                            class="btn btn-primary"
+                            id="btnGeneratePatientReport"
+                            ng-click="generateReport()"
+                            ng-disabled="!selectedPatientId">
+                        <i class="fa fa-external-link"></i>
+                        {{ 'report.GenerateReport' | i18n }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Administration/Scripts/Controllers/PatientMedicalHistoryController.js"></script>
+}

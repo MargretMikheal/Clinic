@@ -6,11 +6,31 @@
     Layout = null;
     var reportName = Model != null ? Model.ReportName : string.Empty;
     var reportParams = (Model != null && Model.Parms != null) ? Model.Parms : new System.Collections.Generic.Dictionary<string, object>();
+    var pageTitle = "Clinic Report";
+    if (!string.IsNullOrEmpty(reportName))
+    {
+        if (reportName.IndexOf("DoctorAppointments", System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            pageTitle = "Doctor Appointments Report";
+        }
+        else if (reportName.IndexOf("PatientMedicalHistory", System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            pageTitle = "Patient Medical History Report";
+        }
+        else if (reportName.IndexOf("PrescriptionReport", System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            pageTitle = "Prescription Report";
+        }
+        else if (reportName.IndexOf("DoctorPerformance", System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            pageTitle = "Doctor Performance Report";
+        }
+    }
 }
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Report Viewer</title>
+    <title>@pageTitle</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 

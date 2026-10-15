@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -148,6 +148,7 @@ namespace Clinic.Core.Data.Seed
                     CreatedDate = DateTime.Now
                 },
 
+
                 // Reception
                 new Screen
                 {
@@ -226,11 +227,76 @@ namespace Clinic.Core.Data.Seed
                     IsActive = true,
                     IsDeleted = false,
                     CreatedDate = DateTime.Now
+                },
+
+                // Reports
+                new Screen
+                {
+                    Name = "Doctor Appointments Report",
+                    Area = "Administration",
+                    Controller = "DoctorAppointments",
+                    Action = "Index",
+                    Icon = "fa-calendar-check-o",
+                    ParentId = administrationId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+
+                new Screen
+                {
+                    Name = "Patient Medical History Report",
+                    Area = "Administration",
+                    Controller = "PatientMedicalHistory",
+                    Action = "Index",
+                    Icon = "fa-file-text-o",
+                    ParentId = administrationId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+
+                new Screen
+                {
+                    Name = "Prescription Report",
+                    Area = "Doctor",
+                    Controller = "PrescriptionReport",
+                    Action = "Index",
+                    Icon = "fa-file-text",
+                    ParentId = doctorId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+
+                new Screen
+                {
+                    Name = "Reports",
+                    Area = "Administration",
+                    Controller = null,
+                    Action = null,
+                    Icon = "fa-bar-chart",
+                    ParentId = administrationId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
+                },
+
+                new Screen
+                {
+                    Name = "Doctor Performance Report",
+                    Area = "Administration",
+                    Controller = "DoctorPerformance",
+                    Action = "Index",
+                    Icon = "fa-bar-chart",
+                    ParentId = administrationId,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedDate = DateTime.Now
                 }
             };
 
             context.Screens.AddRange(childScreens);
-
             context.SaveChanges();
         }
     }

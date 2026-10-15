@@ -23,16 +23,19 @@ namespace Clinic.Web.Filters
 
             string lang = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
             
-            filterContext.Controller.ViewData["ErrorMessage"] = lang == "ar" 
-                ? "حدث خطأ غير متوقع. برجاء المحاولة مرة أخرى."
-                : "An unexpected error occurred. Please try again.";
-                
-            filterContext.Controller.ViewData["ErrorId"] = errorId;
+            var model = new HandleErrorInfo(filterContext.Exception, controllerName, actionName);
+            var viewData = new ViewDataDictionary<HandleErrorInfo>(model)
+            {
+                ["ErrorMessage"] = lang == "ar" 
+                    ? "حدث خطأ غير متوقع. برجاء المحاولة مرة أخرى."
+                    : "An unexpected error occurred. Please try again.",
+                ["ErrorId"] = errorId
+            };
 
             filterContext.Result = new ViewResult
             {
                 ViewName = "Error",
-                ViewData = filterContext.Controller.ViewData,
+                ViewData = viewData,
                 TempData = filterContext.Controller.TempData
             };
             

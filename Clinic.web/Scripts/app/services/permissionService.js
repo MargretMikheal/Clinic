@@ -17,7 +17,12 @@
         MySchedule: 11,
         MyAppointments: 12,
         PatientHistory: 13,
-        Visit: 14
+        Visit: 14,
+        DoctorAppointmentsReport: 15,
+        PatientMedicalHistoryReport: 16,
+        PrescriptionReport: 17,
+        Reports: 18,
+        DoctorPerformanceReport: 19
     });
 
     app.factory("permissionService", ["$http", "$q", function ($http, $q) {

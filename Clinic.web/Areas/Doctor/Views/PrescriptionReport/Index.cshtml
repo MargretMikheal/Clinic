@@ -1,0 +1,108 @@
+@{
+    ViewBag.Title = "Prescription Report";
+}
+
+<div ng-cloak ng-controller="PrescriptionReportDoctorController" class="admin-report-page">
+
+    <!-- Unauthorized Access State -->
+    <div class="empty-state" ng-if="isUnauthorized">
+        <i class="fa fa-lock empty-state-icon text-danger"></i>
+        <h3 class="empty-state-title">{{ 'common.AccessDenied' | i18n }}</h3>
+        <p class="empty-state-desc">{{ 'common.NoPermission' | i18n }}</p>
+    </div>
+
+    <div ng-if="!isUnauthorized && permissions.Show">
+
+        <!-- Page Header -->
+        <div class="page-header" style="margin-bottom: var(--space-4);">
+            <div class="page-title-wrap">
+                <h1 class="page-title">
+                    <i class="fa fa-file-text text-primary"></i>
+                    {{ 'report.PrescriptionReportTitle' | i18n }}
+                </h1>
+                <p class="page-subtitle">
+                    {{ 'report.PrescriptionReportSubtitle' | i18n }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="c-card">
+            <div class="c-card-header">
+                <h3 class="c-card-title">
+                    <i class="fa fa-filter text-primary"></i>
+                    <span>{{ 'report.Filter' | i18n }}</span>
+                </h3>
+            </div>
+            <div class="c-card-body" style="padding: var(--space-4);">
+                <div class="row">
+                    <!-- Search Input -->
+                    <div class="col-md-5 col-sm-6" style="margin-bottom: var(--space-3);">
+                        <label class="form-label" for="txtPrescriptionSearch">
+                            <i class="fa fa-search text-primary"></i>
+                            {{ 'report.SearchPrescription' | i18n }}
+                        </label>
+                        <input type="text"
+                               class="form-control"
+                               id="txtPrescriptionSearch"
+                               ng-model="searchQuery"
+                               ng-change="searchPrescriptions(searchQuery)"
+                               placeholder="{{ 'report.SearchPrescriptionPlaceholder' | i18n }}" />
+                    </div>
+
+                    <!-- Prescription Select -->
+                    <div class="col-md-7 col-sm-6" style="margin-bottom: var(--space-3);">
+                        <label class="form-label" for="ddlPrescriptionSelect">
+                            <i class="fa fa-file-text-o text-primary"></i>
+                            {{ 'report.SelectPrescription' | i18n }}
+                        </label>
+                        @*<select class="form-control"
+                id="ddlPrescriptionSelect"
+                ng-model="selectedPrescriptionId"
+                ng-change="onPrescriptionChanged(selectedPrescriptionId)"
+                ng-disabled="isLoadingPrescriptions"
+                ng-options="p.Id as (p.PrescriptionCode + ' - ' + p.PatientName + ' (' + p.VisitDate + ') - Dr. ' + p.DoctorName) for p in prescriptions">
+            <option value="">-- {{ 'report.SelectPrescription' | i18n }} --</option>
+        </select>*@
+                    <select class="form-control"
+                            id="ddlPrescriptionSelect"
+                            ng-model="selectedPrescriptionId"
+                            ng-change="onPrescriptionChanged(selectedPrescriptionId)"
+                            ng-disabled="isLoadingPrescriptions"
+                            ng-options="p.Id as (p.PrescriptionCode + ' - ' + p.PatientName + ' (' + p.VisitDate + ') - Dr. ' + p.DoctorName) for p in prescriptions">
+
+                        <option value="">-- {{ 'report.SelectPrescription' | i18n }} --</option>
+                    </select>
+                    </div>
+                </div>
+
+                <!-- Essential Actions: Generate & Reset -->
+                <div style="display: flex; gap: var(--space-3); justify-content: flex-end; padding-top: var(--space-2); border-top: 1px solid var(--c-border-light);">
+                    <button type="button"
+                            class="btn btn-outline"
+                            id="btnClearPrescription"
+                            ng-click="clearPrescription()"
+                            ng-disabled="!selectedPrescriptionId && !searchQuery"
+                            title="{{ 'report.ResetFilters' | i18n }}">
+                        <i class="fa fa-undo"></i>
+                        {{ 'report.ResetFilters' | i18n }}
+                    </button>
+                    <button type="button"
+                            class="btn btn-primary"
+                            id="btnGeneratePrescriptionReport"
+                            ng-click="generateReport()"
+                            ng-disabled="!selectedPrescriptionId">
+                        <i class="fa fa-external-link"></i>
+                        {{ 'report.GenerateReport' | i18n }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/Areas/Doctor/Scripts/Controllers/PrescriptionReportController.js"></script>
+}

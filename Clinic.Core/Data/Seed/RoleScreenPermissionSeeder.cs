@@ -99,7 +99,8 @@ namespace Clinic.Core.Data.Seed
                 "My Schedule",
                 "My Appointments",
                 "Patient History",
-                "Visit"
+                "Visit",
+                "Prescription Report"
             };
 
             foreach (var screen in screens
@@ -125,7 +126,8 @@ namespace Clinic.Core.Data.Seed
 
                     ScreenPrint =
                         screen.Name == "Patient History" ||
-                        screen.Name == "Visit",
+                        screen.Name == "Visit" ||
+                        screen.Name == "Prescription Report",
 
                     CreatedDate = DateTime.Now
                 });
