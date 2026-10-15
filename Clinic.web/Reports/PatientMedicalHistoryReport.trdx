@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Report DataSourceName="PatientMedicalHistoryDataSource" Width="19cm" Name="PatientMedicalHistoryReport" xmlns="http://schemas.telerik.com/reporting/2012/3.9">
   <DataSources>
-    <SqlDataSource ConnectionString="ClinicConnection" SelectCommand="dbo.usp_PatientMedicalHistoryReport_GetData" SelectCommandType="StoredProcedure" Name="PatientMedicalHistoryDataSource">
+    <SqlDataSource ConnectionString="ClinicConnection" SelectCommand="dbo.usp_PatientMedicalHistoryReport_GetData" SelectCommandType="StoredProcedure" Name="PatientMedicalHistoryDataSource" ParameterValues="{&quot;@PatientId&quot;:&quot;1&quot;}">
+      <Parameters>
+        <SqlDataSourceParameter DbType="Int32" Name="@PatientId">
+          <Value>
+            <String>= CInt(Parameters.PatientId.Value)</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+    <SqlDataSource ConnectionString="ClinicConnection" SelectCommand="dbo.usp_PatientMedicalHistoryReport_GetData" SelectCommandType="StoredProcedure" Name="sqlDataSource1" ParameterValues="{&quot;@PatientId&quot;:&quot;1&quot;}">
       <Parameters>
         <SqlDataSourceParameter DbType="Int32" Name="@PatientId">
           <Value>
@@ -12,33 +21,25 @@
     </SqlDataSource>
   </DataSources>
   <Items>
-    <ReportHeaderSection Height="3.2cm" Name="reportHeaderSection1">
+    <ReportHeaderSection Height="6.09599983043671cm" Name="reportHeaderSection1">
       <Items>
-        <!-- Title -->
         <TextBox Width="13cm" Height="0.8cm" Left="0cm" Top="0.2cm" Value="PATIENT MEDICAL HISTORY" Name="txtTitle">
-          <Style VerticalAlign="Middle">
+          <Style Color="30, 41, 59" VerticalAlign="Middle">
             <Font Name="Segoe UI" Size="15pt" Bold="True" />
-            <Color>30, 41, 59</Color>
           </Style>
         </TextBox>
-        <!-- Clinic Badge -->
         <TextBox Width="6cm" Height="0.8cm" Left="13cm" Top="0.2cm" Value="CLINICAL RECORD" Name="txtClinicBadge">
-          <Style TextAlign="Right" VerticalAlign="Middle">
+          <Style Color="15, 118, 110" TextAlign="Right" VerticalAlign="Middle">
             <Font Name="Segoe UI" Size="10pt" Bold="True" />
-            <Color>15, 118, 110</Color>
           </Style>
         </TextBox>
-        <!-- Divider Line -->
         <Shape Width="19cm" Height="0.05cm" Left="0cm" Top="1.1cm" Name="shapeDivider">
+          <Style Color="15, 118, 110" LineWidth="1.5pt" />
           <ShapeType>
-            <LineShape />
+            <LineShape Direction="EW" />
           </ShapeType>
-          <Style Color="15, 118, 110">
-            <LineWidth>1.5pt</LineWidth>
-          </Style>
         </Shape>
-        <!-- Patient Context Box -->
-        <Panel Width="19cm" Height="1.6cm" Left="0cm" Top="1.3cm" Name="panelPatient">
+        <Panel Width="19cm" Height="1.60000002384186cm" Left="0cm" Top="1.3cm" Name="panelPatient">
           <Style BackgroundColor="248, 250, 252">
             <BorderStyle Default="Solid" />
             <BorderColor Default="226, 232, 240" />
@@ -46,108 +47,90 @@
           </Style>
           <Items>
             <TextBox Width="9cm" Height="0.55cm" Left="0.4cm" Top="0.2cm" Value="= 'Patient: ' + Fields.PatientName" Name="lblPatientName">
-              <Style VerticalAlign="Middle">
+              <Style Color="15, 23, 42" VerticalAlign="Middle">
                 <Font Name="Segoe UI" Size="10pt" Bold="True" />
-                <Color>15, 23, 42</Color>
               </Style>
             </TextBox>
             <TextBox Width="9cm" Height="0.55cm" Left="9.8cm" Top="0.2cm" Value="= 'Patient Code: ' + Fields.PatientCode" Name="lblPatientCode">
-              <Style VerticalAlign="Middle">
+              <Style Color="15, 118, 110" VerticalAlign="Middle">
                 <Font Name="Segoe UI" Size="9pt" Bold="True" />
-                <Color>15, 118, 110</Color>
               </Style>
             </TextBox>
             <TextBox Width="9cm" Height="0.55cm" Left="0.4cm" Top="0.85cm" Value="= 'Phone: ' + (IsNull(Fields.Phone, '') = '' ? 'N/A' : Fields.Phone)" Name="lblPatientPhone">
-              <Style VerticalAlign="Middle">
+              <Style Color="100, 116, 139" VerticalAlign="Middle">
                 <Font Name="Segoe UI" Size="8.5pt" />
-                <Color>100, 116, 139</Color>
               </Style>
             </TextBox>
             <TextBox Width="9cm" Height="0.55cm" Left="9.8cm" Top="0.85cm" Value="= 'Gender: ' + (IsNull(Fields.Gender, '') = '' ? 'N/A' : Fields.Gender)" Name="lblPatientGender">
-              <Style VerticalAlign="Middle">
+              <Style Color="100, 116, 139" VerticalAlign="Middle">
                 <Font Name="Segoe UI" Size="8.5pt" />
-                <Color>100, 116, 139</Color>
               </Style>
             </TextBox>
           </Items>
         </Panel>
-      </Items>
-    </ReportHeaderSection>
-    <DetailSection Height="1.6cm" Name="detailSection1">
-      <Items>
-        <Table DataSourceName="PatientMedicalHistoryDataSource" Width="19cm" Height="1.4cm" Left="0cm" Top="0.1cm" ColumnHeadersPrintOnEveryPage="True" Name="tblMedicalHistory">
+        <Table DataSourceName="sqlDataSource1" Width="19cm" Height="1.39999997615814cm" Left="0.00009996159593371cm" Top="3.80999989402294cm" ColumnHeadersPrintOnEveryPage="True" Name="tblMedicalHistory">
           <Body>
             <Cells>
-              <!-- Visit Date -->
               <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
                 <ReportItem>
-                  <TextBox Width="2.6cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= Format('{0:yyyy-MM-dd}', Fields.VisitDate)" Name="tdVisitDate">
-                    <Style TextAlign="Left" VerticalAlign="Top">
-                      <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
-                      <Color>15, 23, 42</Color>
+                  <TextBox Width="2.59999990463257cm" Height="0.699999988079071cm" Left="0in" Top="0in" Value="= Format('{0:yyyy-MM-dd}', Fields.VisitDate)" Name="tdVisitDate">
+                    <Style Color="15, 23, 42" TextAlign="Left" VerticalAlign="Top">
                       <BorderStyle Bottom="Solid" />
                       <BorderColor Bottom="226, 232, 240" />
                       <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
                       <Padding Left="4pt" Right="4pt" Top="4pt" Bottom="4pt" />
                     </Style>
                   </TextBox>
                 </ReportItem>
               </TableCell>
-              <!-- Doctor -->
               <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
                 <ReportItem>
-                  <TextBox Width="3.2cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= 'Dr. ' + Fields.DoctorName" Name="tdDoctor">
-                    <Style TextAlign="Left" VerticalAlign="Top">
-                      <Font Name="Segoe UI" Size="8.5pt" />
-                      <Color>15, 23, 42</Color>
+                  <TextBox Width="3.20000004768372cm" Height="0.699999988079071cm" Left="0in" Top="0in" Value="= 'Dr. ' + Fields.DoctorName" Name="tdDoctor">
+                    <Style Color="15, 23, 42" TextAlign="Left" VerticalAlign="Top">
                       <BorderStyle Bottom="Solid" />
                       <BorderColor Bottom="226, 232, 240" />
                       <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="8.5pt" />
                       <Padding Left="4pt" Right="4pt" Top="4pt" Bottom="4pt" />
                     </Style>
                   </TextBox>
                 </ReportItem>
               </TableCell>
-              <!-- Speciality -->
               <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
                 <ReportItem>
-                  <TextBox Width="3.0cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= Fields.SpecialityName" Name="tdSpeciality">
-                    <Style TextAlign="Left" VerticalAlign="Top">
-                      <Font Name="Segoe UI" Size="8.5pt" />
-                      <Color>51, 65, 85</Color>
+                  <TextBox Width="3cm" Height="0.699999988079071cm" Left="0in" Top="0in" Value="= Fields.SpecialityName" Name="tdSpeciality">
+                    <Style Color="51, 65, 85" TextAlign="Left" VerticalAlign="Top">
                       <BorderStyle Bottom="Solid" />
                       <BorderColor Bottom="226, 232, 240" />
                       <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="8.5pt" />
                       <Padding Left="4pt" Right="4pt" Top="4pt" Bottom="4pt" />
                     </Style>
                   </TextBox>
                 </ReportItem>
               </TableCell>
-              <!-- Diagnosis -->
               <TableCell RowIndex="0" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
                 <ReportItem>
-                  <TextBox Width="4.5cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= Fields.Diagnosis" Name="tdDiagnosis">
-                    <Style TextAlign="Left" VerticalAlign="Top">
-                      <Font Name="Segoe UI" Size="8.5pt" />
-                      <Color>30, 41, 59</Color>
+                  <TextBox Width="4.5cm" Height="0.699999988079071cm" Left="0in" Top="0in" Value="= Fields.Diagnosis" Name="tdDiagnosis">
+                    <Style Color="30, 41, 59" TextAlign="Left" VerticalAlign="Top">
                       <BorderStyle Bottom="Solid" />
                       <BorderColor Bottom="226, 232, 240" />
                       <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="8.5pt" />
                       <Padding Left="4pt" Right="4pt" Top="4pt" Bottom="4pt" />
                     </Style>
                   </TextBox>
                 </ReportItem>
               </TableCell>
-              <!-- Prescription -->
               <TableCell RowIndex="0" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
                 <ReportItem>
-                  <TextBox Width="5.7cm" Height="0.7cm" Left="0cm" Top="0cm" Value="= Fields.Prescription" Name="tdPrescription">
-                    <Style TextAlign="Left" VerticalAlign="Top">
-                      <Font Name="Segoe UI" Size="8.5pt" />
-                      <Color>15, 23, 42</Color>
+                  <TextBox Width="5.69999980926514cm" Height="0.699999988079071cm" Left="0in" Top="0in" Value="= Fields.Prescription" Name="tdPrescription">
+                    <Style Color="15, 23, 42" TextAlign="Left" VerticalAlign="Top">
                       <BorderStyle Bottom="Solid" />
                       <BorderColor Bottom="226, 232, 240" />
                       <BorderWidth Bottom="1px" />
+                      <Font Name="Segoe UI" Size="8.5pt" />
                       <Padding Left="4pt" Right="4pt" Top="4pt" Bottom="4pt" />
                     </Style>
                   </TextBox>
@@ -155,14 +138,14 @@
               </TableCell>
             </Cells>
             <Columns>
-              <Column Width="2.6cm" />
-              <Column Width="3.2cm" />
-              <Column Width="3.0cm" />
-              <Column Width="4.5cm" />
-              <Column Width="5.7cm" />
+              <Column Width="2.59999993443489cm" />
+              <Column Width="3.20000013709068cm" />
+              <Column Width="2.99999988079071cm" />
+              <Column Width="4.50000010430813cm" />
+              <Column Width="5.70000022649765cm" />
             </Columns>
             <Rows>
-              <Row Height="0.7cm" />
+              <Row Height="0.699999988079071cm" />
             </Rows>
           </Body>
           <Corner />
@@ -174,61 +157,51 @@
             </TableGroup>
           </RowGroups>
           <ColumnGroups>
-            <!-- Header Column Visit Date -->
             <TableGroup Name="colVisitDate">
               <ReportItem>
-                <TextBox Width="2.6cm" Height="0.7cm" Left="0cm" Top="0cm" Value="Visit Date" Name="thVisitDate">
-                  <Style BackgroundColor="15, 118, 110" TextAlign="Left" VerticalAlign="Middle">
+                <TextBox Width="2.59999990463257cm" Height="0.699999988079071cm" Left="0in" Top="0in" Value="Visit Date" Name="thVisitDate">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Left" VerticalAlign="Middle">
                     <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
-                    <Color>255, 255, 255</Color>
                     <Padding Left="4pt" Right="4pt" />
                   </Style>
                 </TextBox>
               </ReportItem>
             </TableGroup>
-            <!-- Header Column Doctor -->
             <TableGroup Name="colDoctor">
               <ReportItem>
-                <TextBox Width="3.2cm" Height="0.7cm" Left="0cm" Top="0cm" Value="Doctor" Name="thDoctor">
-                  <Style BackgroundColor="15, 118, 110" TextAlign="Left" VerticalAlign="Middle">
+                <TextBox Width="3.20000004768372cm" Height="0.699999988079071cm" Left="0in" Top="0in" Value="Doctor" Name="thDoctor">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Left" VerticalAlign="Middle">
                     <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
-                    <Color>255, 255, 255</Color>
                     <Padding Left="4pt" Right="4pt" />
                   </Style>
                 </TextBox>
               </ReportItem>
             </TableGroup>
-            <!-- Header Column Speciality -->
             <TableGroup Name="colSpeciality">
               <ReportItem>
-                <TextBox Width="3.0cm" Height="0.7cm" Left="0cm" Top="0cm" Value="Speciality" Name="thSpeciality">
-                  <Style BackgroundColor="15, 118, 110" TextAlign="Left" VerticalAlign="Middle">
+                <TextBox Width="3cm" Height="0.699999988079071cm" Left="0in" Top="0in" Value="Speciality" Name="thSpeciality">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Left" VerticalAlign="Middle">
                     <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
-                    <Color>255, 255, 255</Color>
                     <Padding Left="4pt" Right="4pt" />
                   </Style>
                 </TextBox>
               </ReportItem>
             </TableGroup>
-            <!-- Header Column Diagnosis -->
             <TableGroup Name="colDiagnosis">
               <ReportItem>
-                <TextBox Width="4.5cm" Height="0.7cm" Left="0cm" Top="0cm" Value="Diagnosis" Name="thDiagnosis">
-                  <Style BackgroundColor="15, 118, 110" TextAlign="Left" VerticalAlign="Middle">
+                <TextBox Width="4.5cm" Height="0.699999988079071cm" Left="0in" Top="0in" Value="Diagnosis" Name="thDiagnosis">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Left" VerticalAlign="Middle">
                     <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
-                    <Color>255, 255, 255</Color>
                     <Padding Left="4pt" Right="4pt" />
                   </Style>
                 </TextBox>
               </ReportItem>
             </TableGroup>
-            <!-- Header Column Prescription -->
             <TableGroup Name="colPrescription">
               <ReportItem>
-                <TextBox Width="5.7cm" Height="0.7cm" Left="0cm" Top="0cm" Value="Prescription" Name="thPrescription">
-                  <Style BackgroundColor="15, 118, 110" TextAlign="Left" VerticalAlign="Middle">
+                <TextBox Width="5.69999980926514cm" Height="0.699999988079071cm" Left="0in" Top="0in" Value="Prescription" Name="thPrescription">
+                  <Style BackgroundColor="15, 118, 110" Color="White" TextAlign="Left" VerticalAlign="Middle">
                     <Font Name="Segoe UI" Size="8.5pt" Bold="True" />
-                    <Color>255, 255, 255</Color>
                     <Padding Left="4pt" Right="4pt" />
                   </Style>
                 </TextBox>
@@ -237,19 +210,18 @@
           </ColumnGroups>
         </Table>
       </Items>
-    </DetailSection>
-    <PageFooterSection Height="0.7cm" Name="pageFooterSection1">
+    </ReportHeaderSection>
+    <DetailSection Height="0.762000164135293cm" Name="detailSection1" />
+    <PageFooterSection Height="0.699999988079071cm" Name="pageFooterSection1">
       <Items>
         <TextBox Width="10cm" Height="0.6cm" Left="0cm" Top="0.05cm" Value="= 'Printed on: ' + Format('{0:yyyy-MM-dd HH:mm}', Now())" Name="txtPrintTime">
-          <Style VerticalAlign="Middle">
+          <Style Color="148, 163, 184" VerticalAlign="Middle">
             <Font Name="Segoe UI" Size="8pt" />
-            <Color>148, 163, 184</Color>
           </Style>
         </TextBox>
         <TextBox Width="6cm" Height="0.6cm" Left="13cm" Top="0.05cm" Value="= 'Page ' + PageNumber + ' of ' + PageCount" Name="txtPageNumbers">
-          <Style TextAlign="Right" VerticalAlign="Middle">
+          <Style Color="148, 163, 184" TextAlign="Right" VerticalAlign="Middle">
             <Font Name="Segoe UI" Size="8pt" />
-            <Color>148, 163, 184</Color>
           </Style>
         </TextBox>
       </Items>
